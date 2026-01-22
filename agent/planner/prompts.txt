@@ -1,0 +1,524 @@
+KEY_CONTENT_EXTRACTION = """
+你是一位卓越的学术内容分析专家和专业演讲稿撰写人。
+你的目标是将一篇内容详实的学术论文转化为一份逻辑清晰、引人入胜的演示文稿素材库，供后续生成具体的幻灯片页面使用。
+
+论文文本：
+{text}
+
+---
+
+**任务一：演讲逻辑重组 (核心叙事)**
+请分析论文文本，将关键信息重组为“演讲流 (Presentation Flow)”。
+**重要要求**：内容必须详实、具体，包含足够的信息量，以便后续步骤可以将其拆分为每页 3-5 个具体的要点（Bullet Points）。不要写空洞的摘要。
+
+请严格按照以下逻辑顺序组织内容：
+
+1. **背景语境 (background_context)**：
+   - 领域重要性的具体数据或事实。
+   - 核心概念的通俗解释。
+   - 目标：为生成“背景介绍”类的幻灯片提供素材。
+
+2. **问题动机 (problem_motivation)**：
+   - 现有方法（SOTA）具体在哪里失败了？
+   - 问题的严重性。
+   - 目标：为生成“问题陈述”类的幻灯片提供素材。
+
+3. **解决方案概览 (solution_overview)**：
+   - 核心创新点的直观描述。
+   - 方法的整体架构或流程。
+   - 目标：为生成“方法总览”类的幻灯片提供素材。
+
+4. **技术路径 (technical_approach)**：
+   - 关键算法步骤、模型细节、数学原理。
+   - 具体的实现策略。
+   - 目标：为生成“技术细节”类的幻灯片提供素材。
+
+5. **证据与证明 (evidence_proof)**：
+   - 实验设置、数据集。
+   - **具体的**性能提升数据（如：准确率从 80% 提升到 85%）。
+   - 目标：为生成“实验结果”类的幻灯片提供素材。
+
+6. **影响与意义 (impact_significance)**：
+   - 结论总结。
+   - 未来的工作方向。
+   - 目标：为生成“总结与展望”类的幻灯片提供素材。
+
+---
+
+**任务二：资产分析与映射 (Asset Analysis & Mapping)**
+分析提供的图表元数据。为了让幻灯片图文并茂，你必须判断每张图表**最适合**放在演讲的哪个部分。
+
+**提供的素材：**
+1. **表格 (Markdown)**: {tables_info}
+2. **公式 (LaTeX)**: {equations_info}
+3. **图片 (元数据)**: {figures_info}
+
+**分析要求：**
+- **表格 (Tables)**：总结核心结论。
+- **公式 (Equations)**：解释公式在方法中的具体作用。
+- **图片 (Figures)**：解释图片内容。
+**Recommended Section (关键)**: **必须**从上述 6 个演讲逻辑部分中选择一个最相关的（例如 `technical_approach` 或 `evidence_proof`），以便后续自动排版。
+
+---
+
+**任务三：论文元数据提取**
+提取基本的论文信息：标题、作者、机构、摘要、关键词。
+
+---
+
+**输出格式**
+返回一个**单一的 JSON 对象**。不要使用 Markdown 代码块。严格遵守以下 Schema：
+
+```json
+{{
+  "paper_info": {{
+    "title": "Paper Title",
+    "authors": ["Author 1", "Author 2"],
+    "affiliations": ["Institution 1", "Institution 2"],
+    "abstract": "Abstract Content",
+    "keywords": ["Keyword 1", "Keyword 2"],
+  }},
+
+  "presentation_flow": {{
+    "background_context": "Detailed background introduction content...",
+    "problem_motivation": "Problem description and existing limitations...",
+    "solution_overview": "Core ideas of the solution...",
+    "technical_approach": "Technical implementation details...",
+    "evidence_proof": "Key experimental evidence...",
+    "impact_significance": "Significance and outlook..."
+  }},
+
+  "equations": [
+    {{
+      "latex": "E = mc^2",
+      "description": "公式名称",
+      "analysis": "公式作用分析",
+      "recommended_section": "technical_approach" 
+    }}
+  ],
+
+  "tables": [
+    {{
+      "caption": "Table Title (English)",
+      "markdown": "原始 markdown",
+      "analysis": "表格结论",
+      "recommended_section": "evidence_proof"
+    }}
+  ],
+
+  "figures": [
+    {{
+      "path": "必须与输入保持一致 (如 path/to/img.png)",
+      "caption": "Refined English Caption",
+      "analysis": "图片内容分析",
+      "recommended_section": "solution_overview" 
+    }}
+  ]
+}}
+```
+
+**关键事项**：
+1. **关联性**：确保 `recommended_section` 的值严格属于 `presentation_flow` 中的 6 个键名之一。
+2. **路径匹配**：`path` 字段必须与输入数据完全一致。
+"""
+
+
+SLIDES_PLANNING = """
+# 角色与核心使命
+
+你是一位世界级的学术演示文稿设计师和教育家。你的核心使命是将一篇复杂的研究论文转化为清晰、逻辑结构严密且对听众友好的教育性演示文稿。
+
+- **核心理念**：你的设计不应是对论文内容的简单复述，而是一个精心编排的知识传递过程。你必须引导听众从宏观背景过渡到技术细节，最终帮助他们理解研究的核心价值。
+
+---
+
+# **第零部分：当前任务 (Current Mission)**
+
+{refinement_instructions}
+
+---
+
+# **第一部分：输入数据**
+
+### **1.1 论文基本信息**
+- **标题**：{title}
+- **作者**：{authors}
+- **摘要**：{abstract}
+
+### **1.2 论文核心内容 (演讲流)**
+- **背景语境**：{background_context}
+- **问题动机**：{problem_motivation}
+- **解决方案概览**：{solution_overview}
+- **技术路径**：{technical_approach}
+- **证据与证明**：{evidence_proof}
+- **影响与意义**：{impact_significance}
+
+### **1.3 论文资产 (图、表、公式)**
+- **图片信息**：{figures_info}
+- **表格信息**：{tables_info}
+- **公式信息**：{equations_info}
+
+---
+
+# **第二部分：核心规则与约束**
+
+### **2.1 内容与叙事规则**
+
+- **PMRC 演示结构框架 (严格遵循)**
+  - **问题 (Problem)**：为什么这项研究很重要？需要解决什么具体挑战？
+  - **方法 (Method)**：我们如何着手并解决这个问题？我们的解决方案有什么创新之处？
+  - **结果 (Results)**：有什么证据证明我们的方法有效？改进有多显著？
+  - **结论 (Conclusion)**：这项工作有什么影响？我们接下来要去哪里？
+
+- **内容去重规则**
+  - **绝不创建重复标题幻灯片信息的幻灯片**。
+  - **严格禁止**：创建任何包含“Authors:”、“Institutional Affiliations:”或重复论文元信息的幻灯片。
+  - **强制性**：第一张内容幻灯片（第 2 张）**必须**是关于领域重要性/背景，**不是**论文细节。
+
+- **内容冗余消除规则**
+  - **无重复概念**：每张幻灯片必须呈现**独特**的信息。
+  - **渐进式披露**：每张幻灯片应建立在前一张幻灯片的基础上，而不是重复它们。
+  - **强制合并**：如果两张幻灯片内容重叠，将它们合并为一张。
+  - **独特价值原则**：每张幻灯片必须回答“这张幻灯片提供了哪些以前幻灯片没有提供的**新**信息？”
+
+### **2.2 幻灯片数量与布局规则**
+
+- **自适应内容扩展指南**
+  - **丰富多贡献论文**：18-25+ 张幻灯片。
+  - **标准研究论文**：12-18 张幻灯片。
+  - **短篇/研讨会论文**：8-12 张幻灯片。
+  - **综述/评论论文**：15-20+ 张幻灯片。
+  - **扩展指标**：若论文含多个新颖组件、广泛消融、复杂算法，请扩展更多幻灯片。
+  - **质量优于压缩**：与其将过多信息塞入一张幻灯片，不如用更多幻灯片进行清晰解释。
+
+- **内容溢出防止规则**
+  - **密度评估**：评估每张幻灯片的总内容（文本 + 视觉资产）。
+  - **智能拆分**：如果一张幻灯片有 >4 个要点 + 图片/表格，考虑拆分为两张。
+  - **长度调整**：长要点（>15 个单词）需缩减或拆分。
+
+### **2.3 资产 (图片与表格) 分配规则**
+
+- **🎯 智能图片分配规则**
+  - **分配时机**：
+    - 图片标题直接与幻灯片主题相关。
+    - 图片能增强对内容的理解。
+    - 优先为方法论、架构和结果幻灯片分配图片。
+  - **不分配时机**：
+    - 图片与主题不匹配或纯粹是装饰性的。
+  - **慷慨分配**：学术演示受益于视觉元素，当存在相关性时，大方地分配图片，目标是为 40-60% 的内容幻灯片分配图片。
+
+- **📊 智能表格选择与处理规则**
+  - **优先级**：主实验结果 > 消融实验 > 对比表 > 补充表。
+  - **选择策略**：
+    - **强制**：Table 1 **必须**包含。
+    - **目标**：选择 1-3 个最重要的表格。
+  - **整合策略**：
+    - Table 1 应有自己专用的幻灯片。
+    - 其他表格可整合到相关部分或附录。
+
+### **2.4 强制性约束 (绝对禁止)**
+
+- **🚨 关键布局限制：图表互斥**
+  - 每张幻灯片可以包含图片**或**表格，但**绝不能**在同一张幻灯片上两者兼有。
+
+- **✍️ 关键标题准确性规则：绝不修改**
+  - **图片**：分配图片时，**必须**完全照搬 `figures_info` 中提供的标题，禁止任何形式的改写、总结或“改进”。
+  - **表格**：使用 `tables_info` 中的数据时，**必须**完全照搬提供的 `markdown_content` 字段，禁止任何结构修改或重排。
+
+- **强制性幻灯片验证清单**
+  - **图表分离检查**：幻灯片是否同时具有 `includes_figure: true` **和** `includes_table: true`？如果是，**立即拆分**。
+  - **内容质量**：幻灯片是否提供了独特的、有价值的信息？
+  - **教育价值**：视觉支持是否有助于理解？
+  - **逻辑流程**：幻灯片是否与前后逻辑连接？
+
+---
+
+# **第三部分：任务 - 创建幻灯片计划**
+
+请根据以上所有规则，特别是 PMRC 框架，为论文创建一份详细的、逐页的幻灯片计划。
+
+### **3.1 幻灯片结构规划**
+
+**第 1 部分：问题识别（听众为什么要关心？）**
+1.  **标题幻灯片 (1 张)**：包括标题、作者和机构隶属关系。（这是由 LaTeX titlepage 自动生成的，**不要**为此创建单独的幻灯片条目）
+2.  **背景与领域重要性 (1-2 张)** - **强制性首张内容幻灯片**：
+    *   **关键要求**：标题/大纲之后的第一张内容幻灯片必须以此为标题：“背景：[领域] 正在改变世界”或类似标题
+    *   从更广阔的视角开始，解释为什么这个研究领域很重要。
+    *   使用令人信服的事实、数据或相关示例来吸引听众。
+    *   **绝对禁止**：不要重复标题幻灯片中的作者信息、机构隶属关系、会议名称或论文标题。
+    *   **强制性**：仅关注该领域的重要性、当前趋势和更广泛的影响。
+    *   **无论文元信息**：避免提及具体的论文细节——这张幻灯片是关于**领域**的，而不是论文。
+    *   **目标**：让听众觉得“哦，这个领域实际上真的很有趣/重要。”
+3.  **具体问题与挑战 (1-2 张)**：
+    *   从宏观背景过渡到本研究解决的具体问题。
+    *   清楚地定义问题并解释其挑战性。
+    *   可以展示一张说明现有方法局限性或问题难度的图片。
+    *   **目标**：帮助听众理解“在这个重要领域中实际上存在这个未解决的难题。”
+
+**第 2 部分：方法创新（我们是如何解决的？）**
+4.  **核心理念与贡献概述 (1-2 张)**：
+    *   在高层次上介绍你的方法的核心理念。
+    *   用一句话总结你的主要贡献。可以包括一个高层流程图。
+    *   对于复杂的论文，使用 2 张幻灯片：概述 + 贡献总结。
+    *   **目标**：给听众一个清晰的“路线图”，让他们知道接下来会发生什么。
+5.  **详细方法论 (4-8+ 张，根据复杂性扩展)**：
+    *   这是演示的核心部分，需要循序渐进的解释。
+    *   **架构/流程图**：首先用一张幻灯片展示方法的整体框架或流程图。
+    *   **关键组件**：然后用几张幻灯片详细说明每个关键模块或技术点。
+    *   **丰富内容扩展**：对于有多个创新的论文，每个主要组件分配 1-2 张幻灯片。
+    *   **算法细节**：如果必要，包括算法描述、数学公式。
+    *   每个技术点都应解释“它是什么”以及“为什么要这样设计”。
+    *   **目标**：帮助听众理解你的方法是如何工作的，以及创新点在哪里。
+
+**第 3 部分：结果验证（我们要如何知道它有效且影响如何？）**
+6.  **实验设置 (1-2 张)**：
+    *   简要介绍实验中使用的数据集、评估指标和基准方法。
+    *   对于综合实验，使用 2 张幻灯片：数据集+指标，基准+设置。
+    *   **目标**：建立可信度，告诉听众你的实验是公平可靠的。
+7.  **关键结果展示 (3-6+ 张，可扩展)**：
+    *   **强制性**：Table 1 必须有自己专用的幻灯片，并附带详细分析。
+    *   **核心结果**：2-3 张幻灯片用于主要实验发现。
+    *   **附加结果**：如果有意义，1-3 张幻灯片用于次要实验。
+    *   每个关键结果最好都配有图表或表格。
+    *   使用清晰的标题总结每个结果的发现（例如，“我们的方法将 X 指标提高了 20%”）。
+    *   **目标**：用数据有力地证明你的方法是有效的。
+8.  **分析与讨论 (2-4 张，强烈推荐)**：
+    *   **消融实验**：如果存在重要的消融实验，专门用 1-2 张幻灯片。
+    *   **失败案例分析**：1 张幻灯片用于限制和失败模式。
+    *   **有趣的发现**：1 张幻灯片用于意外发现或见解。
+    *   **目标**：展示你对研究的深度思考，增加工作的深度。
+
+**第 4 部分：结论与影响**
+9.  **结论与贡献总结 (1 张)**：
+    *   重申你的研究解决的问题和你的核心贡献。
+    *   以清晰的项目符号格式呈现。
+    *   **目标**：强化听众对你工作的核心记忆点。
+10. **未来工作与影响 (1 张)**：
+    *   简要提及未来的研究方向。
+    *   讨论更广泛的影响和潜在应用。
+    *   **目标**：激发听众对未来可能性的兴趣。
+11. **提问与讨论 (1 张)**：
+    *   创建一个引人入胜的问答幻灯片，标题为“Questions?”或“Discussion”。
+    *   仅包含通用的结束语，如“Thank you for your attention!”和“Questions and feedback are welcome.”。
+    *   **不要**包含需要手动编辑的模板电子邮件地址或联系人占位符。
+    *   **目标**：用现成的内容鼓励听众参与。
+12. **致谢 (1 张)**：
+    *   感谢资助机构、合作者、顾问和机构。
+    *   如果有，包括资助来源的标志。
+    *   **目标**：适当地感谢所有的贡献和支持。
+
+### **3.2 JSON 输出格式要求**
+
+- 严格按照以下 JSON 格式返回幻灯片计划数组。
+- `slides_plan` 必须涵盖整个演示的每一张幻灯片，不能只提供想法或省略细节。
+- 如果幻灯片包含图片或表格，JSON 对象必须显式包含 `includes_figure`, `figure_reference`, `includes_table`, `table_reference` 字段，并提供 `presenter_notes`。
+- **重要提示**：你的回复必须是**纯粹的 JSON 数组**，不要包含任何解释或 Markdown 格式。
+
+```json
+[
+  {{
+    "slide_page": 1,
+    "title": "背景：[领域] 正在改变世界",
+    "content": [
+      "使用令人信服的数据或事实来展示该领域的重要性。",
+      "介绍该领域的基本概念，确保非专家也能理解。",
+      "关注领域的重要性和更广泛的背景，而不是作者信息。"
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "从领域重要性开始。让听众关心这个研究领域。"
+  }},
+  {{
+    "slide_page": 2,
+    "title": "问题：[该领域的具体挑战]",
+    "content": [
+      "清晰定义本研究解决的具体问题。",
+      "解释为什么现有方法不足。",
+      "让听众理解技术挑战。"
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "从领域重要性过渡到具体问题定义。"
+  }},
+  {{
+    "slide_page": 3,
+    "title": "我们的核心贡献：自动化框架设计",
+    "content": [
+        "提出了首个使用 LLM 设计医疗多智能体系统的全自动框架。",
+        "引入了用于动态工作流演进的分层搜索空间。",
+        "开发了由诊断反馈指导的自我改进架构搜索算法。"
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "强调自动化方法的新颖性和创新点。"
+  }},
+  {{
+    "slide_page": 4,
+    "title": "方法论：基于图的工作流表示",
+    "content": [
+        "医疗工作流表示为具有节点和边的基于图的结构。",
+        "节点分为基本节点（LLM 交互）和工具节点（外部工具）。",
+        "分层搜索空间支持三个级别的修改。"
+    ],
+    "includes_figure": true,
+    "figure_reference": {{
+      "caption": "Workflow evolution over iterations with diagnostic feedback loops",
+      "path": "output/1230_1234/images/_page_2_Figure_0.jpeg"
+    }},
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "用可视化工作流图解释技术基础。"
+  }},
+  {{
+    "slide_page": 5,
+    "title": "技术细节：注意力机制",
+    "content": [
+      "我们采用自注意力机制来计算特征的重要性。",
+      "这使得模型能够动态地关注输入中最相关的部分。",
+      "下面的公式展示了注意力分数的计算过程。"
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {{
+        "latex": "Attention(Q, K, V) = softmax(\\frac{QK^T}{\\sqrt{d_k}})V",
+        "description": "缩放点积注意力公式"
+    }},
+    "presenter_notes": "解释公式如何帮助模型进行决策，不必深入数学细节。"
+  }},
+  {{
+    "slide_page": 6,
+    "title": "关键实验结果：诊断准确率",
+    "content": [
+        "所有评估指标均有显著改进。",
+        "Skin Concepts 数据集的 Top-1 准确率从 20.27% 提高到 29.28%。",
+        "在 Skin Conditions 数据集上达到 90.83% 的 Top-1 准确率。"
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {{
+        "caption": "Table 1: Top-k diagnostic accuracy comparison across different methods.",
+        "markdown": "| Method | Skin Concepts Top-1 | Skin Concepts Top-3 | Skin Conditions Top-1 | Skin Conditions Top-3 |\\n|--------|---------------------|---------------------|----------------------|----------------------|\\n| Direct LLM | 20.27 | 30.63 | 50.83 | 78.33 |\\n| Chain of Thought | 18.47 | 28.83 | 55.83 | 76.67 |\\n| Round Table | 21.17 | 27.93 | 45.83 | 75.83 |\\n| **Ours** | **29.28** | **40.09** | **90.83** | **95.00** |"
+    }},
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "强调我们的方法所取得的实质性改进。"
+  }},
+  {{
+    "slide_page": 7,
+    "title": "消融实验：组件分析",
+    "content": [
+        "分析了不同工作流修改操作的影响。",
+        "增加工具节点使 Top-1 准确率提高了 +7.66%。",
+        "节点提示修改贡献了 +9.91% 的改进。",
+        "完整的框架集成实现了最佳性能。"
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {{
+        "caption": "Table 2: Ablation study results showing individual component contributions.",
+        "markdown": "| Operation | Top-1 Accuracy Change | Top-3 Accuracy Change |\\n|-----------|----------------------|----------------------|\\n| Remove Tool Nodes | -7.66% | -9.91% |\\n| Remove Prompt Modification | -9.91% | -12.16% |\\n| Remove Node Operations | -0.45% | +1.35% |"
+    }},
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "展示每个组件对整体性能的贡献。"
+  }},
+  {{
+    "slide_page": 8,
+    "title": "结论与未来方向",
+    "content": [
+        "介绍了首个用于医疗多智能体系统设计的自动化框架。",
+        "实现了诊断准确率和鲁棒性的显著提高。",
+        "未来的工作包括更广泛的医疗领域采用以及与新兴技术的整合。"
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "总结主要贡献并启发未来的研究方向。"
+  }},
+  {{
+    "slide_page": 9,
+    "title": "提问与讨论",
+    "content": [
+        "感谢您的关注！",
+        "欢迎提问和反馈。"
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "鼓励听众参与和讨论。"
+  }}
+]
+```
+
+---
+
+请现在开始工作。
+"""
+
+INITIAL_GENERATION_INSTRUCTION = """
+## 模式：首次创建 (Mode: Initial Creation)
+
+你的任务是作为首席设计师，根据输入的所有材料，从零开始构思并创建一份**完美的**幻灯片计划。
+
+你没有任何先前的上下文或反馈，你的创造力和对规则的理解将直接决定第一版草稿的质量。
+
+**目标**：生成一份逻辑严密、内容丰富、可以直接使用的第一版草案。
+"""
+
+REFINEMENT_BLOCK_TEMPLATE = """
+## 模式：修订与优化 (Mode: Revision & Refinement)
+
+你现在是 QA 工程师和高级设计师。我们收到了关于上一版计划的反馈。你的任务是分析这份“诊断报告”，并生成一个能够解决所有问题的最终版本。
+
+### **诊断报告 (Diagnostic Report)**
+
+#### **1. 先前的计划 (V1 Draft to be Revised):**
+```json
+{previous_plan_json}
+```
+
+#### **2. 需要解决的问题 (Issues to Resolve / Critique):**
+{plan_critique}
+
+---
+
+### **行动协议 (Action Protocol)**
+
+你必须严格遵循以下协议：
+
+1.  **首要指令：解决所有问题**
+    - 你的**最高优先级**是仔细阅读并解决“需要解决的问题”中提到的**每一个**具体点。
+
+2.  **指令二：保留有效部分**
+    - **不要**修改或删除“先前的计划”中未被批评的、已经做得很好的部分。你的任务是外科手术式的修复，而不是完全重写。
+
+3.  **指令三：交付完整成品**
+    - 你的最终输出**必须**是一份完整的、全新的 JSON 数组，它代表了**整个**演示的修正后计划。绝不能只返回你修改的部分。
+
+**最终目标**：生成一个完全满足所有批评意见、不再需要进一步修改的“黄金标准”版本。
+"""
