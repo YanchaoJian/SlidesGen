@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "style_name": "Modern Gradient",
+    "visual_mood": "Professional, Minimalist, High-Contrast"
+  },
+  "color_palette": {
+    "background_main": "#0A1F44",
+    "primary": "#FFFFFF",
+    "secondary": "#A3B9CC",
+    "accent": "#57A0D3",
+    "text_dark": "#FFFFFF",
+    "text_light": "#A3B9CC"
+  },
+  "layout_logic": {
+    "margins": {
+      "top_inches": 0.5,
+      "bottom_inches": 0.5,
+      "left_inches": 0.5,
+      "right_inches": 0.5
+    },
+    "content_area": {
+      "x_inches": 0.5,
+      "y_inches": 1.5,
+      "width_inches": 9,
+      "height_inches": 3.625
+    },
+    "title_position": {
+      "alignment": "left",
+      "x_inches": 0.5,
+      "y_inches": 0.5,
+      "max_width_inches": 8
+    }
+  },
+  "background_elements": [
+    {
+      "name": "Header Stripe",
+      "geometry_type": "RECTANGLE",
+      "color_ref": "primary",
+      "opacity": 0.1,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "width": 10,
+        "height": 1,
+        "rotation": 0
+      },
+      "z_order": 0
+    }
+  ],
+  "typography_rules": {
+    "slide_title": {
+      "font_family": "Arial",
+      "size_pt": 32,
+      "color_ref": "text_dark",
+      "bold": true,
+      "is_uppercase": true
+    },
+    "section_header": {
+      "font_family": "Arial",
+      "size_pt": 24,
+      "color_ref": "text_dark",
+      "bold": true
+    },
+    "body_text": {
+      "font_family": "Arial",
+      "size_pt": 16,
+      "color_ref": "text_light",
+      "line_spacing": 1.2,
+      "bullet_point_symbol": "none"
+    }
+  }
+}

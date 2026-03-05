@@ -1,0 +1,24 @@
+1. Canvas & Master Background
+   - "Set slide background color to RGB(255, 255, 255)."
+   - "Draw the following master shapes: 
+     a. Top Header Bar at [0.0 inches, 0.0 inches, 10.0 inches, 0.5 inches] with Color RGB(0, 112, 192).
+     b. Vertical Line at [1.0 inches, 0.0 inches, 0.0 inches, 0.5 inches] with Line Color RGB(0, 112, 192) and Line Width 2.0."
+
+2. Layout Strategy
+   - "The content consists of a title and a list of bullet points. Use a 'Title and Content' layout."
+   - "Define the main content area as: Left=1.0 inches, Top=1.5 inches, Width=8.0 inches, Height=4.125 inches."
+
+3. Elements Construction (The Blueprint)
+   - Title: 
+     "Create title box at [1.5 inches, 0.5 inches, 8.0 inches, 1.0 inches]. Set text to 'Experimental Setup'. Font: Arial, Size 28pt, Color RGB(0, 0, 0)."
+   - Body Text:
+     "Create a text box at [1.0 inches, 1.5 inches, 8.0 inches, 4.125 inches]."
+     "Add the following bullet points:
+     '• Experiments conducted on WMT 2014 English-to-German and English-to-French translation tasks.'
+     '• Evaluation metrics include BLEU scores.'
+     '• Baseline methods include state-of-the-art models like GNMT and ConvS2S.'
+     "Set font to Arial, Size 18pt, Color RGB(169, 169, 169)."
+
+4. Refinements
+   - "Ensure title is aligned LEFT."
+   - "Ensure text box content does not overlap with title or borders of the content area."

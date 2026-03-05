@@ -1,0 +1,38 @@
+### Design Directive
+
+**Step 1: Layout Context Analysis (Mental Scratchpad)**
+- **Content Analysis**: The current page contains a title and three bullet points. There are no images, tables, or equations.
+- **Style Adaptation**: The original style protocol suggests a cover page layout with a large title area. For this body page, we will adapt to a top title bar layout with content below.
+- **Structure Planning**: The title will be placed at the top (y=0.5 inches), and the bullet points will be arranged in a single column below the title (starting at y=1.5 inches).
+
+**Step 2: Generate Execution Directives**
+
+**[1. Global Settings]**
+1. Create a new slide.
+2. Set the background color to `(10, 31, 68)`.
+
+**[2. Static Decoration Layer (Static Elements)]**
+1. Draw a header stripe at the top of the slide:
+   - Position: `(x=0, y=0, width=10 inches, height=1 inch)`.
+   - Color: `(255, 255, 255)` with 10% opacity.
+   - Ensure the stripe does not obscure the title or content.
+
+**[3. Dynamic Layout Layer (Dynamic Content Layout)]**
+1. **Title**:
+   - Position the title at the top of the slide:
+     - Coordinates: `(left=0.5 inches, top=0.5 inches, width=8 inches)`.
+   - Font: Arial, 32pt, bold, uppercase.
+   - Color: `(255, 255, 255)`.
+   - Text: "PROBLEM: LIMITATIONS OF EXISTING MODELS".
+2. **Body/List**:
+   - Position the text box for bullet points:
+     - Coordinates: `(left=0.5 inches, top=1.5 inches, width=9 inches, height=3.625 inches)`.
+   - Font: Arial, 16pt, line spacing 1.2.
+   - Color: `(163, 185, 204)`.
+   - Text Content:
+     - "Existing models using RNNs and CNNs face limitations in parallelization due to their sequential nature."
+     - "These models struggle with long-range dependencies and require significant computational resources."
+     - "The need for more efficient and scalable models is evident."
+
+**[4. Notes]**
+1. Write speaker notes: "Highlight the challenges faced by traditional models and the need for improvement."

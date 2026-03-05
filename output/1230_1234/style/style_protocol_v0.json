@@ -1,0 +1,166 @@
+{
+  "design_manifesto": "The slide embodies a clean, academic atmosphere with a focus on clarity and structured information. The background is solid white, providing a neutral canvas that emphasizes the content. Decorative motifs include a blue header bar with a thin vertical line, adding a touch of color and guiding the viewer's eye. Typography is straightforward, featuring bold titles and lighter body text, creating a hierarchy that aids in comprehension. Effects are minimal, with no shadows or rounded corners, maintaining a professional and unobtrusive look. The layout is airy, with ample whitespace ensuring that content is not overcrowded, allowing for easy reading and focus on key elements.",
+  "theme_metadata": {
+    "theme_name": "Academic Clarity",
+    "base_font_family": "Arial"
+  },
+  "color_scheme": {
+    "background": {
+      "fill_type": "solid",
+      "solid_rgb": [
+        255,
+        255,
+        255
+      ],
+      "gradient_angle": null,
+      "gradient_stops": []
+    },
+    "primary_text": [
+      0,
+      0,
+      0
+    ],
+    "secondary_text": [
+      169,
+      169,
+      169
+    ],
+    "accent_color": [
+      0,
+      112,
+      192
+    ],
+    "chart_palette": [
+      [
+        0,
+        112,
+        192
+      ],
+      [
+        255,
+        192,
+        0
+      ],
+      [
+        146,
+        208,
+        80
+      ],
+      [
+        237,
+        125,
+        49
+      ],
+      [
+        91,
+        155,
+        213
+      ],
+      [
+        112,
+        48,
+        160
+      ]
+    ]
+  },
+  "master_layout_elements": [
+    {
+      "name": "top_header_bar",
+      "type": "shape",
+      "z_order": 0,
+      "shape_type": "RECTANGLE",
+      "fill_rgb": [
+        0,
+        112,
+        192
+      ],
+      "fill_transparency": 0.0,
+      "line_color": null,
+      "line_width": 0.0,
+      "position_inches": {
+        "left": 0.0,
+        "top": 0.0,
+        "width": 10.0,
+        "height": 0.5
+      },
+      "effects": {
+        "shadow": false
+      }
+    }
+  ],
+  "typography_rules": {
+    "title": {
+      "font_size_pt": 32,
+      "is_bold": true,
+      "color_rgb": [
+        0,
+        0,
+        0
+      ],
+      "alignment": "LEFT",
+      "text_case": "DEFAULT",
+      "bbox_inches": {
+        "left": 1.0,
+        "top": 0.5,
+        "width": 8.0,
+        "height": 1.0
+      }
+    },
+    "body": {
+      "font_size_pt": 20,
+      "color_rgb": [
+        169,
+        169,
+        169
+      ],
+      "line_spacing": 1.2,
+      "bullet_char": "•",
+      "text_box_margins": {
+        "left": 0.1,
+        "top": 0.1,
+        "right": 0.1,
+        "bottom": 0.1
+      }
+    },
+    "footer": {
+      "has_footer": false,
+      "color_rgb": [
+        0,
+        0,
+        0
+      ],
+      "font_size_pt": 12
+    }
+  },
+  "component_styles": {
+    "images": {
+      "border_color": null,
+      "border_width": 0.0,
+      "rounded_corners": false,
+      "has_shadow": false
+    },
+    "tables": {
+      "header_bg_color": [
+        0,
+        112,
+        192
+      ],
+      "header_text_color": [
+        255,
+        255,
+        255
+      ],
+      "has_banded_rows": true
+    }
+  },
+  "content_layout_inference": {
+    "description": "Content should be placed within the central area of the slide, avoiding overlap with the header bar. Text and images should be aligned to maintain a clean and organized appearance.",
+    "valid_content_area": {
+      "left": 1.0,
+      "top": 1.5,
+      "width": 8.0,
+      "height": 4.125,
+      "explanation": "The safe area to place text/images without overlapping master elements."
+    }
+  }
+}
