@@ -1,0 +1,14 @@
+[
+  {
+    "pass": false,
+    "critique": "FAIL: 1. **Title text is missing**: The title is not visible, likely due to the header stripe covering it. **Fix**: Adjust the `top` position of the title box from `Inches(0.5)` to `Inches(1.1)` to ensure it appears below the header stripe. 2. **Bullet points overlap with table**: The bullet points are too close to the table, causing overlap. **Fix**: Increase the `top` position of the table from `Inches(3.5)` to `Inches(4.0)`."
+  },
+  {
+    "pass": false,
+    "critique": "FAIL: 1. **Title Missing**: The title is not visible, likely due to the header stripe's transparency. **Fix**: Adjust the transparency of the header stripe to 0.5 or change the title's position to `Inches(0.5), Inches(0.2)`. 2. **Bullet Points Overlap with Table**: The bullet points are too close to the table, causing overlap. **Fix**: Increase the `top` position of the table to `Inches(4.0)`."
+  },
+  {
+    "pass": false,
+    "critique": "FAIL: 1. **Title Overlap with Header Stripe**: The title text overlaps with the white header stripe due to insufficient space. **Fix**: Increase the `top` position of the title box from `Inches(0.5)` to `Inches(1.0)`. 2. **Table Overlap with Bullet Points**: The table is too close to the bullet points, causing a crowded appearance. **Fix**: Move the table `top` position from `Inches(3.5)` to `Inches(4.0)`."
+  }
+]

@@ -1,0 +1,30 @@
+1. Canvas & Master Background
+   - Set slide background color to RGB(255, 255, 255).
+   - Draw the following master shapes:
+     - "top_header_bar" at Left=0.0 inches, Top=0.0 inches, Width=10.0 inches, Height=0.5 inches with Color RGB(0, 112, 192).
+     - "vertical_line" at Left=1.0 inches, Top=0.0 inches, Width=0.0 inches, Height=0.5 inches with Color RGB(0, 112, 192).
+
+2. Layout Strategy
+   - The content consists of a title, bullet points, and a table. Use a "Top 20% Title, Bottom 80% Content" layout.
+   - Define the main content area as: Left=1.0 inches, Top=1.5 inches, Width=8.0 inches, Height=4.125 inches.
+
+3. Elements Construction (The Blueprint)
+   - Title: 
+     - Create title box at Left=1.5 inches, Top=0.5 inches, Width=8.0 inches, Height=1.0 inches.
+     - Set text to 'Ablation Study: Component Effectiveness'. Font: Arial, Size 28pt, Color RGB(0, 0, 0).
+   - Body Text:
+     - Create a text box at Left=1.0 inches, Top=1.5 inches, Width=8.0 inches, Height=1.0 inches.
+     - Add the following bullet points:
+       - 'Ablation studies confirm the effectiveness of various model components.'
+       - 'Multi-head attention and positional encoding are critical for performance.'
+       - 'The model's architecture allows for efficient parallelization.'
+     - Set font to Arial, Size 18pt, Color RGB(169, 169, 169).
+   - Table:
+     - Create a table with 17 rows and 13 columns.
+     - Header row text: ['N', 'dmodel', 'dff', 'h', 'dk', 'dv', 'Pdrop', 'ϵls', 'train steps', 'PPL (dev)', 'BLEU (dev)', 'params ×106'].
+     - Data rows: Extract data from the table markdown provided in the content.
+     - Set header background color to RGB(0, 112, 192) and header text color to RGB(255, 255, 255).
+
+4. Refinements
+   - Ensure title is aligned Left.
+   - Ensure table does not overlap with text.

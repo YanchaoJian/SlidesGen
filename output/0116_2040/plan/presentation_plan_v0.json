@@ -1,0 +1,194 @@
+[
+  {
+    "slide_page": 1,
+    "title": "Background: Sequence Transduction Models",
+    "content": [
+      "Sequence transduction models are essential for tasks like language modeling and machine translation.",
+      "Traditionally, these models rely on recurrent neural networks (RNNs) and convolutional neural networks (CNNs).",
+      "Attention mechanisms have emerged as a powerful tool to model dependencies in sequences."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Introduce the importance of sequence transduction models and the role of attention mechanisms."
+  },
+  {
+    "slide_page": 2,
+    "title": "Problem: Limitations of Existing Models",
+    "content": [
+      "Existing models using RNNs and CNNs face limitations in parallelization due to their sequential nature.",
+      "These models struggle with long-range dependencies and require significant computational resources.",
+      "The need for more efficient and scalable models is evident."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Highlight the challenges faced by traditional models and the need for improvement."
+  },
+  {
+    "slide_page": 3,
+    "title": "Solution Overview: The Transformer Model",
+    "content": [
+      "The Transformer model introduces a novel architecture based solely on attention mechanisms.",
+      "It eliminates the need for recurrence and convolution, allowing for greater parallelization.",
+      "The model sets new benchmarks in machine translation tasks."
+    ],
+    "includes_figure": true,
+    "figure_reference": {
+      "path": "output/0116_2040/images/_page_2_Figure_0.jpeg",
+      "caption": "The Transformer model architecture."
+    },
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Provide an overview of the Transformer model and its advantages."
+  },
+  {
+    "slide_page": 4,
+    "title": "Technical Approach: Multi-Head Self-Attention",
+    "content": [
+      "The Transformer uses a multi-head self-attention mechanism within an encoder-decoder structure.",
+      "Key components include scaled dot-product attention and position-wise feed-forward networks.",
+      "Positional encoding is used to handle sequence order."
+    ],
+    "includes_figure": true,
+    "figure_reference": {
+      "path": "output/0116_2040/images/_page_3_Figure_1.jpeg",
+      "caption": "Scaled Dot-Product Attention and Multi-Head Attention."
+    },
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {
+      "latex": "Attention(Q, K, V) = \\operatorname{softmax}(\\frac{QK^T}{\\sqrt{d_k}})V",
+      "description": "Scaled Dot-Product Attention formula"
+    },
+    "presenter_notes": "Explain the technical details of the attention mechanism used in the Transformer."
+  },
+  {
+    "slide_page": 5,
+    "title": "Technical Approach: Positional Encoding",
+    "content": [
+      "Positional encoding helps the model understand the order of tokens in a sequence.",
+      "Sine and cosine functions are used for even and odd indices, respectively.",
+      "This encoding is crucial for maintaining sequence information without recurrence."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {
+      "latex": "PE_{(pos,2i)} = \\sin(pos/10000^{2i/d_{\\text{model}}})",
+      "description": "Positional encoding formula (sine)"
+    },
+    "presenter_notes": "Describe how positional encoding works and its importance in the Transformer model."
+  },
+  {
+    "slide_page": 6,
+    "title": "Experimental Setup",
+    "content": [
+      "Experiments conducted on WMT 2014 English-to-German and English-to-French translation tasks.",
+      "Evaluation metrics include BLEU scores.",
+      "Baseline methods used for comparison include state-of-the-art models."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Introduce the experimental setup and evaluation metrics used in the study."
+  },
+  {
+    "slide_page": 7,
+    "title": "Key Results: BLEU Scores and Training Costs",
+    "content": [
+      "The Transformer model achieves superior BLEU scores compared to previous models.",
+      "Significant reduction in training costs observed.",
+      "Results demonstrate the efficiency and effectiveness of the Transformer model."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {
+      "caption": "Comparison of BLEU scores and training costs for various machine translation models.",
+      "markdown": "| Model                           | BL          | EU    | Training C          | Training Cost (FLOPs) |  |  |\n|---------------------------------|-------------|-------|---------------------|-----------------------|--|--|\n| Wiodei                          | EN-DE EN-FR |       | EN-DE               | EN-FR                 |  |  |\n| ByteNet [18]                    | 23.75       |       |                     |                       |  |  |\n| Deep-Att + PosUnk [39]          |             | 39.2  |                     | $1.0 \\cdot 10^{20}$   |  |  |\n| GNMT + RL [38]                  | 24.6        | 39.92 | $2.3 \\cdot 10^{19}$ | $1.4 \\cdot 10^{20}$   |  |  |\n| ConvS2S [9]                     | 25.16       | 40.46 | $9.6 \\cdot 10^{18}$ | $1.5 \\cdot 10^{20}$   |  |  |\n| MoE [32]                        | 26.03       | 40.56 | $2.0\\cdot 10^{19}$  | $1.2\\cdot 10^{20}$    |  |  |\n| Deep-Att + PosUnk Ensemble [39] |             | 40.4  |                     | $8.0 \\cdot 10^{20}$   |  |  |\n| GNMT + RL Ensemble [38]         | 26.30       | 41.16 | $1.8 \\cdot 10^{20}$ | $1.1\\cdot 10^{21}$    |  |  |\n| ConvS2S Ensemble [9]            | 26.36       | 41.29 | $7.7 \\cdot 10^{19}$ | $1.2 \\cdot 10^{21}$   |  |  |\n| Transformer (base model)        | 27.3        | 38.1  |                     | $10^{18}$             |  |  |\n| Transformer (big)               | 28.4        | 41.8  | $2.3 \\cdot$         | $10^{19}$             |  |  |"
+    },
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Highlight the superior performance and reduced training costs of the Transformer model."
+  },
+  {
+    "slide_page": 8,
+    "title": "Analysis: Generalization to Other Tasks",
+    "content": [
+      "The Transformer model generalizes well to English constituency parsing.",
+      "Competitive performance observed in both supervised and semi-supervised settings.",
+      "Demonstrates the model's versatility beyond translation tasks."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {
+      "caption": "Performance of the Transformer and other models on English constituency parsing, evaluated on WSJ Section 23.",
+      "markdown": "| Parser                              | Training                 | WSJ 23 F1 |\n|-------------------------------------|--------------------------|-----------|\n| Vinyals & Kaiser el al. (2014) [37] | WSJ only, discriminative | 88.3      |\n| Petrov et al. (2006) [29]           | WSJ only, discriminative | 90.4      |\n| Zhu et al. (2013) [40]              | WSJ only, discriminative | 90.4      |\n| Dyer et al. (2016) [8]              | WSJ only, discriminative | 91.7      |\n| Transformer (4 layers)              | WSJ only, discriminative | 91.3      |\n| Zhu et al. (2013) [40]              | semi-supervised          | 91.3      |\n| Huang & Harper (2009) [14]          | semi-supervised          | 91.3      |\n| McClosky et al. (2006) [26]         | semi-supervised          | 92.1      |\n| Vinyals & Kaiser el al. (2014) [37] | semi-supervised          | 92.1      |\n| Transformer (4 layers)              | semi-supervised          | 92.7      |\n| Luong et al. (2015) [23]            | multi-task               | 93.0      |\n| Dyer et al. (2016) [8]              | generative               | 93.3      |"
+    },
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Discuss the generalization capabilities of the Transformer model to other tasks."
+  },
+  {
+    "slide_page": 9,
+    "title": "Conclusion & Impact",
+    "content": [
+      "The Transformer sets a new standard in sequence transduction models.",
+      "Offers faster training and better performance compared to existing models.",
+      "Future work includes extending the model to other modalities and exploring restricted attention mechanisms."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Summarize the impact of the Transformer model and future research directions."
+  },
+  {
+    "slide_page": 10,
+    "title": "Questions & Discussion",
+    "content": [
+      "Thank you for your attention!",
+      "Questions and feedback are welcome."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Encourage audience engagement and discussion."
+  },
+  {
+    "slide_page": 11,
+    "title": "Acknowledgements",
+    "content": [
+      "Thank funding agencies, collaborators, advisors, and institutions.",
+      "Include logos of funding sources if available."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Appropriately acknowledge all contributions and support."
+  }
+]

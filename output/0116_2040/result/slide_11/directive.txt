@@ -1,0 +1,32 @@
+### Design Directive for Slide Layout
+
+**Step 1: Layout Context Analysis (Mental Scratchpad)**
+- **Content Analysis**: The current page is primarily textual, containing an "Acknowledgements" title and a list of contributors and institutions. There are no images, tables, or equations.
+- **Style Adaptation**: The original style protocol suggests a layout suitable for a cover or title page, with a large title area. For this body page, we need to adapt by placing the title at the top and the content below it.
+- **Structure Planning**: Use a top title bar layout with the title at the top (y=0.5 inches) and the content area starting below the title (y=1.5 inches). The content area will be adjusted to fit the text comfortably.
+
+**Step 2: Generate Execution Directives**
+
+**[1. Global Settings]**
+1. Create a new slide.
+2. Set the slide background color to `(10, 31, 68)`.
+
+**[2. Static Decoration Layer (Static Elements)]**
+1. Draw a header stripe at the top of the slide:
+   - Position: `(x=0, y=0, width=10 inches, height=1 inch)`.
+   - Color: `(255, 255, 255)` with 10% opacity.
+   - Ensure the stripe does not obscure the title or content.
+
+**[3. Dynamic Layout Layer (Dynamic Content Layout)]**
+1. **Title**:
+   - Position the title "Acknowledgements" at `(x=0.5 inches, y=0.5 inches)`.
+   - Use font family "Arial", size 32 pt, color `(255, 255, 255)`, bold, and uppercase.
+2. **Body/List**:
+   - Position the text box for the content starting at `(x=0.5 inches, y=1.5 inches)`, with a width of `9 inches` and height of `3.625 inches`.
+   - Use font family "Arial", size 16 pt, color `(163, 185, 204)`, with line spacing of 1.2.
+   - Insert the text content as bullet points:
+     - "Thank funding agencies, collaborators, advisors, and institutions."
+     - "Include logos of funding sources if available."
+
+**[4. Notes]**
+1. Write speaker notes: "Appropriately acknowledge all contributions and support."
