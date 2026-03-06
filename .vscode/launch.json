@@ -1,0 +1,25 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "python current file",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "args": [
+                "--pdf_path", "assets/Attention.pdf",
+                "--style_image_path", "assets/style_image.png",
+                "--output_dir", "output/",
+                "--model_name", "gpt-4o",
+                "--marker_path", "models/marker",
+                "--enhance_marker",
+            ],
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+        }
+    ]
+}
