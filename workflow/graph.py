@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 def route_style_protocol_check(state: OverallState) -> Literal["analyze_image_style", "dispatch_slide_tasks"]:
     """路由：风格协议自查"""
-    if state.get("style_protocol_verified"):
+    if state.get("style_review", {}).get("verified"):
         logger.info("🔀 Style protocol verified. Proceeding to dispatch slide tasks.")
         return "dispatch_slide_tasks"
     logger.info("🔀 Style protocol not verified. Routing to style analysis.")
@@ -38,7 +38,7 @@ def route_style_protocol_check(state: OverallState) -> Literal["analyze_image_st
 
 def route_presentation_plan_review(state: OverallState) -> Literal["generate_presentation_plan", "dispatch_slide_tasks"]:
     """路由：大纲审查"""
-    if state.get("presentation_plan_verified"):
+    if state.get("plan_review", {}).get("verified"):
         logger.info("🔀 Presentation plan approved. Proceeding to dispatch slide tasks.")
         return "dispatch_slide_tasks"
     logger.info("🔀 Routing: Presentation plan requires revisions. Returning to planning...")
@@ -46,12 +46,13 @@ def route_presentation_plan_review(state: OverallState) -> Literal["generate_pre
 
 def route_pptx_design_review(state: OverallState) -> Literal["analyze_image_style", "generate_presentation_plan", "dispatch_slide_tasks", "END"]:
     """路由：根据用户反馈的范围决定下一步。"""
-    if state.get("pptx_verified"):
+    pptx_review = state.get("pptx_review", {})
+    if pptx_review.get("verified"):
         logger.info("🔀 PPTX design approved. Workflow will complete.")
         return "END"
-    
-    scope = state.get("user_feedback_pptx_design")
-    
+
+    scope = pptx_review.get("critique")
+
     if scope == "global_style":
         logger.info("🎨 Rerouting to Style Analysis for global style changes.")
         return "analyze_image_style"
@@ -68,31 +69,33 @@ def route_pptx_design_review(state: OverallState) -> Literal["analyze_image_styl
 def route_code_execution_check(state: SlideState):
     """路由：代码执行检查"""
     slide_page = state.get('slide_page')
-    if state.get("slide_code_verified"):
+    code_review = state.get("code_review", {})
+    if code_review.get("verified"):
         logger.info(f"🔀 [Slide {slide_page}] Code executed successfully. Proceeding to slide design check.")
         return "check_slide_design"
-    
-    slide_code_retry_count = state.get("slide_code_retry_count", 0)
-    if slide_code_retry_count >= 3:
-        logger.warning(f"⚠️ [Slide {slide_page}] Code execution failed after {slide_code_retry_count} retries. Aborting this slide.")
+
+    retry_count = code_review.get("retry_count", 0)
+    if retry_count >= 3:
+        logger.warning(f"⚠️ [Slide {slide_page}] Code execution failed after {retry_count} retries. Aborting this slide.")
         return END
-    
-    logger.info(f"🔀 [Slide {slide_page}] Code execution failed. Routing back to code generation for fixes (Attempt {slide_code_retry_count + 1}).")
+
+    logger.info(f"🔀 [Slide {slide_page}] Code execution failed. Routing back to code generation for fixes (Attempt {retry_count + 1}).")
     return "generate_slide_code"
 
 def route_slide_design_check(state: SlideState):
     """路由：设计质量检查"""
     slide_page = state.get('slide_page')
-    if state.get("slide_design_verified"):
+    design_review = state.get("design_review", {})
+    if design_review.get("verified"):
         logger.info(f"🔀 [Slide {slide_page}] Design verified. Completing slide subgraph.")
         return END
 
-    slide_design_retry_count = state.get("slide_design_retry_count")
-    if slide_design_retry_count >= 3:
-        logger.warning(f"⚠️ [Slide {slide_page}] Design check failed after {slide_design_retry_count} retries. Accepting the last generated version to ensure output.")
+    retry_count = design_review.get("retry_count", 0)
+    if retry_count >= 3:
+        logger.warning(f"⚠️ [Slide {slide_page}] Design check failed after {retry_count} retries. Accepting the last generated version to ensure output.")
         return END
-    
-    logger.info(f"🔀 [Slide {slide_page}] Design not verified. Routing to code generation for refinements (Attempt {slide_design_retry_count + 1}).")
+
+    logger.info(f"🔀 [Slide {slide_page}] Design not verified. Routing to code generation for refinements (Attempt {retry_count + 1}).")
     return "generate_slide_code"
 # ==============================================================================
 # 2. Map-Reduce 逻辑

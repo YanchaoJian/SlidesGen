@@ -1,10 +1,10 @@
 import logging
 from typing import Dict, Any, Optional, List, Literal
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 
-# 从 prompts.py 导入新的模板
 from agent.evaluator.prompts import FEEDBACK_ANALYSIS_SYSTEM_PROMPT, FEEDBACK_ANALYSIS_USER_TEMPLATE
+from utils.llm_helpers import LLMConfig, create_llm
+
 logger = logging.getLogger(__name__)
 
 
@@ -19,20 +19,14 @@ class FeedbackAnalysis(BaseModel):
         default=[]
     )
 
-# --- 辅助函数：封装 LLM 分析逻辑 ---
-def _analyze_feedback_with_llm(
+def analyze_feedback_with_llm(
     user_input: str,
     slide_count: int,
-    llm_config: dict
+    llm_config: LLMConfig,
 ) -> FeedbackAnalysis:
     """使用 LLM 分析用户反馈的范围。"""
     try:
-        llm = ChatOpenAI(
-            model=llm_config["model_name"], 
-            api_key=llm_config["api_key"],
-            base_url=llm_config["base_url"], 
-            temperature=0
-        )
+        llm = create_llm(llm_config, temperature=0)
         structured_llm = llm.with_structured_output(FeedbackAnalysis)
 
         # 使用从 prompts.py 导入的模板

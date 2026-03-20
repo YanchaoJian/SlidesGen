@@ -1,67 +1,19 @@
 import os
-import base64
 import json
-import re
 import logging
 from typing import Dict, Any, Optional
 
-# LangChain / OpenAI 依赖
-from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
-# 导入 Prompt
 from agent.designer.prompts import ANALYZE_STYLE_SYSTEM_PROMPT, ANALYZE_STYLE_USER_PROMPT, ANALYZE_STYLE_REFINEMENT_USER_PROMPT
+from utils.llm_helpers import LLMConfig, create_llm, encode_image_to_base64, extract_json_from_response
 
 logger = logging.getLogger(__name__)
 
-# ==============================================================================
-# 2. 核心工具函数
-# ==============================================================================
-
-def _encode_image_to_base64(image_path: str) -> str:
-    """将图片文件编码为 Base64 字符串。"""
-    try:
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode('utf-8')
-    except FileNotFoundError:
-        logger.error(f"Image file not found at: {image_path}")
-        raise
-    except Exception as e:
-        logger.error(f"Failed to encode image {image_path}: {e}")
-        raise
-
-def _extract_json_from_response(response_text: str) -> str:
-    """
-    [旧版方法] 从 LLM 返回的 Markdown 文本中提取纯 JSON 字符串。
-    使用正则表达式匹配，存在一定的不稳定性。
-    """
-    # 策略 1: 匹配 ```json ... ``` 代码块
-    match = re.search(r'```json\s*(.*?)\s*```', response_text, re.DOTALL)
-    if match:
-        return match.group(1).strip()
-    
-    # 策略 2: 匹配通用代码块 ``` ... ```
-    match = re.search(r'```\s*(.*?)\s*```', response_text, re.DOTALL)
-    if match:
-        return match.group(1).strip()
-    
-    # 策略 3: 如果没有代码块，尝试寻找从第一个 '{' 到最后一个 '}' 的内容
-    try:
-        start = response_text.find('{')
-        end = response_text.rfind('}') + 1
-        if start != -1 and end != 0:
-            return response_text[start:end]
-    except Exception:
-        pass
-        
-    return response_text
-
 def analyze_style(
-    style_image_path: str, 
+    style_image_path: str,
     output_dir: str,
-    api_key: str, 
-    base_url: str, 
-    model_name: str,
+    llm_config: LLMConfig,
     previous_protocol: Optional[Dict[str, Any]] = None,
     previous_protocol_critique: Optional[str] = None,
     style_protocol_retry_count: Optional[int] = 0,
@@ -69,13 +21,11 @@ def analyze_style(
 ) -> Optional[Dict[str, Any]]:
     """
     调用 Vision LLM 分析 PPT 截图风格，并返回结构化的字典。
-    本版本使用正则表达式从原始文本中提取 JSON。
 
     Args:
-        image_path: 参考图的文件路径。
-        api_key: OpenAI API key。
-        base_url: OpenAI API base URL。
-        model_name: 要使用的 Vision 模型名称 (如 'gpt-4o')。
+        style_image_path: 参考图的文件路径。
+        output_dir: 输出目录。
+        llm_config: LLM 连接配置。
 
     Returns:
         一个包含视觉协议的字典，如果失败则返回 None。
@@ -83,17 +33,12 @@ def analyze_style(
     logger.info(f"🎨 Analyzing style from image: {os.path.basename(style_image_path)}")
 
     try:
-        base64_image = _encode_image_to_base64(style_image_path)
+        base64_image = encode_image_to_base64(style_image_path)
     except Exception:
         return None
 
     # 1. 初始化 LLM
-    llm = ChatOpenAI(
-        model=model_name,
-        api_key=api_key,
-        base_url=base_url,
-        temperature=0.1,
-    )
+    llm = create_llm(llm_config, temperature=0.1)
 
     if previous_protocol and not style_protocol_verified:
         # 将 JSON 对象转为格式化的字符串，方便 LLM 阅读
@@ -123,14 +68,13 @@ def analyze_style(
         response = llm.invoke(messages)
         content = response.content
         
-        # 3.1 使用旧方法提取 JSON 字符串
-        json_str = _extract_json_from_response(content)
-        
-        # 3.2 解析 JSON 字符串为字典
-        style_data = json.loads(json_str)
-        
-        logger.info("✅ Style analysis successful.")
+        # 3.1 提取并解析 JSON
+        style_data = extract_json_from_response(content)
+        if not style_data:
+            logger.error("❌ Failed to parse JSON from LLM response.")
+            return None
 
+        logger.info("✅ Style analysis successful.")
 
         # 将结果保存到文件
         result_dir = os.path.join(output_dir, "style")
@@ -142,9 +86,6 @@ def analyze_style(
         logger.info(f"Style protocol saved to {protocol_path}")
         return style_data
 
-    except json.JSONDecodeError as e:
-        logger.error(f"❌ Failed to parse JSON from LLM response: {e}")
-        return None
     except Exception as e:
         logger.error(f"❌ LLM call for style analysis failed: {e}")
         return None

@@ -1,38 +1,20 @@
 import json
 import logging
 import os
-import re
 from typing import Dict, Any, Optional
 
-# LangChain / OpenAI 依赖
-from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 
-# 导入 Prompt 定义
-# 确保你的 prompts.py 路径正确
 from agent.planner.prompts import (
     MAIN_CONTENT_EXTRACTION,
     SLIDES_PLANNING,
-    INITIAL_GENERATION_INSTRUCTION, 
+    INITIAL_GENERATION_INSTRUCTION,
     REFINEMENT_BLOCK_TEMPLATE
 )
+from utils.llm_helpers import LLMConfig, create_llm, extract_json_from_response
 
 
 logger = logging.getLogger(__name__)
-
-
-def _extract_json_from_response(response_text: str) -> Optional[Dict]:
-    """从 LLM 的文本响应中提取 JSON 对象。"""
-    match = re.search(r'```json\s*(.*?)\s*```', response_text, re.DOTALL)
-    json_str = match.group(1).strip() if match else response_text.strip()
-    try:
-        # 移除可能的BOM字符
-        json_str = json_str.lstrip('\ufeff')
-        return json.loads(json_str)
-    except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse JSON: {e}")
-        logger.debug(f"Invalid JSON string: {json_str[:500]}...")
-        return None
 
 
 def _extract_main_content(llm: ChatOpenAI, enhanced_content: Dict[str, Any]) -> Dict[str, Any]:
@@ -49,7 +31,7 @@ def _extract_main_content(llm: ChatOpenAI, enhanced_content: Dict[str, Any]) -> 
             "equations_info": json.dumps(enhanced_content.get("equations"), ensure_ascii=False),
         })
         response_text = response.content
-        return _extract_json_from_response(response_text) or {}
+        return extract_json_from_response(response_text) or {}
     except Exception as e:
         logger.warning(f"Could not extract key content: {e}")
         return {}
@@ -121,7 +103,7 @@ def _plan_slides(
         })
 
         response_text = response.content
-        return _extract_json_from_response(response_text)
+        return extract_json_from_response(response_text)
 
     except Exception as e:
         logger.error(f"Could not plan slides: {e}", exc_info=True)
@@ -135,32 +117,21 @@ def generate_presentation_plan(
     content: Dict[str, Any],
     presentation_plan_retry_count: Optional[int],
     output_dir: str,
-    model_name: str,
-    api_key: str,
-    base_url: Optional[str] = None,
-    
+    llm_config: LLMConfig,
 ) -> Optional[Dict[str, Any]]:
     """
-    [核心工具函数] 通过三步法，根据解析后的 PDF 内容字典生成演示大纲。
+    [核心工具函数] 通过两步法，根据解析后的 PDF 内容字典生成演示大纲。
 
     Args:
-        raw_content: 包含 'full_text', 'images' 等键的字典。
-        model_name: 使用的 LLM 名称。
-        api_key: OpenAI API key。
-        base_url: OpenAI API base URL。
+        content: 包含 'full_text', 'images' 等键的字典。
+        llm_config: LLM 连接配置。
 
     Returns:
-        包含完整规划信息的字典，如果失败则返回 None。
+        (paper_main_content, presentation_plan) 元组，如果失败则返回 (None, None)。
     """
 
     try:
-        # 初始化一个可复用的 LLM 实例
-        llm = ChatOpenAI(
-            model=model_name,
-            temperature=0.15,
-            api_key=api_key,
-            base_url=base_url
-        )
+        llm = create_llm(llm_config, temperature=0.15)
     except Exception as e:
         logger.error(f"Failed to initialize LLM: {e}")
         return None

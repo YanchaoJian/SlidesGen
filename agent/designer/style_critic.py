@@ -1,6 +1,5 @@
 # file: agent/designer/style_critic.py
 
-import base64
 from datetime import datetime
 import json
 import logging
@@ -8,9 +7,9 @@ import os
 from typing import Any, Dict, Tuple
 
 from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
 
 from agent.designer.prompts import STYLE_CRITIC_SYSTEM_PROMPT, STYLE_CRITIC_USER_PROMPT
+from utils.llm_helpers import LLMConfig, create_llm, encode_image_to_base64
 
 # 初始化日志记录器
 logger = logging.getLogger(__name__)
@@ -29,50 +28,32 @@ def review_visual_protocol(
     output_dir: str,
     image_path: str,
     style_protocol: Dict[str, Any],
-    model_name: str,
-    api_key: str,
-    base_url: str,
+    llm_config: LLMConfig,
 ) -> Tuple[bool, str]:
     """
-    这是一个核心工具函数，负责调用 Vision LLM 来对比参考图片和已生成的视觉协议JSON文件。
-
-    它封装了从数据加载、模型初始化到 Prompt 构建和 LLM 调用的完整逻辑，
-    最终返回一个清晰的、程序可用的审查结果。
+    调用 Vision LLM 来对比参考图片和已生成的视觉协议JSON文件。
 
     Args:
-        image_path (str): 原始参考图的文件路径。
-        style_protocol: agent/designer/style_analyzer.py 生成的 visual_protocol.json 文件内容的字典。
-        model_name (str): 要使用的 Vision LLM 模型名称 (例如, "gpt-4o")。
-        api_key (str): OpenAI 服务的 API 密钥。
-        base_url (str): OpenAI 服务的 API 基础 URL。
+        output_dir: 输出目录。
+        image_path: 原始参考图的文件路径。
+        style_protocol: 生成的视觉协议字典。
+        llm_config: LLM 连接配置。
 
     Returns:
-        Tuple[bool, str]: 一个元组，包含两个元素：
-                           - is_approved (bool): 审查是否通过。
-                           - critique (str): 详细的审查意见或修改建议。
+        Tuple[bool, str]: (is_approved, critique)
     """
     logger.info("🧐 Style Critic is reviewing the visual protocol against the reference image...")
     # --- 步骤 1: 加载用于审查的必要数据 (图片和JSON协议) ---
     try:
-        with open(image_path, "rb") as image_file:
-            base64_image = base64.b64encode(image_file.read()).decode('utf-8')
-        
+        base64_image = encode_image_to_base64(image_path)
         image_url = f"data:image/jpeg;base64,{base64_image}"
-        
     except Exception as e:
         logger.error(f"❌ Error loading image for style critic at {image_path}: {e}")
-        # 返回一个明确的失败结果，并将错误信息作为审查意见
         return False, f"Failed to load required image for review: {e}"
 
     # --- 步骤 2: 初始化支持结构化输出的 LangChain LLM 实例 ---
     try:
-        llm = ChatOpenAI(
-            model=model_name,
-            temperature=0.1,  # 审查任务需要低随机性以保证结果的一致性
-            api_key=api_key,
-            base_url=base_url
-        )
-        # 绑定 Pydantic 模型，使 LLM 的输出直接成为 StyleCritique 对象
+        llm = create_llm(llm_config, temperature=0.1)
         structured_llm = llm.with_structured_output(StyleCritique)
     except Exception as e:
         logger.error(f"❌ Failed to initialize ChatOpenAI for critic: {e}")
