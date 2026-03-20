@@ -1,16 +1,8 @@
-# filepath: src/composer/pptx_renderer.py
-
 import os
 import subprocess
 import logging
-from copy import deepcopy
-from typing import List, Tuple
 import sys
-
-# 仅保留 python-pptx 相关的核心依赖
-from pptx import Presentation
-from pptx.util import Inches
-from pptx.enum.shapes import MSO_SHAPE_TYPE
+from typing import Tuple
 
 import aspose.slides as slides
 

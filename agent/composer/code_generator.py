@@ -1,4 +1,3 @@
-# filepath: src/composer/code_generator.py
 import logging
 import re
 from typing import List, Union, Optional

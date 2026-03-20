@@ -1,3 +1,14 @@
-models/
-.env
+# Python
 __pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.venv/
+
+# Project-specific
+models/
+output/

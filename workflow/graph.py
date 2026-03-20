@@ -111,12 +111,17 @@ def map_slides_to_tasks(state: OverallState):
         return []
 
     target_pages = state.get("retry_slide_pages")
-    
+
+    # None → 全量生成；非空列表 → 局部重生成；空列表 → 无有效目标，跳过
+    if target_pages is not None and len(target_pages) == 0:
+        logger.warning("  - target_pages is an empty list. No slides to regenerate.")
+        return []
+
     tasks = []
     for slide_plan in slides_plan:
         slide_page = slide_plan.get("slide_page")
 
-        if target_pages and slide_page not in target_pages:
+        if target_pages is not None and slide_page not in target_pages:
             continue
         
         task_input: SlideState = initialize_slide_state(

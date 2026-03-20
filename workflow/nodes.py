@@ -1,7 +1,6 @@
 import os
-import json
 import logging
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict
 
 from langchain_core.runnables import RunnableConfig
 
@@ -11,7 +10,6 @@ from agent.parser.content_enhancer import enhance_content_with_llm
 from agent.designer.style_analyzer import analyze_style
 from agent.designer.style_critic import review_visual_protocol
 from agent.planner.slides_planner import generate_presentation_plan
-from agent.planner.review_plan import print_plan_summary
 from agent.composer.layout_engine import generate_layout_directive
 from agent.composer.code_generator import generate_slide_code
 from agent.composer.pptx_renderer import merge_deck, run_script
@@ -344,11 +342,16 @@ def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict
     logger.info("   -> User provided feedback for final revision. Analyzing feedback...")
     analysis_result = analyze_feedback_with_llm(
         user_input=user_input,
-        slide_count=len(slides_plan),
+        slide_count=len(slides_plan or []),
         llm_config=_get_llm_config(config),
     )
 
     logger.info(f"   -> Feedback analysis result: Scope='{analysis_result.scope}', Target Pages={analysis_result.target_pages}")
+
+    if analysis_result.scope == "ambiguous":
+        logger.warning("   -> Feedback is ambiguous. Prompting user to provide more specific instructions.")
+        return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": "ambiguous"}}
+
     return {
         "pptx_review": {"verified": False, "retry_count": retry_count + 1, "critique": analysis_result.scope},
         "retry_slide_pages": analysis_result.target_pages,
