@@ -1,0 +1,37 @@
+[project]
+name = "slidesgen"
+version = "0.1.0"
+description = "AI-powered PDF-to-PowerPoint presentation generator"
+requires-python = ">=3.10"
+dependencies = [
+    # --- LLM & Orchestration ---
+    "langchain-core>=0.3",
+    "langchain-openai>=0.3",
+    "langgraph>=0.2",
+    "langgraph-checkpoint-sqlite>=2.0",
+
+    # --- Structured Output ---
+    "pydantic>=2.0",
+
+    # --- PDF Parsing ---
+    "marker-pdf>=1.0",
+    "surya-ocr",
+    "torch",
+
+    # --- PPTX Generation ---
+    "python-pptx>=1.0",
+    "aspose.slides",
+
+    # --- Image Processing ---
+    "pdf2image>=1.16",
+    "matplotlib",
+    "tenacity>=8.0",
+]
+
+[project.scripts]
+slidesgen = "main:main"
+
+[project.optional-dependencies]
+dev = [
+    "pygraphviz",
+]

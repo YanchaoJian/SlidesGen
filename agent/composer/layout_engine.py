@@ -1,4 +1,3 @@
-# filepath: src/composer/layout_engine.py
 import json
 import logging
 import os

@@ -1,5 +1,3 @@
-# filepath: src/evaluator/visual_critic.py
-
 import json
 import os
 import logging
@@ -9,7 +7,7 @@ from typing import Optional, Dict, Any
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from agent.evaluator.prompts import VISUAL_CRITIQUE_SYSTEM_PROMPT, VISUAL_CRITIQUE_USER_PROMPT
-from agent.evaluator.image_utils import pptx_to_images
+from utils.image_utils import pptx_to_images
 from utils.llm_helpers import LLMConfig, create_llm, encode_image_to_base64, extract_json_from_response
 
 logger = logging.getLogger(__name__)

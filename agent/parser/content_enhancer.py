@@ -89,7 +89,7 @@ def _extract_tables_and_equations(llm, full_text: str, output_dir: str) -> Optio
     
     try:
         # Import special character handling module
-        from agent.parser.text_utils import preprocess_content_for_llm, postprocess_content_from_llm, validate_special_chars_in_output
+        from utils.text_utils import preprocess_content_for_llm, postprocess_content_from_llm, validate_special_chars_in_output
         from agent.parser.prompts import EXTRACT_TABLES_AND_EQUATIONS_PROMPT
         
         # Preprocess text to protect special characters

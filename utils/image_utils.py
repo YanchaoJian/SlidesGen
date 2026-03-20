@@ -1,4 +1,3 @@
-# filepath: src/eval_slides/pptx_to_images.py
 import os
 import logging
 import tempfile
