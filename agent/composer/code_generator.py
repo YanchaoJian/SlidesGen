@@ -3,15 +3,13 @@ import logging
 import re
 from typing import List, Union, Optional
 
-# 使用 LangChain 统一 LLM 调用
-from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
-# 假设 prompts 位于 src/composer/prompts.py
 from agent.composer.prompts import (
     CODE_GENERATION_SYSTEM_PROMPT,
     CODE_GENERATION_USER_TEMPLATE,
 )
+from utils.llm_helpers import LLMConfig, create_llm
 
 logger = logging.getLogger(__name__)
 
@@ -48,9 +46,7 @@ def extract_code_pieces(text: str) -> Optional[str]:
 
 def generate_slide_code(
     output_pptx_path: str,
-    api_key: str,
-    base_url: str,
-    model_name: str,
+    llm_config: LLMConfig,
     code_directive: Optional[str] = None,
     failed_code: Optional[str] = None,
     error_context: Optional[str] = None,
@@ -88,12 +84,7 @@ def generate_slide_code(
 
     # --- 调用 LLM (通用逻辑) ---
     try:
-        llm = ChatOpenAI(
-            model=model_name, 
-            api_key=api_key, 
-            base_url=base_url, 
-            temperature=0.0
-        )
+        llm = create_llm(llm_config, temperature=0.0)
         messages = [
             SystemMessage(content=system_prompt),
             HumanMessage(content=user_prompt_content),

@@ -1,15 +1,15 @@
 import json
 import logging
 import os
-import re
 from typing import Any, Dict, Optional
 
 try:
-    from langchain_openai import ChatOpenAI
     from langchain_core.prompts import ChatPromptTemplate
     OPENAI_AVAILABLE = True
 except ImportError:
     OPENAI_AVAILABLE = False
+
+from utils.llm_helpers import LLMConfig, create_llm, extract_json_string_from_response
 
 
 logger = logging.getLogger(__name__)
@@ -32,25 +32,19 @@ def _fix_json_escaping(json_str: str) -> str:
 
 
 
-def enhance_content_with_llm(base_content, output_dir, model_name, base_url, api_key):
+def enhance_content_with_llm(base_content, output_dir, llm_config: LLMConfig):
     logger = logging.getLogger(__name__)
-    
+
     if not OPENAI_AVAILABLE:
         logger.warning("Cannot import OpenAI packages, skipping LLM enhancement")
         return base_content
-    
-    if not api_key:
+
+    if not llm_config.get("api_key"):
         logger.warning("OpenAI API key not provided, skipping LLM enhancement")
         return base_content
-    
+
     try:
-        # Initialize LLM
-        llm = ChatOpenAI(
-            model=model_name,
-            temperature=0.2,
-            api_key=api_key,
-            base_url=base_url
-        )
+        llm = create_llm(llm_config, temperature=0.2)
         
         # Get full text
         full_text = base_content.get("full_text")
@@ -114,16 +108,15 @@ def _extract_tables_and_equations(llm, full_text: str, output_dir: str) -> Optio
         # Restore special characters
         response_text = postprocess_content_from_llm(response_text)
 
-        # Extract JSON part
-        json_match = re.search(r'```(?:json)?(.*?)```', response_text, re.DOTALL)
-        if json_match:
-            json_str = json_match.group(1).strip()
-        else:
-            json_str = response_text.strip()
-        
+        # Extract JSON string, then fix escaping before parsing
+        json_str = extract_json_string_from_response(response_text)
+        if not json_str:
+            logger.warning("Failed to extract JSON string from LLM response")
+            return None
+
         # 🔧 修复 JSON 转义问题（将单反斜杠替换为双反斜杠）
         json_str = _fix_json_escaping(json_str)
-        
+
         # Parse JSON
         result = json.loads(json_str)
         

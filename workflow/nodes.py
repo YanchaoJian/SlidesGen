@@ -3,28 +3,33 @@ import json
 import logging
 from typing import Any, Dict, List, Literal, Optional
 
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import SystemMessage, HumanMessage
-from pydantic import BaseModel, Field
+from langchain_core.runnables import RunnableConfig
 
-# 导入各个节点实现
-from agent.evaluator.overall_review import _analyze_feedback_with_llm
+from workflow.feedback_router import analyze_feedback_with_llm
 from agent.parser.pdf_extractor import extract_content
 from agent.parser.content_enhancer import enhance_content_with_llm
 from agent.designer.style_analyzer import analyze_style
-from agent.designer.style_critic import review_visual_protocol 
+from agent.designer.style_critic import review_visual_protocol
 from agent.planner.slides_planner import generate_presentation_plan
 from agent.planner.review_plan import print_plan_summary
 from agent.composer.layout_engine import generate_layout_directive
 from agent.composer.code_generator import generate_slide_code
 from agent.composer.pptx_renderer import merge_deck, run_script
 from agent.evaluator.visual_critic import evaluate_and_critique_slide
-from langchain_core.runnables import RunnableConfig
-
-# 导入状态定义
+from utils.llm_helpers import LLMConfig
 from workflow.state import OverallState, SlideState
 
 logger = logging.getLogger(__name__)
+
+
+def _get_llm_config(configurable: Dict[str, Any]) -> LLMConfig:
+    """从 configurable 字典中提取 LLM 连接配置。"""
+    return LLMConfig(
+        model_name=configurable["model_name"],
+        api_key=configurable["api_key"],
+        base_url=configurable["base_url"],
+    )
+
 
 # ==============================================================================
 # Phase 1: 感知与反思 (Perception & Reflection)
@@ -57,9 +62,7 @@ def enhance_content_node(state: OverallState, config: RunnableConfig) -> Dict[st
         enhanced_content = enhance_content_with_llm(
             base_content=state["content"],
             output_dir=config["output_dir"],
-            model_name=config["model_name"],
-            base_url=config["base_url"],
-            api_key=config["api_key"]            
+            llm_config=_get_llm_config(config),
         )
         return {"content": enhanced_content}
     else:
@@ -70,54 +73,48 @@ def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dic
     """[Node] 分析参考图,提取初始的视觉协议 JSON"""
     logger.info("--- NODE: AnalyzeImageStyle ---")
     config = config["configurable"]
+    review = state.get("style_review", {})
 
     style_data = analyze_style(
         previous_protocol=state.get("style_protocol"),
-        previous_protocol_critique=state.get("style_protocol_critique"),
-        style_protocol_retry_count=state.get("style_protocol_retry_count"),
-        style_protocol_verified=state.get("style_protocol_verified"),
+        previous_protocol_critique=review.get("critique"),
+        style_protocol_retry_count=review.get("retry_count", 0),
+        style_protocol_verified=review.get("verified", False),
         style_image_path=config["style_image_path"],
         output_dir=config['output_dir'],
-        api_key=config["api_key"],
-        base_url=config["base_url"],
-        model_name=config["model_name"]
+        llm_config=_get_llm_config(config),
     )
-    
+
     if not style_data:
         logger.warning("   -> ⚠️ Style analysis failed. This may impact slide generation quality.")
-        return {"style_protocol_verified": False}
+        return {"style_review": {**review, "verified": False}}
 
-    return {"style_protocol": style_data, "style_protocol_verified": False}
+    return {"style_protocol": style_data, "style_review": {**review, "verified": False}}
 
 def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 风格自查 (StyleCritic),对比协议与原图,决定是否需要修正"""
     logger.info("--- NODE: CheckStyleProtocol ---")
     config = config["configurable"]
-    retry_count = state.get("style_protocol_retry_count")
+    review = state.get("style_review", {})
+    retry_count = review.get("retry_count", 0)
 
     if retry_count >= 2:
         logger.warning(f"   -> ⚠️ Style check retry limit ({retry_count}) reached. Forcing approval to avoid infinite loop.")
-        return {"style_protocol_verified": True, "style_protocol_critique": "Exceeded retry limit, auto-approved."}
+        return {"style_review": {"verified": True, "retry_count": retry_count, "critique": "Exceeded retry limit, auto-approved."}}
 
-    style_protocol_verified, style_protocol_critique = review_visual_protocol(
+    verified, critique = review_visual_protocol(
         style_protocol=state["style_protocol"],
         output_dir=config["output_dir"],
         image_path=config["style_image_path"],
-        model_name=config["model_name"],
-        api_key=config["api_key"],
-        base_url=config["base_url"]
+        llm_config=_get_llm_config(config),
     )
-    
-    if style_protocol_verified:
+
+    if verified:
         logger.info(f"   -> ✅ Style protocol APPROVED.")
     else:
-        logger.warning(f"   -> ❌ Style protocol REJECTED. Critique: {style_protocol_critique[:20]}...")
+        logger.warning(f"   -> ❌ Style protocol REJECTED. Critique: {critique[:20]}...")
 
-    return {
-        "style_protocol_verified": style_protocol_verified,
-        "style_protocol_critique": style_protocol_critique,
-        "style_protocol_retry_count": retry_count + 1
-    }
+    return {"style_review": {"verified": verified, "critique": critique, "retry_count": retry_count + 1}}
 
 # ==============================================================================
 # Phase 2: 规划与交互 (Planning & HITL 1)
@@ -126,50 +123,44 @@ def generate_presentation_plan_node(state: OverallState, config: RunnableConfig)
     """[Node] 根据解析后的 PDF 内容,生成演示大纲"""
     logger.info("--- NODE: GeneratePresentationPlan ---")
     config = config["configurable"]
+    review = state.get("plan_review", {})
 
     paper_main_content, presentation_plan = generate_presentation_plan(
         previous_main_content=state.get("main_content"),
         previous_plan=state.get("presentation_plan"),
-        user_feedback_plan=state.get("user_feedback_plan"),
-        presentation_plan_verified=state.get("presentation_plan_verified"),
+        user_feedback_plan=review.get("critique"),
+        presentation_plan_verified=review.get("verified", False),
         content=state["content"],
-        presentation_plan_retry_count=state.get("presentation_plan_retry_count"),
+        presentation_plan_retry_count=review.get("retry_count", 0),
         output_dir=config["output_dir"],
-        model_name=config["model_name"],
-        api_key=config["api_key"],
-        base_url=config["base_url"],
+        llm_config=_get_llm_config(config),
     )
-    
+
     if not presentation_plan:
         logger.error("❌ Fatal: Presentation plan generation failed.")
         raise ValueError("Fatal: Presentation plan generation failed.")
-       
+
     return {
         "main_content": paper_main_content,
-        "presentation_plan": presentation_plan, 
-        "presentation_plan_verified": False
+        "presentation_plan": presentation_plan,
+        "plan_review": {**review, "verified": False},
     }
 
 def review_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] HITL 1: Plan Review - 集成人工交互逻辑"""
     logger.info("--- NODE: ReviewPlan (HITL) ---")
-    
-    slides_plan = state.get("presentation_plan")
-    # print_plan_summary(slides_plan)
-    
+    review = state.get("plan_review", {})
+    retry_count = review.get("retry_count", 0)
+
     logger.info("🛑 HITL [1/2]: Plan Review - Waiting for user input.")
     user_input = input(">> Enter feedback to revise the plan, or press Enter to approve: ").strip()
-    
+
     if user_input:
         logger.info(f"   -> User provided feedback for plan revision.")
+        return {"plan_review": {"verified": False, "critique": user_input, "retry_count": retry_count + 1}}
     else:
         logger.info(f"   -> User approved the plan.")
-        
-    return {
-        "user_feedback_plan": user_input if user_input else None,
-        "presentation_plan_verified": not bool(user_input),
-        "presentation_plan_retry_count": state.get("presentation_plan_retry_count") + (1 if user_input else 0)
-    }
+        return {"plan_review": {"verified": True, "critique": None, "retry_count": retry_count}}
 
 # ==============================================================================
 # Phase 3: 执行 (Execution - Single Slide Generation)
@@ -187,10 +178,8 @@ def generate_code_directive_node(state: SlideState, config: RunnableConfig) -> D
     directive = generate_layout_directive(
         slide_style_protocol=state["slide_style_protocol"],
         slide_content=state["slide_plan"],
-        api_key=config["api_key"],
-        base_url=config["base_url"],
-        model_name=config["model_name"],
-        output_dir=slide_dir
+        llm_config=_get_llm_config(config),
+        output_dir=slide_dir,
     )
     
     if not directive:
@@ -211,15 +200,15 @@ def generate_slide_code_node(state: SlideState, config: RunnableConfig) -> Dict[
     os.makedirs(slide_dir, exist_ok=True)
     output_pptx_path = os.path.join(slide_dir, f"slide.pptx")
 
+    code_review = state.get("code_review", {})
+
     code = generate_slide_code(
         code_directive=state["code_directive"],
         failed_code=state.get('code'),
         error_context=state.get("error_log"),
-        slide_code_verified=state.get("slide_code_verified"),
+        slide_code_verified=code_review.get("verified"),
         output_pptx_path=output_pptx_path,
-        api_key=config["api_key"],
-        base_url=config["base_url"],
-        model_name=config["model_name"],
+        llm_config=_get_llm_config(config),
     )
 
     if not code:
@@ -227,7 +216,7 @@ def generate_slide_code_node(state: SlideState, config: RunnableConfig) -> Dict[
         return {"code": None, "error_log": "Code generation returned empty result"}
 
     # 保存代码
-    code_attempt = state.get("slide_code_retry_count")
+    code_attempt = code_review.get("retry_count", 0)
     code_path = os.path.join(slide_dir, f"code_v{code_attempt}.py")
     with open(code_path, "w", encoding='utf-8') as f: 
         f.write(code)
@@ -244,25 +233,26 @@ def check_code_execution_node(state: SlideState, config: RunnableConfig) -> Dict
     
     if not state.get("code"):
         logger.error(f"❌ [Slide {slide_page}] No code to execute.")
-        return {"slide_code_verified": False, "error_log": "No code available to execute"}
-    
+        return {"code_review": {"verified": False, "retry_count": 0, "critique": "No code available to execute"}, "error_log": "No code available to execute"}
+
     code_path = state.get("code_path")
     if not code_path or not os.path.exists(code_path):
         logger.error(f"❌ [Slide {slide_page}] Code file not found: {code_path}")
-        return {"slide_code_verified": False, "error_log": f"Code file not found: {code_path}"}
-    
+        return {"code_review": {"verified": False, "retry_count": 0, "critique": f"Code file not found: {code_path}"}, "error_log": f"Code file not found: {code_path}"}
+
     logger.info(f"   -> Executing Python script: {code_path}")
     success, exec_error = run_script(code_path)
-    
-    retry_count = state.get("slide_code_retry_count")
-    
+
+    code_review = state.get("code_review", {})
+    retry_count = code_review.get("retry_count", 0)
+
     if success:
         logger.info(f"   -> ✅ Code executed successfully for slide {slide_page}.")
         slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
         output_pptx_path = os.path.join(slide_dir, f"slide.pptx")
         logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): CheckCodeExecution completed.")
         return {
-            "slide_code_verified": True,
+            "code_review": {"verified": True, "retry_count": retry_count, "critique": None},
             "error_log": None,
             "generated_slide_paths": [output_pptx_path]
         }
@@ -270,9 +260,8 @@ def check_code_execution_node(state: SlideState, config: RunnableConfig) -> Dict
         logger.warning(f"   -> ❌ Code execution failed for slide {slide_page} (Attempt {retry_count + 1}). Error: {exec_error}")
         logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): CheckCodeExecution completed (with failure).")
         return {
-            "slide_code_verified": False,
+            "code_review": {"verified": False, "retry_count": retry_count + 1, "critique": exec_error},
             "error_log": exec_error,
-            "slide_code_retry_count": retry_count + 1
         }
 
 def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
@@ -288,29 +277,23 @@ def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[s
         slide_code=state["code"],
         slide_style_protocol=state["slide_style_protocol"],
         pptx_path=output_pptx_path,
-        api_key=config["api_key"],
-        base_url=config["base_url"],
-        model_name=config["model_name"]
+        llm_config=_get_llm_config(config),
     )
 
-    retry_count = state.get("slide_design_retry_count")
+    design_review = state.get("design_review", {})
+    retry_count = design_review.get("retry_count", 0)
 
     if critique_feedback is None:
         logger.info(f"   -> ✅ [Success] Slide {slide_page:02d} passed visual critique.")
         logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): CheckSlideDesign completed.")
         return {
-            "generated_slide_paths": [output_pptx_path],
-            "slide_design_critique": None,
-            "slide_design_verified": True
+            "design_review": {"verified": True, "retry_count": retry_count, "critique": None},
         }
     else:
         logger.warning(f"   -> ⚠️ Visual critique suggested revisions for slide {slide_page} (Attempt {retry_count + 1}).")
         logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): CheckSlideDesign completed (with revisions needed).")
         return {
-            "generated_slide_paths": [output_pptx_path],
-            "slide_design_critique": critique_feedback,
-            "slide_design_retry_count": retry_count + 1,
-            "slide_design_verified": False
+            "design_review": {"verified": False, "retry_count": retry_count + 1, "critique": critique_feedback},
         }
 
 # ==============================================================================
@@ -322,7 +305,7 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
     config = config["configurable"]
     logger.info("--- NODE: MergeSlidesToDeck ---")
     
-    slide_paths = sorted(list(set(state.get("generated_slide_paths"))))
+    slide_paths = sorted(state.get("generated_slide_paths", []))
     
     if not slide_paths:
         logger.warning("   -> No slides were generated to merge.")
@@ -337,34 +320,36 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
 def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] HITL 2: Final Inspection - 集成人工交互逻辑"""
     logger.info("--- NODE: ReviewPPTXDesign (HITL) ---")
-    
+    config = config["configurable"]
+
     pptx_path = state.get("final_pptx_path")
     slides_plan = state.get("presentation_plan")
-    
+
+    review = state.get("pptx_review", {})
+    retry_count = review.get("retry_count", 0)
+
     if not pptx_path or not os.path.exists(pptx_path):
         logger.warning("   -> Final PPTX file not found. Skipping user review.")
-        return {"user_feedback_pptx_design": None, "pptx_verified": True}
+        return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": None}}
 
     logger.info(f"\n✨ Preview Ready: Your presentation has been generated at '{pptx_path}'")
     logger.info("🛑 HITL [2/2]: Final Inspection - Waiting for user input.")
-    
+
     user_input = input(">> Enter feedback for refinements, or press Enter to accept: ").strip()
-    
+
     if not user_input:
         logger.info("   -> ✅ User accepted the final presentation. Workflow will now complete.")
-        return {"user_feedback_pptx_design": None, "pptx_verified": True}
+        return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": None}}
 
     logger.info("   -> User provided feedback for final revision. Analyzing feedback...")
-    # 调用独立的分析函数
-    analysis_result = _analyze_feedback_with_llm(
+    analysis_result = analyze_feedback_with_llm(
         user_input=user_input,
         slide_count=len(slides_plan),
-        llm_config=config["configurable"]
+        llm_config=_get_llm_config(config),
     )
-    
+
     logger.info(f"   -> Feedback analysis result: Scope='{analysis_result.scope}', Target Pages={analysis_result.target_pages}")
     return {
-        "user_feedback_pptx_design": analysis_result.scope,
-        "pptx_verified": False,
-        "retry_slide_pages": analysis_result.target_pages
+        "pptx_review": {"verified": False, "retry_count": retry_count + 1, "critique": analysis_result.scope},
+        "retry_slide_pages": analysis_result.target_pages,
     }

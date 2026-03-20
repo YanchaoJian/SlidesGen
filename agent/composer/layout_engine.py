@@ -4,34 +4,27 @@ import logging
 import os
 from typing import Dict, Any, Optional
 
-# 使用 LangChain 统一 LLM 调用
-from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
-# 假设 prompts 位于 src/composer/prompts.py
-# 注意：根据你的项目结构，可能需要调整路径
 from agent.composer.prompts import LAYOUT_DIRECTIVE_SYSTEM_PROMPT, LAYOUT_DIRECTIVE_USER_PROMPT
+from utils.llm_helpers import LLMConfig, create_llm
 
 logger = logging.getLogger(__name__)
 
 def generate_layout_directive(
     slide_style_protocol: Dict[str, Any],
     slide_content: Dict[str, Any],
-    api_key: str,
-    base_url: str,
-    model_name: str,
+    llm_config: LLMConfig,
     output_dir: str,
 ) -> Optional[str]:
     """
     为单张幻灯片生成自然语言布局指令 (Layout Directive)。
 
     Args:
-        style_protocol: 包含视觉风格规则的字典。
+        slide_style_protocol: 包含视觉风格规则的字典。
         slide_content: 当前幻灯片的内容大纲字典。
-        api_key: OpenAI API key。
-        base_url: OpenAI API base URL。
-        model_name: 使用的 LLM 模型名称。
-        user_feedback: (可选) 用户针对此页的特定修改反馈。
+        llm_config: LLM 连接配置。
+        output_dir: 输出目录。
 
     Returns:
         包含布局指令的字符串，如果失败则返回 None。
@@ -42,12 +35,7 @@ def generate_layout_directive(
 
     # 1. 初始化 LLM
     try:
-        llm = ChatOpenAI(
-            model=model_name,
-            temperature=0.3, # 保持一定的设计灵活性
-            api_key=api_key,
-            base_url=base_url
-        )
+        llm = create_llm(llm_config, temperature=0.3)
     except Exception as e:
         logger.error(f"❌ Failed to initialize LLM in layout engine: {e}")
         return None

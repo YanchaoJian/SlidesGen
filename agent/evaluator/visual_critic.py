@@ -2,47 +2,32 @@
 
 import json
 import os
-import base64
 import logging
-import re
 import tempfile
 from typing import Optional, Dict, Any
 
-# LangChain / OpenAI 依赖
-from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 
-# 假设 prompts 位于 src/evaluator/prompts.py
 from agent.evaluator.prompts import VISUAL_CRITIQUE_SYSTEM_PROMPT, VISUAL_CRITIQUE_USER_PROMPT
-# 工具函数：PPTX转图片
 from agent.evaluator.image_utils import pptx_to_images
+from utils.llm_helpers import LLMConfig, create_llm, encode_image_to_base64, extract_json_from_response
 
 logger = logging.getLogger(__name__)
-
-def _encode_image_to_base64(image_path: str) -> str:
-    """将图片文件编码为 Base64 字符串。"""
-    try:
-        with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode('utf-8')
-    except Exception as e:
-        logger.error(f"❌ Failed to encode image {image_path}: {e}")
-        raise
 
 def evaluate_and_critique_slide(
     slide_code: str,
     pptx_path: str,
     slide_style_protocol: Dict[str, Any],
-    api_key: str,
-    base_url: str,
-    model_name: str,
+    llm_config: LLMConfig,
 ) -> Optional[str]:
     """
     对单张幻灯片进行视觉评估，并生成可操作的修改建议。
 
     Args:
+        slide_code: 生成该幻灯片的 Python 代码。
         pptx_path: 单页 PPTX 文件的路径。
-        style_protocol: 用于对比风格一致性的视觉协议字典。
-        api_key, base_url, model_name: LLM 配置。
+        slide_style_protocol: 用于对比风格一致性的视觉协议字典。
+        llm_config: LLM 连接配置。
 
     Returns:
         如果发现问题，返回一个包含修改建议的字符串；如果质量合格，返回 None。
@@ -64,19 +49,14 @@ def evaluate_and_critique_slide(
                 return "Failed to render slide image for evaluation."
             
             image_path = os.path.join(temp_dir, "slide_001.jpg") # 假设总是第一张
-            base64_image = _encode_image_to_base64(image_path)
+            base64_image = encode_image_to_base64(image_path)
 
         except Exception as e:
             logger.error(f"   -> ❌ Failed to convert PPTX to image for critique: {e}")
             return f"Internal error during image conversion: {e}"
 
         # 2. 初始化 Vision LLM
-        llm = ChatOpenAI(
-            model=model_name, 
-            api_key=api_key,
-            base_url=base_url,
-            temperature=0.1
-        )
+        llm = create_llm(llm_config, temperature=0.1)
 
         # 3. 构建 Prompt (传入代码)
         user_prompt = VISUAL_CRITIQUE_USER_PROMPT.format(
@@ -97,26 +77,12 @@ def evaluate_and_critique_slide(
             response = llm.invoke(messages)
             response_content = response.content.strip()
 
-            # --- 核心修改部分：从字符串解析 JSON ---
-
-            # 1. 尝试从 LLM 的响应中提取 JSON 块（如果模型返回了 markdown 包装）
-            json_match = re.search(r'```(?:json)?(.*)```', response_content, re.DOTALL)
-            if json_match:
-                json_str = json_match.group(1).strip()
-            else:
-                # 如果没有找到代码块，则假定整个响应就是 JSON 字符串
-                json_str = response_content
-
-            # 2. 解析 JSON 字符串
-            try:
-                critique_data = json.loads(json_str)
-            except json.JSONDecodeError:
-                error_msg = f"❌ Failed to decode JSON from LLM response. Raw output: {response_content[:500]}..."
-                logger.error(error_msg)
-                # 将原始响应作为修改意见，强制进行一次修正
+            # --- 从字符串解析 JSON ---
+            critique_data = extract_json_from_response(response_content)
+            if critique_data is None:
                 return f"CRITICAL FORMAT ERROR: LLM did not return valid JSON. Raw response: {response_content}"
 
-            # 3. 安全地从解析后的字典中获取字段
+            # 安全地从解析后的字典中获取字段
             pass_status = critique_data.get("pass")
             critique_text = critique_data.get("critique", "No critique text provided by the model.")
 
