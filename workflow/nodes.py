@@ -51,14 +51,24 @@ def extract_content_from_pdf_node(state: OverallState, config: RunnableConfig) -
     return {"content": base_content}
 
 def enhance_content_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] 使用 LLM 增强内容"""
+    """[Node] 内容增强（表格和公式已由 Marker 直接提取，此步骤可跳过）"""
     logger.info("--- NODE: EnhanceContent ---")
     config = config["configurable"]
 
+    content = state["content"]
+    has_tables = bool(content.get("tables"))
+    has_equations = bool(content.get("equations"))
+
+    if has_tables or has_equations:
+        logger.info(f"   -> Marker already extracted {len(content.get('tables', []))} tables "
+                    f"and {len(content.get('equations', []))} equations. Skipping LLM enhancement.")
+        return {}
+
+    # 仅当 Marker 未提取到表格/公式且配置了增强时，才使用 LLM 补充
     if config.get("enhance_marker"):
-        logger.info("   -> Enhancing content with LLM to extract tables & equations...")
+        logger.info("   -> No tables/equations from Marker, falling back to LLM enhancement...")
         enhanced_content = enhance_content_with_llm(
-            base_content=state["content"],
+            base_content=content,
             output_dir=config["output_dir"],
             llm_config=_get_llm_config(config),
         )
@@ -68,7 +78,7 @@ def enhance_content_node(state: OverallState, config: RunnableConfig) -> Dict[st
         return {}
 
 def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] 分析参考图,提取初始的视觉协议 JSON"""
+    """[Node] 分析参考图,提取自然语言形式的主题风格描述"""
     logger.info("--- NODE: AnalyzeImageStyle ---")
     config = config["configurable"]
     review = state.get("style_review", {})
@@ -90,7 +100,7 @@ def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dic
     return {"style_protocol": style_data, "style_review": {**review, "verified": False}}
 
 def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] 风格自查 (StyleCritic),对比协议与原图,决定是否需要修正"""
+    """[Node] 风格自查 (StyleCritic),对比风格描述与原图,决定是否需要修正"""
     logger.info("--- NODE: CheckStyleProtocol ---")
     config = config["configurable"]
     review = state.get("style_review", {})

@@ -4,7 +4,7 @@ from datetime import datetime
 import json
 import logging
 import os
-from typing import Any, Dict, Tuple
+from typing import Tuple
 
 from pydantic import BaseModel, Field
 
@@ -21,29 +21,29 @@ class StyleCritique(BaseModel):
     通过与 LangChain 的 .with_structured_output() 方法结合，可以确保 LLM 的输出总是
     一个可以被程序直接使用的 Python 对象，而不是需要手动解析的字符串。
     """
-    is_approved: bool = Field(description="If the protocol accurately reflects the image's style, this is True. Otherwise, it is False.")
+    is_approved: bool = Field(description="If the style description accurately reflects the image's style, this is True. Otherwise, it is False.")
     critique: str = Field(description="A detailed justification for the decision. If approved, explain why. If rejected, provide specific, actionable suggestions for revision.")
 
 def review_visual_protocol(
     output_dir: str,
     image_path: str,
-    style_protocol: Dict[str, Any],
+    style_protocol: str,
     llm_config: LLMConfig,
 ) -> Tuple[bool, str]:
     """
-    调用 Vision LLM 来对比参考图片和已生成的视觉协议JSON文件。
+    调用 Vision LLM 来对比参考图片和已生成的主题风格描述。
 
     Args:
         output_dir: 输出目录。
         image_path: 原始参考图的文件路径。
-        style_protocol: 生成的视觉协议字典。
+        style_protocol: 自然语言形式的主题风格描述。
         llm_config: LLM 连接配置。
 
     Returns:
         Tuple[bool, str]: (is_approved, critique)
     """
-    logger.info("🧐 Style Critic is reviewing the visual protocol against the reference image...")
-    # --- 步骤 1: 加载用于审查的必要数据 (图片和JSON协议) ---
+    logger.info("🧐 Style Critic is reviewing the style description against the reference image...")
+    # --- 步骤 1: 加载用于审查的必要数据 (图片) ---
     try:
         base64_image = encode_image_to_base64(image_path)
         image_url = f"data:image/jpeg;base64,{base64_image}"
@@ -61,9 +61,8 @@ def review_visual_protocol(
 
     # --- 步骤 3: 构建 Prompt 并调用 Vision LLM ---
     logger.info("   -> Invoking Vision LLM for critique...")
-    
-    # 这里的 user_prompt_content 是多语言的，以便中文或英文模型都能理解
-    user_prompt_content = STYLE_CRITIC_USER_PROMPT.format(json.dumps(style_protocol, ensure_ascii=False, indent=2)) 
+
+    user_prompt_content = STYLE_CRITIC_USER_PROMPT.format(style_protocol)
     
     messages = [
         {"role": "system", "content": STYLE_CRITIC_SYSTEM_PROMPT},

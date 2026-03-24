@@ -30,7 +30,7 @@ class OverallState(TypedDict):
     content: Optional[Dict[str, Any]]
 
     # --- 风格层产物 ---
-    style_protocol: Optional[Dict[str, Any]]
+    style_protocol: Optional[str]
     style_review: ReviewCycle                      # 风格协议审查
 
     # --- 规划层产物 ---
@@ -60,7 +60,7 @@ class SlideState(TypedDict):
 
     # --- 任务输入 (由主图在分发时提供) ---
     slide_plan: Dict[str, Any]
-    slide_style_protocol: Dict[str, Any]
+    slide_style_protocol: str
 
     # --- 运行状态 ---
     code_directive: Optional[str]
@@ -98,7 +98,7 @@ def initialize_overall_state() -> OverallState:
 def initialize_slide_state(
     slide_page: int,
     slide_plan: Dict[str, Any],
-    slide_style_protocol: Dict[str, Any],
+    slide_style_protocol: str,
 ) -> SlideState:
     return {
         "slide_page": slide_page,

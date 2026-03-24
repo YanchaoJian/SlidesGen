@@ -1,17 +1,17 @@
 LAYOUT_DIRECTIVE_SYSTEM_PROMPT = """
 # Role: Adaptive Slide Layout Architect
 
-Your core task is to **design**. You are not just a data mover, you must dynamically plan a perfect slide layout directive based on **visual style protocol (Visual DNA)** and **current page content (Content)**.
+Your core task is to **design**. You are not just a data mover, you must dynamically plan a perfect slide layout directive based on the **Theme Style Description (色彩系统/字体规范/视觉特征/布局原则/组件特征)** and **current page content (Content)**.
 
 ### Core Design Philosophy:
 1.  **Inherit Visual DNA**:
-    -   **Color & Font**: Must strictly follow `color_palette` and `typography_rules` in the style protocol. This is the baseline of "brand consistency".
-    -   **Decoration Elements**: If the style protocol contains a Logo or footer bar, keep them; but if it's a full-screen background image that interferes with the body text, please fade it out or remove it.
+    -   **Color & Font**: Must strictly follow the color palette and typography rules described in the Theme Style Description. This is the baseline of "brand consistency".
+    -   **Decoration Elements**: If the style description mentions a Logo or footer bar, keep them; but if it's a full-screen background image that interferes with the body text, please fade it out or remove it.
 
 2.  **Layout Reconstruction**:
-    -   **Beware Source Deviation**: The provided style protocol may be extracted from a "cover page" or "table of contents page".
+    -   **Beware Source Deviation**: The provided style description may be extracted from a "cover page" or "table of contents page".
     -   **Adaptive Logic**: If the current page is a "body page" (with large amounts of text or charts), **do not** mechanically copy the centered large title layout from the cover. You must automatically switch to the standard "top title bar + content area" layout.
-    -   **Avoidance Principle**: When calculating content area (`content_area`), you must avoid decorative elements like header and footer (`background_elements`).
+    -   **Avoidance Principle**: When calculating content area, you must avoid decorative elements like header and footer described in the style.
 
 3.  **Data Baking**:
     -   Downstream code generators are mindless executors. You must convert all **HEX colors to RGB tuples** (e.g., `(255, 0, 0)`).
@@ -27,11 +27,10 @@ Your core task is to **design**. You are not just a data mover, you must dynamic
 LAYOUT_DIRECTIVE_USER_PROMPT = """
 Please design and generate **Python Code Generation Directive**.
 
-### Input 1: Visual Style Protocol
-*Note: This protocol may be extracted from a cover or specific page, please extract its color and font logic, but do not rigidly copy its coordinates.*
-```json
-{protocol_json}
-```
+### Input 1: Theme Style Description
+*Note: This style may be extracted from a cover or specific page, please extract its color and font logic, but do not rigidly copy its coordinates.*
+
+{style_description}
 
 ### Input 2: Current Slide Content Data
 ```json

@@ -11,7 +11,7 @@ from utils.llm_helpers import LLMConfig, create_llm
 logger = logging.getLogger(__name__)
 
 def generate_layout_directive(
-    slide_style_protocol: Dict[str, Any],
+    slide_style_protocol: str,
     slide_content: Dict[str, Any],
     llm_config: LLMConfig,
     output_dir: str,
@@ -20,7 +20,7 @@ def generate_layout_directive(
     为单张幻灯片生成自然语言布局指令 (Layout Directive)。
 
     Args:
-        slide_style_protocol: 包含视觉风格规则的字典。
+        slide_style_protocol: 自然语言形式的主题风格描述。
         slide_content: 当前幻灯片的内容大纲字典。
         llm_config: LLM 连接配置。
         output_dir: 输出目录。
@@ -38,11 +38,10 @@ def generate_layout_directive(
     except Exception as e:
         logger.error(f"❌ Failed to initialize LLM in layout engine: {e}")
         return None
-    
+
     # 2. 填充 Prompt
-    # 使用 json.dumps 将字典数据格式化为字符串嵌入到 Prompt 中
     user_prompt_content = LAYOUT_DIRECTIVE_USER_PROMPT.format(
-        protocol_json=json.dumps(slide_style_protocol, ensure_ascii=False, indent=2),
+        style_description=slide_style_protocol,
         slide_content_json=json.dumps(slide_content, ensure_ascii=False, indent=2)
     )
 
