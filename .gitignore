@@ -1,6 +1,7 @@
 # Python
-__pycache__/
+**/__pycache__/
 *.pyc
+*.pyo
 *.egg-info/
 dist/
 build/
@@ -12,3 +13,6 @@ build/
 # Project-specific
 models/
 output/
+
+# IDE
+.vscode/

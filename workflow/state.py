@@ -39,6 +39,7 @@ class OverallState(TypedDict):
     plan_review: ReviewCycle                       # 演示计划审查
 
     # --- 执行层产物 (Reducer) ---
+    # 存储各 slide 的代码文件路径（.py），用于最终 merge_deck 合并
     generated_slide_paths: Annotated[List[str], operator.add]
 
     # --- 交付层产物 ---

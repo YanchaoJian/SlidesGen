@@ -17,12 +17,11 @@ def _save_images_blocking(pdf_path: str, output_dir: str, dpi: int):
     """私有函数：将PDF渲染为图片并保存"""
     try:
         images = convert_from_path(
-            pdf_path, 
-            dpi=dpi, 
-            fmt="jpeg", 
+            pdf_path,
+            dpi=dpi,
+            fmt="jpeg",
             thread_count=4,
         )
-        #images = convert_from_path(pdf_path, dpi=dpi, fmt="jpeg", thread_count=4)
         
         if not images:
             raise RuntimeError("pdf2image did not return any pages from the PDF.")
