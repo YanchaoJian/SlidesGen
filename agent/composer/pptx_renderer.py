@@ -1,10 +1,12 @@
 import os
+import sys
 import subprocess
 import logging
-import sys
+import importlib.util
 from typing import Tuple
 
-import aspose.slides as slides
+from pptx import Presentation
+from pptx.util import Inches
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +15,7 @@ logger = logging.getLogger(__name__)
 # ==============================================================================
 
 def run_script(
-    script_path: str, 
+    script_path: str,
     timeout: int = 12
 ) -> Tuple[bool, str]:
     """
@@ -34,7 +36,7 @@ def run_script(
             timeout=timeout,
             check=False # 不在返回非0时抛出异常
         )
-        
+
         if result.returncode == 0:
             logger.debug(f"   -> Script {os.path.basename(script_path)} executed successfully.")
             return True, result.stdout
@@ -43,7 +45,7 @@ def run_script(
             error_details = result.stderr.strip()
             logger.warning(f"   -> ⚠️ Script {os.path.basename(script_path)} failed with return code {result.returncode}. Stderr:\n{error_details}")
             return False, error_details
-            
+
     except subprocess.TimeoutExpired:
         timeout_msg = f"Script execution timed out after {timeout} seconds."
         logger.error(f"   -> ❌ {timeout_msg}")
@@ -53,35 +55,47 @@ def run_script(
         logger.error(f"   -> ❌ {exec_err_msg}", exc_info=True)
         return False, exec_err_msg
 
-def merge_deck(ppt_files: list, output_path: str):
+
+def merge_deck(code_paths: list, output_path: str):
     """
-    使用 Aspose.Slides 合并多个单页 PPTX 文件为一个完整演示文稿。
+    通过动态加载各 slide 的 add_slide(prs) 函数，
+    将所有页面追加到同一个 Presentation 对象中，最终保存为一个完整的 PPTX。
+
+    每个 code_path 对应的 .py 文件必须定义 def add_slide(prs) 函数。
+
     Args:
-        ppt_files: 包含单页 PPTX 文件路径的列表。
+        code_paths: 包含各 slide 代码文件路径的列表（按页码排序）。
         output_path: 最终合并后文件的保存路径。
     """
-    if not ppt_files:
-        logger.warning("   -> No slide files provided to merge.")
+    if not code_paths:
+        logger.warning("   -> No slide code files provided to merge.")
         return
 
-    logger.info(f"   -> Merging {len(ppt_files)} slides into a single presentation...")
+    logger.info(f"   -> Merging {len(code_paths)} slides into a single presentation...")
 
-    # 以第一个PPT为基础
-    try:
-        pres = slides.Presentation(ppt_files[0])
+    prs = Presentation()
+    prs.slide_width = Inches(10)
+    prs.slide_height = Inches(5.625)
 
-        for pptx_path in ppt_files[1:]:
-            if not os.path.exists(pptx_path):
-                logger.warning(f"   -> Skipping non-existent file: {pptx_path}")
+    for i, code_path in enumerate(code_paths):
+        if not os.path.exists(code_path):
+            logger.warning(f"   -> Skipping non-existent code file: {code_path}")
+            continue
+        try:
+            # 动态加载 slide 脚本为独立模块
+            spec = importlib.util.spec_from_file_location(f"slide_module_{i}", code_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+
+            if not hasattr(module, "add_slide"):
+                logger.error(f"   -> ❌ {code_path} does not define add_slide(prs). Skipping.")
                 continue
-            try:
-                other_pres = slides.Presentation(pptx_path)
-                for slide in other_pres.slides:
-                    pres.slides.add_clone(slide)
-            except Exception as e:
-                logger.error(f"   -> ❌ Failed to merge {pptx_path}: {e}", exc_info=True)
 
-        pres.save(output_path, slides.export.SaveFormat.PPTX)
-        logger.info(f"   -> ✅ All slides merged successfully! Saved to: {os.path.abspath(output_path)}")
-    except Exception as e:
-        logger.error(f"   -> ❌ Failed to create or save the final presentation: {e}", exc_info=True)
+            module.add_slide(prs)
+            logger.debug(f"   -> Added slide from {os.path.basename(code_path)}")
+        except Exception as e:
+            logger.error(f"   -> ❌ Failed to load/execute {code_path}: {e}", exc_info=True)
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    prs.save(output_path)
+    logger.info(f"   -> ✅ All slides merged successfully! Saved to: {os.path.abspath(output_path)}")

@@ -33,54 +33,54 @@ Each section is mandatory. Provide **specific values** (HEX colors with role des
 
 **Output the following sections in this exact format:**
 
-【主题名称】<Give a short descriptive name, e.g., "学术商务蓝", "Modern Gradient Dark">
+[Theme Name] <Give a short descriptive name, e.g., "Academic Business Blue", "Modern Gradient Dark">
 
-【整体氛围】<1-2 sentences describing the visual mood and suitable scenarios, e.g., "专业、严谨、现代学术风，适合技术汇报和组会展示">
+[Overall Atmosphere] <1-2 sentences describing the visual mood and suitable scenarios, e.g., "Professional, clean, modern academic style, suitable for technical reports and academic presentations">
 
-【色彩系统】
-- 主色调：
-  - <Color name> <#HEX>（用途说明）
+[Color System]
+- Primary Colors:
+  - <Color name> <#HEX> (usage description)
   - ... (list all primary/theme colors)
 
-- 辅助色：
-  - <Color name> <#HEX>（用途说明）
+- Accent Colors:
+  - <Color name> <#HEX> (usage description)
   - ... (list accent/supporting colors)
 
-- 文字色：
-  - 深色文字：<#HEX>（主正文）、<#HEX>（次要文字）
-  - 浅色文字：<#HEX>（用于深色背景）
+- Text Colors:
+  - Dark text: <#HEX> (main body text), <#HEX> (secondary text)
+  - Light text: <#HEX> (for dark backgrounds)
 
-- 背景色：
-  - 主背景：<#HEX>
+- Background Colors:
+  - Main background: <#HEX>
   - <Other background zones if any, with color and description>
 
-【字体规范】
-- 标题：<font family (Chinese) + font family (English)>，<size>pt，<weight>，<color>
-- 正文：<font family>，<title size>pt（标题）/ <body size>pt（正文），<weight>
-- 特殊：<any special text rules, e.g., links, captions — include color and size>
+[Typography]
+- Title: <font family (Chinese) + font family (English)>, <size>pt, <weight>, <color>
+- Body: <font family>, <title size>pt (title) / <body size>pt (body), <weight>
+- Special: <any special text rules, e.g., links, captions — include color and size>
 
-【视觉特征】
-- 几何风格：<shape style, e.g., 直角矩形/圆角矩形, overall feel>
-- 阴影效果：<shadow details if any, including color, opacity, offset, blur>
-- 线条：<line style, thickness, color>
-- 渐变：<gradient usage, or "以纯色块为主" if minimal>
+[Visual Features]
+- Geometric Style: <shape style, e.g., sharp rectangles / rounded rectangles, overall feel>
+- Shadow Effects: <shadow details if any, including color, opacity, offset, blur>
+- Lines: <line style, thickness, color>
+- Gradients: <gradient usage, or "primarily solid color blocks" if minimal>
 
-【布局原则】
+[Layout Principles]
 - <Describe each major layout zone with percentage or inch dimensions>
-  e.g., 顶部标题区：占屏幕 25%，深蓝背景，文字居中
+  e.g., Top title area: occupies 25% of screen, dark blue background, text centered
 - <Bottom area description>
 - <Side margins / logo placement>
-- 文字层级：<alignment rules, e.g., 左对齐为主，标题居中>
+- Text hierarchy: <alignment rules, e.g., left-aligned primarily, titles centered>
 
-【组件特征】
-- 文本框：<fill, border, text effect>
-- 信息卡片：<fill color, text color if applicable>
+[Component Features]
+- Text boxes: <fill, border, text effect>
+- Info cards: <fill color, text color if applicable>
 - <Any other notable UI components: links, buttons, icons, etc.>
 
 ---
 
 **Analysis Instructions:**
-1. Extract ALL visually distinct colors — do not limit to just 4-6. Group them by role (主色调/辅助色/文字色/背景色).
+1. Extract ALL visually distinct colors — do not limit to just 4-6. Group them by role (Primary/Accent/Text/Background).
 2. Infer layout zones from the spatial arrangement in the image. Use percentages for zone proportions and inches for precise coordinates.
 3. Do NOT extract specific text content (e.g., "Q3 Financial Report") — only extract the style rules.
 4. If the background is a complex image, simplify it to a solid background color or describe it as a full-screen image placeholder.
@@ -164,13 +164,13 @@ Your job is to perform targeted corrections on the existing style description ba
 
 ### Refinement Guidelines:
 
-1.  **Maintain Structure**: Keep the same section format (主题名称/整体氛围/色彩系统/字体规范/视觉特征/布局原则/组件特征).
+1.  **Maintain Structure**: Keep the same section format ([Theme Name] / [Overall Atmosphere] / [Color System] / [Typography] / [Visual Features] / [Layout Principles] / [Component Features]).
 
 2.  **Targeted Fixes**:
-    *   If criticism is about **colors**: Adjust the HEX values in 色彩系统, and ensure downstream references remain consistent.
-    *   If criticism is about **layout**: Adjust zone proportions, margins, or element positions in 布局原则.
-    *   If criticism is about **missing elements**: Add the missing items to the appropriate section (视觉特征/组件特征/etc.).
-    *   If criticism is about **typography**: Adjust font families, sizes, or weights in 字体规范.
+    *   If criticism is about **colors**: Adjust the HEX values in [Color System], and ensure downstream references remain consistent.
+    *   If criticism is about **layout**: Adjust zone proportions, margins, or element positions in [Layout Principles].
+    *   If criticism is about **missing elements**: Add the missing items to the appropriate section ([Visual Features] / [Component Features] / etc.).
+    *   If criticism is about **typography**: Adjust font families, sizes, or weights in [Typography].
 
 3.  **Visual Calibration**:
     *   Audit comments may contain specific numerical suggestions (e.g., "increase title area to 25%"), please prioritize adopting these values and fine-tune with the image.

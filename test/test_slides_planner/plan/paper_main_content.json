@@ -1,0 +1,132 @@
+{
+  "paper_info": {
+    "title": "Attention Is All You Need",
+    "authors": [
+      "Ashish Vaswani",
+      "Llion Jones",
+      "Noam Shazeer",
+      "Aidan N. Gomez",
+      "Niki Parmar",
+      "Jakob Uszkoreit",
+      "Łukasz Kaiser",
+      "Illia Polosukhin"
+    ],
+    "affiliations": [
+      "Google Brain",
+      "Google Research",
+      "University of Toronto"
+    ],
+    "abstract": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.",
+    "keywords": [
+      "Transformer",
+      "Attention Mechanism",
+      "Machine Translation",
+      "Neural Networks",
+      "Sequence Transduction"
+    ]
+  },
+  "presentation_flow": {
+    "background_context": "Sequence transduction tasks, such as machine translation and language modeling, are critical in natural language processing. Historically, recurrent neural networks (RNNs) and convolutional neural networks (CNNs) have been the state-of-the-art approaches for these tasks. These models rely on sequential computation, which limits parallelization and increases training time. Attention mechanisms have emerged as a powerful tool to model dependencies between input and output sequences, regardless of their distance, but are often combined with RNNs or CNNs.",
+    "problem_motivation": "Existing methods like RNNs and CNNs suffer from inherent sequential computation constraints, making them inefficient for long sequences. This limitation restricts parallelization during training and increases computational costs. While attention mechanisms improve dependency modeling, their integration with recurrent networks still inherits these inefficiencies. A solution is needed to overcome these bottlenecks and improve training speed and model performance.",
+    "solution_overview": "The Transformer architecture eliminates recurrence and convolution entirely, relying solely on self-attention mechanisms to model global dependencies between input and output sequences. This design enables significant parallelization, reduces training time, and achieves state-of-the-art performance in machine translation tasks. The architecture consists of encoder and decoder stacks, each composed of multi-head self-attention layers and feed-forward networks.",
+    "technical_approach": "The Transformer uses multi-head attention to process queries, keys, and values in parallel, enabling the model to attend to different representation subspaces. Positional encodings are added to embeddings to capture sequence order. The encoder stack consists of six identical layers, each with a self-attention mechanism and a feed-forward network. The decoder stack includes an additional encoder-decoder attention layer and masking to preserve auto-regressive properties. The model is trained using the Adam optimizer with a custom learning rate schedule and regularization techniques like dropout and label smoothing.",
+    "evidence_proof": "Experiments on the WMT 2014 English-to-German and English-to-French translation tasks demonstrate the Transformer’s superior performance. The big model achieves BLEU scores of 28.4 and 41.8, respectively, surpassing previous state-of-the-art models, including ensembles, at a fraction of the training cost. Constituency parsing experiments further validate the model's generalization capabilities, achieving competitive results in both supervised and semi-supervised settings.",
+    "impact_significance": "The Transformer sets a new benchmark in sequence transduction tasks, offering faster training and improved performance. Its attention-based design paves the way for applications beyond text, such as image, audio, and video processing. Future research will explore restricted attention mechanisms for handling large inputs and outputs and reducing sequential dependencies in generation tasks."
+  },
+  "equations": [
+    {
+      "latex": "\\text{Attention}(Q, K, V) = \\text{softmax}(\\frac{QK^T}{\\sqrt{d\\_k}})V \\tag{l}",
+      "description": "Scaled Dot-Product Attention",
+      "analysis": "This formula computes attention weights by scaling the dot product of queries and keys, followed by a softmax operation. It ensures stable gradients for large dimensions and enables efficient computation of attention scores.",
+      "recommended_section": "technical_approach"
+    },
+    {
+      "latex": "\\begin{aligned} \\text{MultiHead}(Q, K, V) &= \\text{Concat}(\\text{head}\\_1, \\dots, \\text{head}\\_h) W^O \\\\ \\text{where } \\text{head}\\_i &= \\text{Attention}(QW\\_i^Q, KW\\_i^K, VW\\_i^V) \\end{aligned}",
+      "description": "Multi-Head Attention",
+      "analysis": "Multi-head attention enables the model to attend to different representation subspaces simultaneously by projecting queries, keys, and values into smaller dimensions and processing them in parallel.",
+      "recommended_section": "technical_approach"
+    },
+    {
+      "latex": "\\text{FFN}(x) = \\max(0, xW\\_1 + b\\_1)W\\_2 + b\\_2 \\tag{2}",
+      "description": "Feed-Forward Network",
+      "analysis": "This formula describes the position-wise feed-forward network used in each layer of the Transformer. It applies two linear transformations with a ReLU activation, enabling non-linear feature extraction.",
+      "recommended_section": "technical_approach"
+    },
+    {
+      "latex": "PE\\_{(pos,2i)} = \\sin(pos/10000^{2i/d\\_{\\text{model}}})",
+      "description": "Positional Encoding (Sine)",
+      "analysis": "This encoding captures positional information using sine functions, allowing the model to learn relative positions in sequences.",
+      "recommended_section": "technical_approach"
+    },
+    {
+      "latex": "PE\\_{(pos,2i+1)} = \\cos(pos/10000^{2i/d\\_{\\text{model}}})",
+      "description": "Positional Encoding (Cosine)",
+      "analysis": "This encoding complements the sine function to represent positional information, ensuring smooth transitions between positions.",
+      "recommended_section": "technical_approach"
+    },
+    {
+      "latex": "lrate = d\\_{\\text{model}}^{-0.5} \\cdot \\min(step\\\\_num^{-0.5}, step\\\\_num \\cdot warmup\\\\_steps^{-1.5}) \\tag{3}",
+      "description": "Learning Rate Schedule",
+      "analysis": "This formula defines the learning rate schedule, which increases linearly during warm-up steps and decreases proportionally to the inverse square root of the step number, optimizing training stability and convergence.",
+      "recommended_section": "technical_approach"
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Maximum path lengths, per-layer complexity and minimum number of sequential operations for different layer types.",
+      "markdown": "| Layer Type                  | Complexity per Layer  | Sequential<br>Operations | Maximum Path Length |\n|-----------------------------|-----------------------|--------------------------|---------------------|\n| Self-Attention              | 2<br>O(n<br>· d)      | O(1)                     | O(1)                |\n| Recurrent                   | 2<br>O(n · d<br>)     | O(n)                     | O(n)                |\n| Convolutional               | 2<br>O(k · n · d<br>) | O(1)                     | O(logk(n))          |\n| Self-Attention (restricted) | O(r · n · d)          | O(1)                     | O(n/r)              |",
+      "analysis": "This table compares the computational complexity, sequential operations, and path lengths of different layer types. Self-attention is shown to be more efficient and parallelizable than recurrent and convolutional layers.",
+      "recommended_section": "problem_motivation"
+    },
+    {
+      "caption": "The Transformer achieves better BLEU scores than previous state-of-the-art models on the English-to-German and English-to-French newstest2014 tests at a fraction of the training cost.",
+      "markdown": "|                                 | BLEU  |       |            | Training Cost (FLOPs) |  |  |  |\n|---------------------------------|-------|-------|------------|-----------------------|--|--|--|\n| Model                           | EN-DE | EN-FR | EN-DE      | EN-FR                 |  |  |  |\n| ByteNet [18]                    | 23.75 |       |            |                       |  |  |  |\n| Deep-Att + PosUnk [39]          |       | 39.2  |            | 1.0 · 1020            |  |  |  |\n| GNMT + RL [38]                  | 24.6  | 39.92 | 2.3 · 1019 | 1.4 · 1020            |  |  |  |\n| ConvS2S [9]                     | 25.16 | 40.46 | 9.6 · 1018 | 1.5 · 1020            |  |  |  |\n| MoE [32]                        | 26.03 | 40.56 | 2.0 · 1019 | 1.2 · 1020            |  |  |  |\n| Deep-Att + PosUnk Ensemble [39] |       | 40.4  |            | 8.0 · 1020            |  |  |  |\n| GNMT + RL Ensemble [38]         | 26.30 | 41.16 | 1.8 · 1020 | 1.1 · 1021            |  |  |  |\n| ConvS2S Ensemble [9]            | 26.36 | 41.29 | 7.7 · 1019 | 1.2 · 1021            |  |  |  |\n| Transformer (base model)        | 27.3  | 38.1  |            | 3.3 · 1018            |  |  |  |\n| Transformer (big)               | 28.4  | 41.8  |            | 2.3 · 1019            |  |  |  |",
+      "analysis": "The table highlights the superior BLEU scores achieved by the Transformer compared to previous models, along with significantly reduced training costs, demonstrating its efficiency and effectiveness.",
+      "recommended_section": "evidence_proof"
+    },
+    {
+      "caption": "Variations on the Transformer architecture.",
+      "markdown": "|      | N                                         | dmodel | dff  | h  | dk  | dv  | Pdrop | ϵls  | train | PPL   | BLEU  | params |      |\n|------|-------------------------------------------|--------|------|----|-----|-----|-------|------|-------|-------|-------|--------|------|\n|      |                                           |        |      |    |     |     |       |      |       | steps | (dev) | (dev)  | ×106 |\n| base | 6                                         | 512    | 2048 | 8  | 64  | 64  | 0.1   | 0.1  | 100K  | 4.92  | 25.8  | 65     |      |\n| (A)  |                                           |        |      | 1  | 512 | 512 |       |      |       | 5.29  | 24.9  |        |      |\n|      |                                           |        |      | 4  | 128 | 128 |       |      |       | 5.00  | 25.5  |        |      |\n|      |                                           |        |      | 16 | 32  | 32  |       |      |       | 4.91  | 25.8  |        |      |\n|      |                                           |        |      | 32 | 16  | 16  |       |      |       | 5.01  | 25.4  |        |      |\n| (B)  |                                           |        |      |    | 16  |     |       |      |       | 5.16  | 25.1  | 58     |      |\n|      |                                           |        |      |    | 32  |     |       |      |       | 5.01  | 25.4  | 60     |      |\n|      | 2                                         |        |      |    |     |     |       |      |       | 6.11  | 23.7  | 36     |      |\n|      | 4                                         |        |      |    |     |     |       |      |       | 5.19  | 25.3  | 50     |      |\n|      | 8                                         |        |      |    |     |     |       |      |       | 4.88  | 25.5  | 80     |      |\n| (C)  |                                           | 256    |      |    | 32  | 32  |       |      |       | 5.75  | 24.5  | 28     |      |\n|      |                                           | 1024   |      |    | 128 | 128 |       |      |       | 4.66  | 26.0  | 168    |      |\n|      |                                           |        | 1024 |    |     |     |       |      |       | 5.12  | 25.4  | 53     |      |\n|      |                                           |        | 4096 |    |     |     |       |      |       | 4.75  | 26.2  | 90     |      |\n| (D)  |                                           |        |      |    |     |     | 0.0   |      |       | 5.77  | 24.6  |        |      |\n|      |                                           |        |      |    |     |     | 0.2   |      |       | 4.95  | 25.5  |        |      |\n|      |                                           |        |      |    |     |     |       | 0.0  |       | 4.67  | 25.3  |        |      |\n|      |                                           |        |      |    |     |     |       | 0.2  |       | 5.47  | 25.7  |        |      |\n| (E)  | positional embedding instead of sinusoids |        |      |    |     |     | 4.92  | 25.7 |       |       |       |        |      |\n| big  | 6                                         | 1024   | 4096 | 16 |     |     | 0.3   |      | 300K  | 4.33  | 26.4  | 213    |      |",
+      "analysis": "This table evaluates variations in the Transformer architecture, including changes in attention heads, dimensions, and dropout rates. It demonstrates the impact of these changes on BLEU scores and perplexity.",
+      "recommended_section": "technical_approach"
+    },
+    {
+      "caption": "The Transformer generalizes well to English constituency parsing (Results are on Section 23 of WSJ)",
+      "markdown": "| Parser                              | Training                 | WSJ 23 F1 |\n|-------------------------------------|--------------------------|-----------|\n| Vinyals & Kaiser el al. (2014) [37] | WSJ only, discriminative | 88.3      |\n| Petrov et al. (2006) [29]           | WSJ only, discriminative | 90.4      |\n| Zhu et al. (2013) [40]              | WSJ only, discriminative | 90.4      |\n| Dyer et al. (2016) [8]              | WSJ only, discriminative | 91.7      |\n| Transformer (4 layers)              | WSJ only, discriminative | 91.3      |\n| Zhu et al. (2013) [40]              | semi-supervised          | 91.3      |\n| Huang & Harper (2009) [14]          | semi-supervised          | 91.3      |\n| McClosky et al. (2006) [26]         | semi-supervised          | 92.1      |\n| Vinyals & Kaiser el al. (2014) [37] | semi-supervised          | 92.1      |\n| Transformer (4 layers)              | semi-supervised          | 92.7      |\n| Luong et al. (2015) [23]            | multi-task               | 93.0      |\n| Dyer et al. (2016) [8]              | generative               | 93.3      |",
+      "analysis": "This table showcases the Transformer’s performance in English constituency parsing, achieving competitive results in both supervised and semi-supervised settings, surpassing many prior models.",
+      "recommended_section": "evidence_proof"
+    }
+  ],
+  "figures": [
+    {
+      "path": "/media/data_2/jyc/code/AI-Slides/SlidesGen/test/test_extractor/images/_page_2_Figure_0.jpeg",
+      "caption": "The Transformer model architecture, illustrating the encoder and decoder stacks with self-attention and feed-forward layers.",
+      "analysis": "This figure provides a visual overview of the Transformer architecture, highlighting the encoder-decoder structure and the use of self-attention mechanisms.",
+      "recommended_section": "solution_overview"
+    },
+    {
+      "path": "/media/data_2/jyc/code/AI-Slides/SlidesGen/test/test_extractor/images/_page_3_Figure_0.jpeg",
+      "caption": "Illustration of Scaled Dot-Product Attention and Multi-Head Attention mechanisms used in the Transformer.",
+      "analysis": "The figure explains how attention weights are calculated using scaled dot-product attention and how multi-head attention enables parallel processing of multiple attention layers.",
+      "recommended_section": "technical_approach"
+    },
+    {
+      "path": "/media/data_2/jyc/code/AI-Slides/SlidesGen/test/test_extractor/images/_page_12_Figure_1.jpeg",
+      "caption": "Visualization of encoder self-attention in layer 5, showing attention heads focusing on long-distance dependencies.",
+      "analysis": "This figure demonstrates the ability of the Transformer’s attention mechanism to capture long-distance dependencies, such as completing phrases across distant words.",
+      "recommended_section": "evidence_proof"
+    },
+    {
+      "path": "/media/data_2/jyc/code/AI-Slides/SlidesGen/test/test_extractor/images/_page_13_Figure_0.jpeg",
+      "caption": "Two attention heads in layer 5 focusing on anaphora resolution, with sharp attention on the word 'its'.",
+      "analysis": "This figure highlights the Transformer’s ability to resolve anaphora by focusing attention on relevant antecedents within the sentence structure.",
+      "recommended_section": "evidence_proof"
+    },
+    {
+      "path": "/media/data_2/jyc/code/AI-Slides/SlidesGen/test/test_extractor/images/_page_14_Figure_0.jpeg",
+      "caption": "Examples of attention heads learning tasks related to syntactic and semantic sentence structure in layer 5.",
+      "analysis": "This figure illustrates how different attention heads specialize in tasks related to sentence structure, showcasing the interpretability of the Transformer model.",
+      "recommended_section": "impact_significance"
+    }
+  ]
+}

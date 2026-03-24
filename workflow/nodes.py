@@ -256,13 +256,11 @@ def check_code_execution_node(state: SlideState, config: RunnableConfig) -> Dict
 
     if success:
         logger.info(f"   -> ✅ Code executed successfully for slide {slide_page}.")
-        slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
-        output_pptx_path = os.path.join(slide_dir, f"slide.pptx")
         logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): CheckCodeExecution completed.")
         return {
             "code_review": {"verified": True, "retry_count": retry_count, "critique": None},
             "error_log": None,
-            "generated_slide_paths": [output_pptx_path]
+            "generated_slide_paths": [state["code_path"]]  # 收集代码路径，用于最终合并
         }
     else:
         logger.warning(f"   -> ❌ Code execution failed for slide {slide_page} (Attempt {retry_count + 1}). Error: {exec_error}")

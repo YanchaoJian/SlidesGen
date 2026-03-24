@@ -1,16 +1,12 @@
 import json
 import logging
 import os
+import re
 from typing import Any, Dict, Optional
 
-try:
-    from langchain_core.prompts import ChatPromptTemplate
-    OPENAI_AVAILABLE = True
-except ImportError:
-    OPENAI_AVAILABLE = False
+from langchain_core.prompts import ChatPromptTemplate
 
 from utils.llm_helpers import LLMConfig, create_llm, extract_json_string_from_response
-
 
 logger = logging.getLogger(__name__)
 
@@ -33,12 +29,6 @@ def _fix_json_escaping(json_str: str) -> str:
 
 
 def enhance_content_with_llm(base_content, output_dir, llm_config: LLMConfig):
-    logger = logging.getLogger(__name__)
-
-    if not OPENAI_AVAILABLE:
-        logger.warning("Cannot import OpenAI packages, skipping LLM enhancement")
-        return base_content
-
     if not llm_config.get("api_key"):
         logger.warning("OpenAI API key not provided, skipping LLM enhancement")
         return base_content
@@ -85,8 +75,6 @@ def _extract_tables_and_equations(llm, full_text: str, output_dir: str) -> Optio
     """
     Step 1: Specifically extract tables and formulas
     """
-    logger = logging.getLogger(__name__)
-    
     try:
         # Import special character handling module
         from utils.text_utils import preprocess_content_for_llm, postprocess_content_from_llm, validate_special_chars_in_output

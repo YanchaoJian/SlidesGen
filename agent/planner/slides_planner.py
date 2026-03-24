@@ -17,7 +17,7 @@ from utils.llm_helpers import LLMConfig, create_llm, extract_json_from_response
 logger = logging.getLogger(__name__)
 
 
-def _extract_main_content(llm: ChatOpenAI, enhanced_content: Dict[str, Any]) -> Dict[str, Any]:
+def _extract_main_content(llm, enhanced_content: Dict[str, Any]) -> Dict[str, Any]:
     """[第二步] 提取关键内容，如图表、公式和核心论点。"""
     logger.info("   Planner Step 1/2: Extracting main content...")
     try:
@@ -37,7 +37,7 @@ def _extract_main_content(llm: ChatOpenAI, enhanced_content: Dict[str, Any]) -> 
         return {}
 
 def _plan_slides(
-    llm: ChatOpenAI, 
+    llm,
     main_content: Dict[str, Any],
     previous_plan: Optional[Dict[str, Any]] = None,
     plan_critique: Optional[str] = None,
@@ -137,14 +137,15 @@ def generate_presentation_plan(
         return None
 
     # 依次执行两个步骤
+    plan_dir = os.path.join(output_dir, "plan")
+    os.makedirs(plan_dir, exist_ok=True)
+
     if previous_main_content:
         logger.info("Using previous main content for slide planning.")
         paper_main_content = previous_main_content
     else:
         logger.info("Extracting main content from enhanced content.")
         paper_main_content = _extract_main_content(llm, content)
-        plan_dir = os.path.join(output_dir, "plan")
-        os.makedirs(plan_dir, exist_ok=True)
         paper_main_content_path = os.path.join(plan_dir, f"paper_main_content.json")
         with open(paper_main_content_path, "w", encoding='utf-8') as f:
             json.dump(paper_main_content, f, indent=2, ensure_ascii=False)

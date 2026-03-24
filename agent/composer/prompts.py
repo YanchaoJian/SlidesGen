@@ -1,7 +1,7 @@
 LAYOUT_DIRECTIVE_SYSTEM_PROMPT = """
 # Role: Adaptive Slide Layout Architect
 
-Your core task is to **design**. You are not just a data mover, you must dynamically plan a perfect slide layout directive based on the **Theme Style Description (色彩系统/字体规范/视觉特征/布局原则/组件特征)** and **current page content (Content)**.
+Your core task is to **design**. You are not just a data mover, you must dynamically plan a perfect slide layout directive based on the **Theme Style Description (Color System / Typography / Visual Features / Layout Principles / Component Features)** and **current page content (Content)**.
 
 ### Core Design Philosophy:
 1.  **Inherit Visual DNA**:
@@ -169,18 +169,38 @@ def render_latex_to_image(latex_str, dpi=300):
 *   `slide.shapes.add_picture(path, left, top, height=...)`
 *   Usually only specify `height` or `width`, to maintain aspect ratio.
 
+### 📐 Code Structure (MANDATORY)
+Your code **must** follow this structure:
+1.  Define a function `def add_slide(prs):` that takes a `Presentation` object and adds **one slide** to it. Do **NOT** create a new `Presentation()` inside this function.
+2.  Include an `if __name__ == "__main__":` block that creates a `Presentation`, sets 16:9 dimensions, calls `add_slide(prs)`, and saves.
+
+```python
+def add_slide(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])  # Blank layout
+    # ... all slide creation code here ...
+
+if __name__ == "__main__":
+    from pptx import Presentation
+    from pptx.util import Inches
+    prs = Presentation()
+    prs.slide_width = Inches(10)
+    prs.slide_height = Inches(5.625)
+    add_slide(prs)
+    prs.save(output_pptx_path)
+```
+
 ### Output Requirements
 *   Output complete Python code directly, without Markdown explanation.
-*   Code must include `if __name__ == "__main__":` block.
-*   **Last line** must be `prs.save(output_pptx_path)`.
+*   The `add_slide(prs)` function is the **primary deliverable**. It must be importable.
+*   The `if __name__ == "__main__":` block is for standalone testing only.
 """
 
 CODE_GENERATION_USER_TEMPLATE = """
-Please write a Python script to generate a single-page PPT.
+Please write a Python script that defines an `add_slide(prs)` function to add a single slide to an existing Presentation object.
 
 ### 1. Global Configuration
-*   **Output Path**: `{output_pptx_path}`
-*   **Canvas Size**: 16:9 (10 inches wide, 5.625 inches high)
+*   **Output Path** (for `__main__` test block only): `{output_pptx_path}`
+*   **Canvas Size**: 16:9 (10 inches wide, 5.625 inches high) — set only in `__main__`, NOT in `add_slide`.
 
 ### 2. Layout Directive (Layout Directive)
 This is the visual description given by the designer, please convert it into code logic:
