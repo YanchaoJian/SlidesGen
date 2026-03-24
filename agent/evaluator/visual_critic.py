@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 def evaluate_and_critique_slide(
     slide_code: str,
     pptx_path: str,
-    slide_style_protocol: Dict[str, Any],
+    slide_style_protocol: str,
     llm_config: LLMConfig,
 ) -> Optional[str]:
     """
@@ -24,7 +24,7 @@ def evaluate_and_critique_slide(
     Args:
         slide_code: 生成该幻灯片的 Python 代码。
         pptx_path: 单页 PPTX 文件的路径。
-        slide_style_protocol: 用于对比风格一致性的视觉协议字典。
+        slide_style_protocol: 自然语言形式的主题风格描述。
         llm_config: LLM 连接配置。
 
     Returns:

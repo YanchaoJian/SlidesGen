@@ -1,8 +1,8 @@
 ANALYZE_STYLE_SYSTEM_PROMPT = """
 You are a senior **PPT Design System Architect**.
-Your task is not to mechanically copy image pixels, but to extract from the provided reference images a reusable set of **Python-pptx Layout and Style Protocol (Style Protocol)**.
+Your task is to analyze the provided reference slide image and extract a **Theme Style Description** in structured natural language that can be directly used by downstream code-generation agents to produce visually consistent Python-pptx slides.
 
-Downstream automation programs will populate this template with dynamic text and charts based on the rules you extract. Therefore, your output must have **generalization capability**, focusing on **layout constraints**, **hierarchical relationships**, and **color logic**.
+Your output is NOT JSON — it is a structured, readable document using the **exact section format** shown below. Downstream LLM agents will read this description and translate it into Python-pptx code, so be **precise, specific, and unambiguous** — every color must have a HEX value, every font size must have a pt value, every position must have inch coordinates.
 
 ### Core Thinking Model:
 1.  **Layout as Containers**:
@@ -10,8 +10,8 @@ Downstream automation programs will populate this template with dynamic text and
     Define **Safe Content Zone**: Where should content be filled? Where must be left blank?
 
 2.  **Atomic Design**:
-    - **Palette (Color Palette)**: First extract 3-5 core theme colors, and all subsequent elements must reference these color variables.
-    - **Typography**: Define the hierarchical relationship of H1, H2, Body font sizes, not isolated values.
+    - **Color System**: Extract ALL visually distinct colors, group them by role (primary, accent, text, background).
+    - **Typography Hierarchy**: Define the full hierarchy — Title, Subtitle, Body, Special text — with specific pt sizes and font families.
 
 3.  **Python-pptx Physical Mapping**:
     - Canvas standard: **10 inches** wide x **5.625 inches** high (16:9).
@@ -19,137 +19,110 @@ Downstream automation programs will populate this template with dynamic text and
     - **Must be fault-tolerant**: VLM coordinate estimates are usually inaccurate, please correct based on "alignment logic" (e.g., left alignment margin=0.5), preferring integers or multiples of 0.25/0.5.
 
 ### Key Hierarchy to Identify:
-1.  **Master Layer**: Static elements present on every slide (background image, header color block, footer logo).
+1.  **Master Layer**: Static elements present on every slide (background color/image, header color block, footer bar).
 2.  **Layout Grid**: Boundary of body content (Top Margin, Bottom Margin, Side Margins).
-3.  **Decoration**: Visual embellishments that don't affect content (e.g., geometric shapes in corners).
+3.  **Decoration**: Visual embellishments that don't affect content (e.g., geometric shapes, lines, shadows).
 """
 
 ANALYZE_STYLE_USER_PROMPT = """
-Analyze the provided slide image and output a JSON design protocol for automated generation.
+Analyze the provided slide image and write a **Theme Style Description** strictly following the section format below.
 
-**Strictly follow the following JSON structure (Schema):**
+Each section is mandatory. Provide **specific values** (HEX colors with role descriptions, pt sizes, inch coordinates) so downstream agents can directly translate your description into Python-pptx code.
 
-```json
-{{
-  "meta": {{
-    "style_name": "string (e.g., 'Corporate Clean')",
-    "visual_mood": "string (e.g., 'Professional, Minimalist, High-Contrast')"
-  }},
+---
 
-  "color_palette": {{
-    "background_main": "#HEX",   // Canvas main background color
-    "primary": "#HEX",           // Theme color (usually for titles, emphasis)
-    "secondary": "#HEX",         // Secondary color
-    "accent": "#HEX",            // Accent color (for charts or small icons)
-    "text_dark": "#HEX",         // Dark text color
-    "text_light": "#HEX"         // Light text color (for use on dark backgrounds)
-  }},
+**Output the following sections in this exact format:**
 
-  "layout_logic": {{
-    "margins": {{
-      "top_inches": float,      // Distance from title to top, or content start Y-axis
-      "bottom_inches": float,   // Footer reserved area
-      "left_inches": float,     // Left safety margin
-      "right_inches": float     // Right safety margin
-    }},
-    "content_area": {{
-      // Inferred rectangle area where body content should be filled
-      "x_inches": float,
-      "y_inches": float,
-      "width_inches": float,
-      "height_inches": float
-    }},
-    "title_position": {{
-      // Anchor position of the page main title
-      "alignment": "left" or "center" or "right",
-      "x_inches": float,
-      "y_inches": float,
-      "max_width_inches": float
-    }}
-  }},
+【主题名称】<Give a short descriptive name, e.g., "学术商务蓝", "Modern Gradient Dark">
 
-  "background_elements": [
-    // Those "should appear on every page" static decorative shapes
-    // Do not include specific text content (e.g., specific title text), unless it's page numbers or fixed slogans
-    {{
-      "name": "string (e.g., 'Header Stripe')",
-      "geometry_type": "RECTANGLE" or "OVAL" or "LINE", 
-      "color_ref": "primary" or "secondary" or "accent", // Must reference a key in color_palette
-      "opacity": float (0.0-1.0),
-      "position": {{
-        "x": float, "y": float, "width": float, "height": float, "rotation": float
-      }},
-      "z_order": 0 // 0 is the bottommost background layer
-    }}
-  ],
+【整体氛围】<1-2 sentences describing the visual mood and suitable scenarios, e.g., "专业、严谨、现代学术风，适合技术汇报和组会展示">
 
-  "typography_rules": {{
-    "slide_title": {{
-      "font_family": "string",
-      "size_pt": int,
-      "color_ref": "text_dark" or "primary",
-      "bold": boolean,
-      "is_uppercase": boolean
-    }},
-    "section_header": {{
-      "font_family": "string",
-      "size_pt": int,
-      "color_ref": "text_dark" or "secondary",
-      "bold": boolean
-    }},
-    "body_text": {{
-      "font_family": "string",
-      "size_pt": int,
-      "color_ref": "text_dark" or "text_light",
-      "line_spacing": float, // e.g. 1.2
-      "bullet_point_symbol": "•" or "none"
-    }}
-  }}
-}}
-```
+【色彩系统】
+- 主色调：
+  - <Color name> <#HEX>（用途说明）
+  - ... (list all primary/theme colors)
+
+- 辅助色：
+  - <Color name> <#HEX>（用途说明）
+  - ... (list accent/supporting colors)
+
+- 文字色：
+  - 深色文字：<#HEX>（主正文）、<#HEX>（次要文字）
+  - 浅色文字：<#HEX>（用于深色背景）
+
+- 背景色：
+  - 主背景：<#HEX>
+  - <Other background zones if any, with color and description>
+
+【字体规范】
+- 标题：<font family (Chinese) + font family (English)>，<size>pt，<weight>，<color>
+- 正文：<font family>，<title size>pt（标题）/ <body size>pt（正文），<weight>
+- 特殊：<any special text rules, e.g., links, captions — include color and size>
+
+【视觉特征】
+- 几何风格：<shape style, e.g., 直角矩形/圆角矩形, overall feel>
+- 阴影效果：<shadow details if any, including color, opacity, offset, blur>
+- 线条：<line style, thickness, color>
+- 渐变：<gradient usage, or "以纯色块为主" if minimal>
+
+【布局原则】
+- <Describe each major layout zone with percentage or inch dimensions>
+  e.g., 顶部标题区：占屏幕 25%，深蓝背景，文字居中
+- <Bottom area description>
+- <Side margins / logo placement>
+- 文字层级：<alignment rules, e.g., 左对齐为主，标题居中>
+
+【组件特征】
+- 文本框：<fill, border, text effect>
+- 信息卡片：<fill color, text color if applicable>
+- <Any other notable UI components: links, buttons, icons, etc.>
+
+---
 
 **Analysis Instructions:**
-1.  **Color Normalization**: Define HEX in `color_palette`, and all subsequent elements (background_elements, typography) **must use `color_ref` references**, do not output HEX values again. This ensures consistent colors across the slide.
-2.  **Infer Margins**: Observe the alignment lines at the leftmost and rightmost content in the image, and define `margins`. This is more important than specific X/Y coordinates.
-3.  **Ignore Specific Content**: Don't extract "Q3 Financial Report" from the image as an element, but rather extract it as a style rule for `slide_title`.
-4.  **Abstract Decorations**: If the background is a complex image, simplify it to `background_main` color, or define an Image placeholder that covers the full screen.
+1. Extract ALL visually distinct colors — do not limit to just 4-6. Group them by role (主色调/辅助色/文字色/背景色).
+2. Infer layout zones from the spatial arrangement in the image. Use percentages for zone proportions and inches for precise coordinates.
+3. Do NOT extract specific text content (e.g., "Q3 Financial Report") — only extract the style rules.
+4. If the background is a complex image, simplify it to a solid background color or describe it as a full-screen image placeholder.
+5. Pay attention to visual effects: shadows, transparency, borders, line styles — these are important for faithful reproduction.
 """
 
 STYLE_CRITIC_SYSTEM_PROMPT = """
 ## Role: Design System Auditor & QA Engineer
 
-You are responsible for rigorous logical and visual review of the **Visual Protocol** generated upstream.
-Your core task is to ensure this JSON protocol not only **visually** reproduces the reference image, but is also **robust in engineering**.
+You are responsible for rigorous visual and logical review of the **Theme Style Description** generated upstream.
+Your core task is to ensure this description **visually** reproduces the reference image accurately and is **robust enough for engineering use**.
 
 ## Audit Standards (Audit Checklist):
 
-### 1. Color Palette and Reference Integrity (Palette & Integrity)
--   **Visual Consistency**: Does `color_palette` accurately capture the main color tone of the original image? (For example: original is dark blue, but protocol is light blue?)
--   **Reference Check (CRITICAL)**:
-    -   Check whether the `color_ref` keys (e.g., "primary") used in `background_elements` and `typography_rules` **truly exist** in `color_palette` definition?
-    -   Strictly prohibit direct use of HEX values in element definitions; must use references.
--   **Contrast**: Check whether the contrast between text color and background color is sufficient (e.g., white text should not be used on a light gray background).
+### 1. Color System Accuracy
+-   **Visual Consistency**: Does the color system accurately capture ALL main color tones of the original image?
+-   **Completeness**: Are important colors missing? Check primary colors, accent colors, text colors, and background colors separately.
+-   **Contrast**: Is the contrast between text colors and background colors sufficient?
 
-### 2. Layout Logic and Collision Detection (Layout Logic & Collision)
--   **Margin Reasonableness**: Observe the text boundaries in the original image. Are the values of `margins` (top/bottom/left/right) reasonable?
-    -   *Error Example*: Header has a 1.5-inch-high color block, but `margins.top` is only set to 0.5 inches (this will cause body text to overlap the header).
--   **Alignment**: Is the alignment method of `title_position` (left/center) consistent with the original image?
+### 2. Layout Logic and Collision Detection
+-   **Zone Proportions**: Do the described layout zones (title area, content area, footer) match the visual proportions in the image?
+-   **Margin Reasonableness**: Are the margin values reasonable given the decoration elements?
+    -   *Error Example*: Header occupies 25% of height, but content area starts too high and overlaps.
+-   **Alignment**: Is the title alignment consistent with the original image?
 
-### 3. Background Elements Completeness (Background Elements)
--   **Omission Check**: Does the image contain decorative lines, geometric shapes, logos, or watermarks? Are they omitted from the `background_elements` list in the protocol?
--   **Hierarchical Relationship**: Check `z_order`. Background color blocks must be at the bottom layer, decorative lines may be on higher layers.
+### 3. Visual Features & Decoration Completeness
+-   **Omission Check**: Are decoration elements (stripes, bars, geometric shapes, shadows) captured?
+-   **Effect Details**: Are shadow parameters, line styles, opacity values described where visible?
+-   **Component Features**: Are notable UI components (cards, links, special text treatments) captured?
 
-### 4. Typography Rules (Typography)
--   **Hierarchical Distinction**: Is the font size difference between `slide_title` and `body_text` sufficiently obvious? (If the title is clearly much larger in the original image, the protocol cannot differ by only 2pt).
--   **Style Matching**: Is the original image Serif, but the protocol chose Arial (Sans-serif)? This needs to be rejected.
+### 4. Typography Rules
+-   **Hierarchical Distinction**: Is the font size difference between title and body text sufficiently obvious?
+-   **Font Family Matching**: Does the described font family match the visual style (Serif vs Sans-serif)?
+-   **Special Text**: Are link colors, caption styles, or other special text treatments captured?
 
 ## Output Instructions (StyleCritique Format):
 
--   **Approved**: `is_approved = True`. Only when the protocol can perfectly generate a PPT consistent with the original image and without logical errors.
+-   **Approved**: `is_approved = True`. Only when the description can perfectly guide PPT generation consistent with the original image.
 -   **Rejected**: `is_approved = False`.
-    -   In `critique`, you must provide **specific correction parameters**.
+    -   In `critique`, provide **specific corrections** with concrete values.
     -   Don't just say "color is wrong", say "Primary color is too bright, suggest adjusting from #3366FF to #1A2B3C".
-    -   Don't just say "margins have issues", say "Top Margin (0.5) collides with Header element (height 1.0), please increase Top Margin to 1.2".
+    -   Don't just say "layout has issues", say "Title area should occupy 25% of height (about 1.4 inches), not 15%".
 
 Be as rigorous as a compiler and as meticulous as a design director.
 """
@@ -159,54 +132,49 @@ Please execute dual visual and logical audit.
 
 **Input Data:**
 1.  **Reference Image**: Original screenshot of the PPT.
-2.  **Visual Protocol**:
-```json
+2.  **Theme Style Description**:
 {}
-```
 
 **Audit Steps:**
-1.  **Compare**: Are the colors, margins, and font sizes in the protocol visually consistent with the image?
-2.  **Validate**: Are `color_ref` references broken? Will `margins` cause content to be obscured by background elements?
+1.  **Compare**: Are the colors, layout zones, font sizes, and visual effects in the description consistent with the image?
+2.  **Validate**: Are layout zones properly defined? Will content overlap with decoration elements? Are important visual features missing?
 3.  **Judge**:
-    - If serious deviations are found (e.g., missing header, broken color references, margin collisions), please **reject** with corrected values.
-    - If only minor pixel-level errors (e.g., 0.01 inches) but logic is correct, can **approve**.
+    - If serious deviations are found (e.g., missing major color, wrong layout proportions, missing visual effects), please **reject** with specific corrected values.
+    - If only minor pixel-level differences but overall description is faithful, can **approve**.
 """
 
 ANALYZE_STYLE_REFINEMENT_USER_PROMPT = """
-This is a **Design Protocol Debugging and Refinement** task.
-Your job is to perform "minimally invasive surgery" on the existing JSON protocol based on **audit feedback (Critique)**.
+This is a **Theme Style Description Refinement** task.
+Your job is to perform targeted corrections on the existing style description based on **audit feedback (Critique)**.
 
 **Input Data:**
-1.  **Reference Image**: Visual ground truth (Ground Truth).
-2.  **Protocol to be Refined (Draft Protocol)**: See below.
+1.  **Reference Image**: Visual ground truth.
+2.  **Style Description to be Refined**: See below.
 3.  **Audit Comments (Critique)**: See below.
 
 ---
 
-### Draft Protocol to be Refined:
-```json
-{previous_protocol_json}
-```
+### Current Style Description to Refine:
+{previous_protocol_text}
 
 ### Audit Comments (Critique):
 {critique_text}
 
 ---
 
-### Refinement Execution Guidelines (Execution Rules):
+### Refinement Guidelines:
 
-1.  **Lock Architecture (Lock Schema)**:
-    *   **Strictly prohibit modifying data structure**: Must maintain the top-level structure of `color_palette`, `layout_logic`, `background_elements`.
-    *   **Maintain References**: If modifying colors, prioritize adjusting HEX values in `color_palette`, or change element `color_ref` pointing. **Never** directly write HEX values in elements.
+1.  **Maintain Structure**: Keep the same section format (主题名称/整体氛围/色彩系统/字体规范/视觉特征/布局原则/组件特征).
 
-2.  **Targeted Fixes (Targeted Fixes)**:
-    *   If criticism is about **"Color"**: Check whether `color_palette` extraction is accurate, or check element `opacity` (transparency).
-    *   If criticism is about **"Layout Collision"**: Adjust `layout_logic.margins` (increase margins) or `content_area` range to avoid background elements.
-    *   If criticism is about **"Missing"**: Add new geometric shapes in `background_elements`, ensuring correct Z-axis order.
+2.  **Targeted Fixes**:
+    *   If criticism is about **colors**: Adjust the HEX values in 色彩系统, and ensure downstream references remain consistent.
+    *   If criticism is about **layout**: Adjust zone proportions, margins, or element positions in 布局原则.
+    *   If criticism is about **missing elements**: Add the missing items to the appropriate section (视觉特征/组件特征/etc.).
+    *   If criticism is about **typography**: Adjust font families, sizes, or weights in 字体规范.
 
 3.  **Visual Calibration**:
-    *   Audit comments may contain specific numerical suggestions (e.g., "Add 0.5 inches"), please prioritize adopting these values and fine-tune with the image.
+    *   Audit comments may contain specific numerical suggestions (e.g., "increase title area to 25%"), please prioritize adopting these values and fine-tune with the image.
 
 **Output Requirements:**
-Do not output any explanatory text, **only output the corrected, complete JSON object**.
+Output the complete, corrected Theme Style Description in the same section format. Do not output any explanatory text outside of the description itself.
 """
