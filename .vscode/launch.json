@@ -1,21 +1,26 @@
 {
-    // 使用 IntelliSense 了解相关属性。 
-    // 悬停以查看现有属性的描述。
-    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "python current file",
+            "name": "Run SlidesGen Pipeline",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "program": "main.py",
             "args": [
-                "--pdf_path", "assets/Attention.pdf",
-                "--style_image_path", "assets/style_image.png",
+                // [Required] Path to the input academic paper PDF
+                "--pdf_path", "assets/paper.pdf",
+                // [Required] Path to the reference style image for theme extraction
+                "--style_image_path", "assets/ref-style-img.png",
+                // [Optional] Root output directory (default: output/)
                 "--output_dir", "output/",
+                // [Optional] LLM model name (default: gpt-4o)
                 "--model_name", "gpt-4o",
+                // [Optional] Path to local Marker model for PDF parsing (default: models/marker)
                 "--marker_path", "models/marker",
-                "--enhance_marker",
+                // [Optional] Enable debug-level logging
+                // "--verbose",
+                // [Optional] Resume an interrupted session by specifying its thread ID
+                // "--thread_id", "0324_1530",
             ],
             "cwd": "${workspaceFolder}",
             "envFile": "${workspaceFolder}/.env",

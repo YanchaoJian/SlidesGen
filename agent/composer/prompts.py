@@ -109,6 +109,29 @@ You are not a simple code completion tool, you are a **logic transformation engi
     *   Assigning strings to enumeration properties is not allowed.
     *   For example: `line.dash_style` must be assigned `MSO_LINE_DASH_STYLE.DASH`, not `'dash'`.
 
+4.  **Drawing Lines — MSO_SHAPE.LINE and add_connector Are FORBIDDEN**:
+    *   ❌ **Strictly prohibit**: `MSO_SHAPE.LINE` — this enum member does not exist (`AttributeError: LINE`).
+    *   ❌ **Strictly prohibit**: `slide.shapes.add_connector()` — the API signature is complex and error-prone, do NOT use it.
+    *   ✅ **The ONLY correct way** to draw a line is to use a very thin rectangle:
+        ```python
+        # Horizontal line example:
+        line_shape = slide.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE, Inches(0.5), Inches(1.0), Inches(9.0), Inches(0.02)
+        )
+        line_shape.fill.solid()
+        line_shape.fill.fore_color.rgb = RGBColor(0, 0, 0)
+        line_shape.line.fill.background()  # Remove border
+        ```
+
+5.  **Import Everything You Use**:
+    *   Every class and enum used in your code **MUST** be imported at the top of the file.
+    *   Common mistake: using `MSO_SHAPE` without `from pptx.enum.shapes import MSO_SHAPE`.
+    *   If you reference it, you must import it. No exceptions.
+
+6.  **TextFrame Has No `.fill` Attribute**:
+    *   ❌ `text_frame.fill.solid()` will raise `AttributeError`.
+    *   ✅ `.fill` belongs to the **shape** object, not the text frame: `shape.fill.solid()`.
+
 ### 🎨 Visual Safety Guidelines (Visual Safety Guidelines)
 To pass visual review (Visual Critic), please follow:
 1.  **Safe Margins**: Do not place elements tight against edges. Reserve at least **0.5 inches** of page margin.
