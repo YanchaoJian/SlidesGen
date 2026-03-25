@@ -5,7 +5,10 @@ import argparse
 import logging
 import asyncio
 
+from dotenv import load_dotenv
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+
+load_dotenv()
 from workflow.state import initialize_overall_state
 from workflow.graph import build_graph
 
