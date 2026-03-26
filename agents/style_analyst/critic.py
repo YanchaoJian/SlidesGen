@@ -1,5 +1,3 @@
-# file: agent/designer/style_critic.py
-
 from datetime import datetime
 import json
 import logging
@@ -8,8 +6,8 @@ from typing import Tuple
 
 from pydantic import BaseModel, Field
 
-from agent.designer.prompts import STYLE_CRITIC_SYSTEM_PROMPT, STYLE_CRITIC_USER_PROMPT
-from utils.llm_helpers import LLMConfig, create_llm, encode_image_to_base64
+from agents.style_analyst.prompts import STYLE_CRITIC_SYSTEM_PROMPT, STYLE_CRITIC_USER_PROMPT
+from utils.llm import LLMConfig, create_llm, encode_image_to_base64
 
 # 初始化日志记录器
 logger = logging.getLogger(__name__)
@@ -24,7 +22,7 @@ class StyleCritique(BaseModel):
     is_approved: bool = Field(description="If the style description accurately reflects the image's style, this is True. Otherwise, it is False.")
     critique: str = Field(description="A detailed justification for the decision. If approved, explain why. If rejected, provide specific, actionable suggestions for revision.")
 
-def review_visual_protocol(
+def critique_style_protocol(
     output_dir: str,
     image_path: str,
     style_protocol: str,

@@ -318,7 +318,7 @@ class ContentExtractor:
 # ==============================================================================
 # 便捷函数 (用于在 LangGraph Node 中调用)
 # ==============================================================================
-def extract_content(pdf_path: str, marker_path: str, output_dir: str) -> tuple:
+def extract_pdf(pdf_path: str, marker_path: str, output_dir: str) -> tuple:
     """
     顶层便捷函数，实例化 ContentExtractor 并执行提取。
     现在直接提取文字、图片、表格和公式，无需后续 LLM 增强。

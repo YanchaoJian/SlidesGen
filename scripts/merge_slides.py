@@ -5,7 +5,7 @@
 import argparse
 from pathlib import Path
 
-from agent.composer.pptx_renderer import merge_deck
+from agents.composer.pptx_runner import merge_slides as merge_slides_to_deck
 
 
 def merge_slides(result_dir: str, output_dir: str):
@@ -33,7 +33,7 @@ def merge_slides(result_dir: str, output_dir: str):
     final_path = output_dir / "result" / "Final_Presentation.pptx"
     final_path.parent.mkdir(parents=True, exist_ok=True)
     print(f"\nMerging to: {final_path}")
-    merge_deck(code_paths, str(final_path))
+    merge_slides_to_deck(code_paths, str(final_path))
     print(f"Done! Saved to: {final_path}")
 
 

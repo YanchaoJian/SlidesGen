@@ -6,7 +6,7 @@ from typing import Any, Dict, Optional
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from utils.llm_helpers import LLMConfig, create_llm, extract_json_string_from_response
+from utils.llm import LLMConfig, create_llm, extract_json_string
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ def _fix_json_escaping(json_str: str) -> str:
 
 
 
-def enhance_content_with_llm(base_content, output_dir, llm_config: LLMConfig):
+def enhance_tables_and_equations(base_content, output_dir, llm_config: LLMConfig):
     if not llm_config.get("api_key"):
         logger.warning("OpenAI API key not provided, skipping LLM enhancement")
         return base_content
@@ -77,8 +77,8 @@ def _extract_tables_and_equations(llm, full_text: str, output_dir: str) -> Optio
     """
     try:
         # Import special character handling module
-        from utils.text_utils import preprocess_content_for_llm, postprocess_content_from_llm, validate_special_chars_in_output
-        from agent.parser.prompts import EXTRACT_TABLES_AND_EQUATIONS_PROMPT
+        from utils.char_protection import preprocess_content_for_llm, postprocess_content_from_llm, validate_special_chars_in_output
+        from agents.pdf_parser.prompts import EXTRACT_TABLES_AND_EQUATIONS_PROMPT
         
         # Preprocess text to protect special characters
         protected_text = preprocess_content_for_llm(full_text)
@@ -97,7 +97,7 @@ def _extract_tables_and_equations(llm, full_text: str, output_dir: str) -> Optio
         response_text = postprocess_content_from_llm(response_text)
 
         # Extract JSON string, then fix escaping before parsing
-        json_str = extract_json_string_from_response(response_text)
+        json_str = extract_json_string(response_text)
         if not json_str:
             logger.warning("Failed to extract JSON string from LLM response")
             return None

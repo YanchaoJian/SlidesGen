@@ -6,9 +6,9 @@ from typing import Optional, Dict, Any
 
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from agent.evaluator.prompts import VISUAL_CRITIQUE_SYSTEM_PROMPT, VISUAL_CRITIQUE_USER_PROMPT
-from utils.image_utils import pptx_to_images
-from utils.llm_helpers import LLMConfig, create_llm, encode_image_to_base64, extract_json_from_response
+from agents.slide_critic.prompts import VISUAL_CRITIQUE_SYSTEM_PROMPT, VISUAL_CRITIQUE_USER_PROMPT
+from utils.pptx_imaging import pptx_to_images
+from utils.llm import LLMConfig, create_llm, encode_image_to_base64, parse_json_response
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ def evaluate_and_critique_slide(
             response_content = response.content.strip()
 
             # --- 从字符串解析 JSON ---
-            critique_data = extract_json_from_response(response_content)
+            critique_data = parse_json_response(response_content)
             if critique_data is None:
                 return f"CRITICAL FORMAT ERROR: LLM did not return valid JSON. Raw response: {response_content}"
 

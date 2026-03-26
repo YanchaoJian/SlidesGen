@@ -27,8 +27,8 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from dotenv import load_dotenv
 
-from agent.composer.layout_engine import generate_layout_directive
-from utils.llm_helpers import LLMConfig
+from agents.layout_planner.directive_generator import generate_layout_directive
+from utils.llm import LLMConfig
 
 logging.basicConfig(
     level=logging.INFO,

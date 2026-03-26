@@ -43,7 +43,7 @@ def encode_image_to_base64(image_path: str) -> str:
         raise
 
 
-def extract_json_string_from_response(response_text: str) -> Optional[str]:
+def extract_json_string(response_text: str) -> Optional[str]:
     """
     从 LLM 返回的文本中提取 JSON 字符串（不解析）。
 
@@ -100,14 +100,14 @@ def extract_json_string_from_response(response_text: str) -> Optional[str]:
     return json_str
 
 
-def extract_json_from_response(response_text: str) -> Optional[Dict[str, Any]]:
+def parse_json_response(response_text: str) -> Optional[Dict[str, Any]]:
     """
     从 LLM 返回的文本中提取并解析 JSON 对象。
 
     Returns:
         解析后的字典/列表，如果失败则返回 None。
     """
-    json_str = extract_json_string_from_response(response_text)
+    json_str = extract_json_string(response_text)
     if json_str is None:
         return None
 

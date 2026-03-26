@@ -19,8 +19,8 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from dotenv import load_dotenv
 
-from agent.designer.style_analyzer import analyze_style
-from utils.llm_helpers import LLMConfig
+from agents.style_analyst.analyzer import analyze_style
+from utils.llm import LLMConfig
 
 logging.basicConfig(
     level=logging.INFO,

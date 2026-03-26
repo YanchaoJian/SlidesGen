@@ -4,17 +4,17 @@ from typing import Any, Dict
 
 from langchain_core.runnables import RunnableConfig
 
-from workflow.feedback_router import analyze_feedback_with_llm
-from agent.parser.pdf_extractor import extract_content
-from agent.parser.content_enhancer import enhance_content_with_llm
-from agent.designer.style_analyzer import analyze_style
-from agent.designer.style_critic import review_visual_protocol
-from agent.planner.slides_planner import generate_presentation_plan
-from agent.composer.layout_engine import generate_layout_directive
-from agent.composer.code_generator import generate_slide_code
-from agent.composer.pptx_renderer import merge_deck, run_script
-from agent.evaluator.visual_critic import evaluate_and_critique_slide
-from utils.llm_helpers import LLMConfig
+from workflow.feedback_router import analyze_feedback
+from agents.pdf_parser.extractor import extract_pdf
+from agents.pdf_parser.fallback_enhancer import enhance_tables_and_equations
+from agents.style_analyst.analyzer import analyze_style
+from agents.style_analyst.critic import critique_style_protocol
+from agents.planner.planner import plan_presentation
+from agents.layout_planner.directive_generator import generate_layout_directive
+from agents.composer.code_generator import generate_slide_code
+from agents.composer.pptx_runner import merge_slides, execute_slide_script
+from agents.slide_critic.critic import evaluate_and_critique_slide
+from utils.llm import LLMConfig
 from workflow.state import OverallState, SlideState
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ def extract_content_from_pdf_node(state: OverallState, config: RunnableConfig) -
     logger.info("--- NODE: ExtractContentFromPDF ---")
     config = config["configurable"]
     
-    base_content, _, _ = extract_content(
+    base_content, _, _ = extract_pdf(
         pdf_path=config["pdf_path"], 
         marker_path=config["marker_path"],
         output_dir=config["output_dir"]
@@ -67,7 +67,7 @@ def enhance_content_node(state: OverallState, config: RunnableConfig) -> Dict[st
     # 仅当 Marker 未提取到表格/公式且配置了增强时，才使用 LLM 补充
     if config.get("enhance_marker"):
         logger.info("   -> No tables/equations from Marker, falling back to LLM enhancement...")
-        enhanced_content = enhance_content_with_llm(
+        enhanced_content = enhance_tables_and_equations(
             base_content=content,
             output_dir=config["output_dir"],
             llm_config=_get_llm_config(config),
@@ -110,7 +110,7 @@ def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Di
         logger.warning(f"   -> ⚠️ Style check retry limit ({retry_count}) reached. Forcing approval to avoid infinite loop.")
         return {"style_review": {"verified": True, "retry_count": retry_count, "critique": "Exceeded retry limit, auto-approved."}}
 
-    verified, critique = review_visual_protocol(
+    verified, critique = critique_style_protocol(
         style_protocol=state["style_protocol"],
         output_dir=config["output_dir"],
         image_path=config["style_image_path"],
@@ -133,7 +133,7 @@ def generate_presentation_plan_node(state: OverallState, config: RunnableConfig)
     config = config["configurable"]
     review = state.get("plan_review", {})
 
-    paper_main_content, presentation_plan = generate_presentation_plan(
+    paper_main_content, presentation_plan = plan_presentation(
         previous_main_content=state.get("main_content"),
         previous_plan=state.get("presentation_plan"),
         user_feedback_plan=review.get("critique"),
@@ -249,7 +249,7 @@ def check_code_execution_node(state: SlideState, config: RunnableConfig) -> Dict
         return {"code_review": {"verified": False, "retry_count": 0, "critique": f"Code file not found: {code_path}"}, "error_log": f"Code file not found: {code_path}"}
 
     logger.info(f"   -> Executing Python script: {code_path}")
-    success, exec_error = run_script(code_path)
+    success, exec_error = execute_slide_script(code_path)
 
     code_review = state.get("code_review", {})
     retry_count = code_review.get("retry_count", 0)
@@ -318,7 +318,7 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
         return {"final_pptx_path": None}
     
     final_path = os.path.join(config["output_dir"], "result", "Final_Presentation.pptx")
-    merge_deck(slide_paths, final_path)
+    merge_slides(slide_paths, final_path)
     
     logger.info(f"   -> ✅ Merged {len(slide_paths)} slides into {final_path}")
     return {"final_pptx_path": final_path}
@@ -348,7 +348,7 @@ def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict
         return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": None}}
 
     logger.info("   -> User provided feedback for final revision. Analyzing feedback...")
-    analysis_result = analyze_feedback_with_llm(
+    analysis_result = analyze_feedback(
         user_input=user_input,
         slide_count=len(slides_plan or []),
         llm_config=_get_llm_config(config),

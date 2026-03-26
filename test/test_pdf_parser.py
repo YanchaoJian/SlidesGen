@@ -14,7 +14,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
 
-from agent.parser.pdf_extractor import extract_content
+from agents.pdf_parser.extractor import extract_pdf
 
 # 所有路径基于项目根目录
 PDF_PATH = os.path.join(PROJECT_ROOT, "assets", "Attention.pdf")
@@ -29,7 +29,7 @@ def main():
 
     print(f"=== Testing PDF extraction: {PDF_PATH} ===\n")
 
-    content, output_file, img_dir = extract_content(PDF_PATH, MARKER_PATH, OUTPUT_DIR)
+    content, output_file, img_dir = extract_pdf(PDF_PATH, MARKER_PATH, OUTPUT_DIR)
 
     if content is None:
         print("Extraction failed!")
