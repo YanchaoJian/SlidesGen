@@ -26,9 +26,9 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from dotenv import load_dotenv
 
-from agent.designer.style_analyzer import analyze_style
-from agent.designer.style_critic import review_visual_protocol
-from utils.llm_helpers import LLMConfig
+from agents.style_analyst.analyzer import analyze_style
+from agents.style_analyst.critic import critique_style_protocol
+from utils.llm import LLMConfig
 
 logging.basicConfig(
     level=logging.INFO,
@@ -123,7 +123,7 @@ def main():
     print("测试 1: 审查风格描述 (review_visual_protocol)")
     print("=" * 60)
 
-    is_approved, critique = review_visual_protocol(
+    is_approved, critique = critique_style_protocol(
         output_dir=output_dir,
         image_path=image_path,
         style_protocol=style_text,
@@ -181,7 +181,7 @@ No decoration elements.
 - **Body Text**: Comic Sans MS, 10pt, Text Dark color, line spacing 1.0, no bullets.
 """
 
-    is_approved_bad, critique_bad = review_visual_protocol(
+    is_approved_bad, critique_bad = critique_style_protocol(
         output_dir=output_dir,
         image_path=image_path,
         style_protocol=bad_style_text,

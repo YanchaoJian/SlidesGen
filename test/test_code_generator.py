@@ -25,8 +25,8 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from dotenv import load_dotenv
 
-from agent.composer.code_generator import generate_slide_code
-from utils.llm_helpers import LLMConfig
+from agents.composer.code_generator import generate_slide_code
+from utils.llm import LLMConfig
 
 logging.basicConfig(
     level=logging.INFO,

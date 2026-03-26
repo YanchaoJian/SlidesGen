@@ -2,8 +2,8 @@ import logging
 from typing import Dict, Any, Optional, List, Literal
 from pydantic import BaseModel, Field, model_validator
 
-from agent.evaluator.prompts import FEEDBACK_ANALYSIS_SYSTEM_PROMPT, FEEDBACK_ANALYSIS_USER_TEMPLATE
-from utils.llm_helpers import LLMConfig, create_llm
+from workflow.prompts import FEEDBACK_ANALYSIS_SYSTEM_PROMPT, FEEDBACK_ANALYSIS_USER_TEMPLATE
+from utils.llm import LLMConfig, create_llm
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class FeedbackAnalysis(BaseModel):
             self.target_pages = []
         return self
 
-def analyze_feedback_with_llm(
+def analyze_feedback(
     user_input: str,
     slide_count: int,
     llm_config: LLMConfig,

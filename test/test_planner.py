@@ -24,8 +24,8 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from dotenv import load_dotenv
 
-from agent.planner.slides_planner import generate_presentation_plan
-from utils.llm_helpers import LLMConfig
+from agents.planner.planner import plan_presentation
+from utils.llm import LLMConfig
 
 logging.basicConfig(
     level=logging.INFO,
@@ -103,9 +103,9 @@ def load_content(args) -> dict:
             logger.error(f"PDF 文件不存在: {pdf_path}")
             sys.exit(1)
         logger.info(f"从 PDF 提取内容: {pdf_path}")
-        from agent.parser.pdf_extractor import extract_content
+        from agents.pdf_parser.extractor import extract_pdf
         output_dir = str(ROOT_DIR / args.output_dir)
-        base_content, _, _ = extract_content(pdf_path=pdf_path, marker_path=marker_path, output_dir=output_dir)
+        base_content, _, _ = extract_pdf(pdf_path=pdf_path, marker_path=marker_path, output_dir=output_dir)
         if not base_content:
             logger.error("PDF 内容提取失败")
             sys.exit(1)
@@ -131,10 +131,10 @@ def main():
 
     # ── 测试 1: 首次生成大纲 ─────────────────────────────────
     print("\n" + "=" * 60)
-    print("测试 1: 首次生成演示大纲 (generate_presentation_plan)")
+    print("测试 1: 首次生成演示大纲 (plan_presentation)")
     print("=" * 60)
 
-    result = generate_presentation_plan(
+    result = plan_presentation(
         previous_main_content=None,
         previous_plan=None,
         user_feedback_plan=None,
@@ -146,7 +146,7 @@ def main():
     )
 
     if result is None or result == (None, None):
-        logger.error("❌ 测试 1 失败: generate_presentation_plan 返回 None")
+        logger.error("❌ 测试 1 失败: plan_presentation 返回 None")
         sys.exit(1)
 
     paper_main_content, presentation_plan = result
@@ -195,7 +195,7 @@ def main():
         "3. 缺少消融实验的页面，请在实验结果后增加。"
     )
 
-    refined_result = generate_presentation_plan(
+    refined_result = plan_presentation(
         previous_main_content=paper_main_content,
         previous_plan=presentation_plan,
         user_feedback_plan=mock_feedback,

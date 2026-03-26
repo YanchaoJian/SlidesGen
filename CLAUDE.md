@@ -10,12 +10,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Environment Setup
 
-```bash
-# Install dependencies (project uses uv package manager)
-uv pip install -e .
+- **Python**: 3.11+ required
+- **Conda env**: `slides-gen` (`conda activate slides-gen`)
 
-# Or with pip
-pip install -e .
+```bash
+# Install dependencies
+pip install -r requirements.txt
 ```
 
 ### Required Environment Variables
@@ -51,7 +51,7 @@ python main.py --pdf_path paper.pdf --style_image_path style.png --thread_id 032
 python -m pytest test/
 
 # Run specific test
-python test/test_slides_planner.py
+python test/test_planner.py
 ```
 
 ### Utility Scripts
@@ -77,7 +77,9 @@ Pipeline B (Content): extract_pdf → enhance → plan → review ────�
                                                                                     Human-in-the-loop checkpoints
 ```
 
-`dispatch_slide_tasks` is a no-op fan-out node (`lambda state: {}`). Its outgoing conditional edge (`map_slides_to_tasks`) dispatches parallel `Send("generate_single_slide", ...)` tasks.
+`dispatch_slide_tasks` is a no-op fan-out node (`lambda state: {}`). Its outgoing conditional edge (`map_slides_to_tasks`) dispatches parallel `Send("generate_single_slide", ...)` tasks. Max concurrency is 4 (hardcoded in `main.py`).
+
+The entire workflow is **async** — entry point uses `asyncio.run()`, checkpointing uses `AsyncSqliteSaver`, and streaming uses `astream()`.
 
 ### Slide Subgraph (per slide, runs in parallel)
 
@@ -105,11 +107,16 @@ Two TypedDict state classes control data flow:
 
 | Module | Purpose | Key Files |
 |--------|---------|-----------|
-| `agent/parser` | PDF content extraction via Marker model | `pdf_extractor.py`, `content_enhancer.py` |
-| `agent/designer` | Visual style analysis from reference image | `style_analyzer.py`, `style_critic.py` |
-| `agent/planner` | Presentation outline generation | `slides_planner.py` |
-| `agent/composer` | Slide layout and code generation | `layout_engine.py`, `code_generator.py`, `pptx_renderer.py` |
-| `agent/evaluator` | Visual quality critique | `visual_critic.py` |
+| `agents/pdf_parser` | PDF content extraction via Marker model | `extractor.py`, `fallback_enhancer.py` |
+| `agents/style_analyst` | Visual style analysis and critique from reference image | `analyzer.py`, `critic.py` |
+| `agents/planner` | Presentation outline generation | `planner.py` |
+| `agents/layout_planner` | Per-slide layout strategy and directive generation | `directive_generator.py` |
+| `agents/composer` | Slide code generation and PPTX execution/merging | `code_generator.py`, `pptx_runner.py` |
+| `agents/slide_critic` | Visual quality critique | `critic.py` |
+
+### Node Configuration Injection
+
+All nodes receive a `RunnableConfig` and extract settings via `config["configurable"]`, which carries: `pdf_path`, `style_image_path`, `output_dir`, `model_name`, `api_key`, `base_url`, `marker_path`, `enhance_marker`, `verbose`. Helper `_get_llm_config(configurable)` builds `LLMConfig` from this dict.
 
 ### Review Cycles
 
@@ -122,10 +129,10 @@ class ReviewCycle(TypedDict):
     critique: Optional[str]
 ```
 
-Retry limits:
-- Style protocol: 2 retries max
-- Code execution: 3 retries max
-- Design check: 3 retries max
+Retry limits (0-based counter, fails when `retry_count >= N`):
+- Style protocol: 2 (up to 3 attempts)
+- Code execution: 3 (up to 4 attempts)
+- Design check: 3 (up to 4 attempts)
 
 ### Human-in-the-Loop (HITL)
 
@@ -134,7 +141,7 @@ Two interactive checkpoints require user input:
 1. **Plan Review** (`review_plan_node`): User approves/revises presentation outline
 2. **Final PPTX Review** (`review_pptx_design_node`): User approves final output or requests refinements
 
-Feedback routing uses `analyze_feedback_with_llm()` in `workflow/feedback_router.py`, which returns a `FeedbackAnalysis` Pydantic model with:
+Feedback routing uses `analyze_feedback()` in `workflow/feedback_router.py`, which returns a `FeedbackAnalysis` Pydantic model with:
 - `scope`: one of `"local"`, `"global_style"`, `"global_plan"`, `"ambiguous"`
 - `target_pages`: list of slide page numbers (only populated when `scope == "local"`)
 
@@ -155,7 +162,7 @@ Routing based on scope:
 All LLM calls use `LLMConfig` TypedDict for consistent configuration:
 
 ```python
-from utils.llm_helpers import LLMConfig, create_llm
+from utils.llm import LLMConfig, create_llm
 
 config = LLMConfig(model_name="gpt-4o", api_key="...", base_url="...")
 llm = create_llm(config, temperature=0.0)
@@ -181,15 +188,16 @@ output/
 
 ### Session Resumption
 
-Use `--thread_id` to resume interrupted workflows. Checkpoints are stored in `checkpoints/checkpoints.sqlite`. The session ID format is `MMDD_HHMM` (auto-generated from run start time).
+Use `--thread_id` to resume interrupted workflows. Checkpoints are stored in `checkpoints/checkpoints.sqlite`. The session ID format is `MMDD_HHMM` (auto-generated from run start time). When resuming, `initial_state` is `None` — the graph resumes from its SQLite checkpoint, not from a fresh state.
 
 ## Dependencies
 
-Core libraries:
-- **langchain/langgraph**: Workflow orchestration
+See `requirements.txt` (no version pinning). Core libraries:
+- **langchain/langgraph**: Workflow orchestration (async)
 - **python-pptx**: PowerPoint generation
-- **marker**: PDF parsing (layout, OCR, equations, tables)
+- **marker-pdf**: PDF parsing (layout, OCR, equations, tables)
 - **langchain_openai**: LLM interface
+- **matplotlib**: Used in generated slide code execution
 
 ## Common Issues
 

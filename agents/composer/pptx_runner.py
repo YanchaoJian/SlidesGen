@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 # 核心工具函数
 # ==============================================================================
 
-def run_script(
+def execute_slide_script(
     script_path: str,
     timeout: int = 12
 ) -> Tuple[bool, str]:
@@ -56,7 +56,7 @@ def run_script(
         return False, exec_err_msg
 
 
-def merge_deck(code_paths: list, output_path: str):
+def merge_slides(code_paths: list, output_path: str):
     """
     通过动态加载各 slide 的 add_slide(prs) 函数，
     将所有页面追加到同一个 Presentation 对象中，最终保存为一个完整的 PPTX。

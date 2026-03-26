@@ -5,19 +5,19 @@ from typing import Dict, Any, Optional
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from agent.planner.prompts import (
+from agents.planner.prompts import (
     MAIN_CONTENT_EXTRACTION,
     SLIDES_PLANNING,
     INITIAL_GENERATION_INSTRUCTION,
     REFINEMENT_BLOCK_TEMPLATE
 )
-from utils.llm_helpers import LLMConfig, create_llm, extract_json_from_response
+from utils.llm import LLMConfig, create_llm, parse_json_response
 
 
 logger = logging.getLogger(__name__)
 
 
-def _extract_main_content(llm, enhanced_content: Dict[str, Any]) -> Dict[str, Any]:
+def _extract_paper_content(llm, enhanced_content: Dict[str, Any]) -> Dict[str, Any]:
     """[第二步] 提取关键内容，如图表、公式和核心论点。"""
     logger.info("   Planner Step 1/2: Extracting main content...")
     try:
@@ -31,7 +31,7 @@ def _extract_main_content(llm, enhanced_content: Dict[str, Any]) -> Dict[str, An
             "equations_info": json.dumps(enhanced_content.get("equations"), ensure_ascii=False),
         })
         response_text = response.content
-        return extract_json_from_response(response_text) or {}
+        return parse_json_response(response_text) or {}
     except Exception as e:
         logger.warning(f"Could not extract key content: {e}")
         return {}
@@ -103,13 +103,13 @@ def _plan_slides(
         })
 
         response_text = response.content
-        return extract_json_from_response(response_text)
+        return parse_json_response(response_text)
 
     except Exception as e:
         logger.error(f"Could not plan slides: {e}", exc_info=True)
         return None
 
-def generate_presentation_plan(
+def plan_presentation(
     previous_main_content: Optional[Dict[str, Any]],
     previous_plan: Optional[Dict[str, Any]],
     user_feedback_plan: Optional[str],
@@ -145,7 +145,7 @@ def generate_presentation_plan(
         paper_main_content = previous_main_content
     else:
         logger.info("Extracting main content from enhanced content.")
-        paper_main_content = _extract_main_content(llm, content)
+        paper_main_content = _extract_paper_content(llm, content)
         paper_main_content_path = os.path.join(plan_dir, f"paper_main_content.json")
         with open(paper_main_content_path, "w", encoding='utf-8') as f:
             json.dump(paper_main_content, f, indent=2, ensure_ascii=False)
