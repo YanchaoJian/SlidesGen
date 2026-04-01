@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **SlidesGen** - AI-powered PowerPoint presentation generator from academic PDF papers using multi-agent workflows.
 
+Pipeline: PDF → Content Extraction → Plan → LLM generates SVG → SVG validation & finalize → SVG→DrawingML → editable PPTX.
+
 ## Quick Start
 
 ### Environment Setup
@@ -37,7 +39,6 @@ python main.py --pdf_path path/to/paper.pdf --style_image_path path/to/style.png
 python main.py --pdf_path paper.pdf --style_image_path style.png \
     --model_name gpt-4o \
     --output_dir output \
-    --enhance_marker \
     --verbose
 
 # Resume interrupted session
@@ -60,7 +61,7 @@ python test/test_planner.py
 # Visualize the LangGraph workflow as a PNG
 python scripts/visualize_workflow.py
 
-# Manually merge individual slide PPTX files into one deck
+# Manually merge individual slide SVG files into one PPTX deck
 python scripts/merge_slides.py
 ```
 
@@ -73,7 +74,7 @@ The system uses a state-machine workflow with two parallel pipelines that conver
 ```
 Pipeline A (Style): analyze_image_style → check_style_protocol ─┐
                                                                  ├→ dispatch_slide_tasks → merge → review
-Pipeline B (Content): extract_pdf → enhance → plan → review ────┘                              |
+Pipeline B (Content): extract_pdf → plan → review ──────────────┘                              |
                                                                                     Human-in-the-loop checkpoints
 ```
 
@@ -84,10 +85,10 @@ The entire workflow is **async** — entry point uses `asyncio.run()`, checkpoin
 ### Slide Subgraph (per slide, runs in parallel)
 
 ```
-generate_code_directive → generate_slide_code → check_code_execution ─┐
-                                      ^                                ├→ check_slide_design → END
-                                      └──────────── retry (max 3) ────┘        |
-                                                                                └── retry (max 3)
+generate_slide_svg → check_svg_execution ─┐
+        ^                                  ├→ check_slide_design → END
+        └──────────── retry (max 3) ──────┘        |
+                                                    └── retry (max 3)
 ```
 
 Each slide runs as an independent `SlideState` subgraph compiled by `build_slide_subgraph()` in `workflow/graph.py`.
@@ -107,16 +108,24 @@ Two TypedDict state classes control data flow:
 
 | Module | Purpose | Key Files |
 |--------|---------|-----------|
-| `agents/pdf_parser` | PDF content extraction via Marker model | `extractor.py`, `fallback_enhancer.py` |
+| `agents/pdf_parser` | PDF content extraction via Marker model + multimodal image orientation fix | `extractor.py`, `image_orientation.py` |
 | `agents/style_analyst` | Visual style analysis and critique from reference image | `analyzer.py`, `critic.py` |
 | `agents/planner` | Presentation outline generation | `planner.py` |
-| `agents/layout_planner` | Per-slide layout strategy and directive generation | `directive_generator.py` |
-| `agents/composer` | Slide code generation and PPTX execution/merging | `code_generator.py`, `pptx_runner.py` |
-| `agents/slide_critic` | Visual quality critique | `critic.py` |
+| `agents/composer` | SVG generation, validation, finalization, and PPTX assembly | `svg_generator.py`, `svg_runner.py`, `svg_converter/` |
+| `agents/slide_critic` | Visual quality critique (SVG→PPTX→screenshot→multimodal LLM review) | `critic.py` |
+
+### SVG Pipeline Details
+
+The composer module uses a multi-stage SVG pipeline:
+
+1. **SVG Generation** (`svg_generator.py`): LLM generates SVG source code from slide plan + style protocol
+2. **SVG Validation** (`svg_runner.py:validate_svg`): Checks for 15 banned SVG features (clipPath, mask, `<style>`, class, foreignObject, etc.)
+3. **SVG Finalize** (`svg_converter/svg_finalize/`): 4-step post-processing — `fix_image_aspect` → `embed_images` → `flatten_tspan` → `svg_rect_to_path`
+4. **SVG→PPTX** (`svg_converter/svg_to_pptx/`): Converts SVG elements to native DrawingML XML, producing editable PowerPoint shapes
 
 ### Node Configuration Injection
 
-All nodes receive a `RunnableConfig` and extract settings via `config["configurable"]`, which carries: `pdf_path`, `style_image_path`, `output_dir`, `model_name`, `api_key`, `base_url`, `marker_path`, `enhance_marker`, `verbose`. Helper `_get_llm_config(configurable)` builds `LLMConfig` from this dict.
+All nodes receive a `RunnableConfig` and extract settings via `config["configurable"]`, which carries: `pdf_path`, `style_image_path`, `output_dir`, `model_name`, `api_key`, `base_url`, `marker_path`, `verbose`. Helper `_get_llm_config(configurable)` builds `LLMConfig` from this dict.
 
 ### Review Cycles
 
@@ -131,7 +140,7 @@ class ReviewCycle(TypedDict):
 
 Retry limits (0-based counter, fails when `retry_count >= N`):
 - Style protocol: 2 (up to 3 attempts)
-- Code execution: 3 (up to 4 attempts)
+- SVG execution: 3 (up to 4 attempts)
 - Design check: 3 (up to 4 attempts)
 
 ### Human-in-the-Loop (HITL)
@@ -150,10 +159,6 @@ Routing based on scope:
 - `global_plan` → Regenerate presentation plan
 - `local` → Regenerate specific slides only
 - `ambiguous` → Workflow ends (user prompted implicitly)
-
-### Content Enhancement (`--enhance_marker`)
-
-`enhance_content_node` checks if Marker already extracted tables or equations. If it did, the LLM enhancement step is skipped entirely. The `--enhance_marker` flag only activates LLM-based content enhancement as a fallback when Marker extracts *no* tables and *no* equations.
 
 ## Key Conventions
 
@@ -178,8 +183,7 @@ output/
     ├── style/              # Style protocols and critiques
     ├── result/             # Generated slides
     │   ├── slide_01/       # Per-slide outputs
-    │   │   ├── code_v*.py
-    │   │   ├── directive.txt
+    │   │   ├── slide_v*.svg
     │   │   └── slide_critique.json
     │   └── Final_Presentation.pptx
     ├── checkpoints/        # LangGraph checkpoint SQLite
@@ -194,10 +198,9 @@ Use `--thread_id` to resume interrupted workflows. Checkpoints are stored in `ch
 
 See `requirements.txt` (no version pinning). Core libraries:
 - **langchain/langgraph**: Workflow orchestration (async)
-- **python-pptx**: PowerPoint generation
+- **python-pptx**: PowerPoint generation (used by SVG→DrawingML converter)
 - **marker-pdf**: PDF parsing (layout, OCR, equations, tables)
 - **langchain_openai**: LLM interface
-- **matplotlib**: Used in generated slide code execution
 
 ## Common Issues
 

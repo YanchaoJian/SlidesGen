@@ -7,7 +7,6 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 
 from workflow.state import OverallState, SlideState, initialize_slide_state
 from workflow.nodes import (
-    enhance_content_node,
     extract_content_from_pdf_node,
     analyze_image_style_node,
     check_style_protocol_node,
@@ -15,10 +14,9 @@ from workflow.nodes import (
     merge_slides_to_deck_node,
     review_pptx_design_node,
     review_plan_node,
-    generate_code_directive_node, 
-    generate_slide_code_node,
-    check_code_execution_node,
-    check_slide_design_node
+    generate_slide_svg_node,
+    check_svg_execution_node,
+    check_slide_design_node,
 )
 
 
@@ -66,21 +64,21 @@ def route_pptx_design_review(state: OverallState) -> Literal["analyze_image_styl
         logger.info("🤔 User feedback was ambiguous or empty. Ending review cycle.")
         return "END"
 
-def route_code_execution_check(state: SlideState):
-    """路由：代码执行检查"""
+def route_svg_execution_check(state: SlideState):
+    """路由：SVG 验证+后处理检查"""
     slide_page = state.get('slide_page')
-    code_review = state.get("code_review", {})
-    if code_review.get("verified"):
-        logger.info(f"🔀 [Slide {slide_page}] Code executed successfully. Proceeding to slide design check.")
+    svg_review = state.get("svg_review", {})
+    if svg_review.get("verified"):
+        logger.info(f"🔀 [Slide {slide_page}] SVG validated successfully. Proceeding to slide design check.")
         return "check_slide_design"
 
-    retry_count = code_review.get("retry_count", 0)
+    retry_count = svg_review.get("retry_count", 0)
     if retry_count >= 3:
-        logger.warning(f"⚠️ [Slide {slide_page}] Code execution failed after {retry_count} retries. Aborting this slide.")
+        logger.warning(f"⚠️ [Slide {slide_page}] SVG validation failed after {retry_count} retries. Aborting this slide.")
         return END
 
-    logger.info(f"🔀 [Slide {slide_page}] Code execution failed. Routing back to code generation for fixes (Attempt {retry_count + 1}).")
-    return "generate_slide_code"
+    logger.info(f"🔀 [Slide {slide_page}] SVG validation failed. Routing back to SVG generation for fixes (Attempt {retry_count + 1}).")
+    return "generate_slide_svg"
 
 def route_slide_design_check(state: SlideState):
     """路由：设计质量检查"""
@@ -95,8 +93,8 @@ def route_slide_design_check(state: SlideState):
         logger.warning(f"⚠️ [Slide {slide_page}] Design check failed after {retry_count} retries. Accepting the last generated version to ensure output.")
         return END
 
-    logger.info(f"🔀 [Slide {slide_page}] Design not verified. Routing to code generation for refinements (Attempt {retry_count + 1}).")
-    return "generate_slide_code"
+    logger.info(f"🔀 [Slide {slide_page}] Design not verified. Routing to SVG generation for refinements (Attempt {retry_count + 1}).")
+    return "generate_slide_svg"
 # ==============================================================================
 # 2. Map-Reduce 逻辑
 # ==============================================================================
@@ -138,32 +136,30 @@ def map_slides_to_tasks(state: OverallState):
 # 3. 图构建函数 (Graph Builder)
 # ==============================================================================
 def build_slide_subgraph():
-    """构建单个 slide 的生成子图"""
+    """构建单个 slide 的生成子图（SVG 管线）"""
     slide_subgraph = StateGraph(SlideState)
-    
-    # 子图节点
-    slide_subgraph.add_node("generate_code_directive", generate_code_directive_node)
-    slide_subgraph.add_node("generate_slide_code", generate_slide_code_node)
-    slide_subgraph.add_node("check_code_execution", check_code_execution_node)
-    slide_subgraph.add_node("check_slide_design", check_slide_design_node) 
 
-    # 子图流程
-    slide_subgraph.add_edge(START, "generate_code_directive")
-    slide_subgraph.add_edge("generate_code_directive", "generate_slide_code")
-    slide_subgraph.add_edge("generate_slide_code", "check_code_execution")
-    
-    # 代码执行检查后的路由
-    slide_subgraph.add_conditional_edges("check_code_execution", route_code_execution_check, {
+    # 子图节点
+    slide_subgraph.add_node("generate_slide_svg", generate_slide_svg_node)
+    slide_subgraph.add_node("check_svg_execution", check_svg_execution_node)
+    slide_subgraph.add_node("check_slide_design", check_slide_design_node)
+
+    # 子图流程: START → generate_slide_svg → check_svg_execution → (route)
+    slide_subgraph.add_edge(START, "generate_slide_svg")
+    slide_subgraph.add_edge("generate_slide_svg", "check_svg_execution")
+
+    # SVG 验证+后处理检查后的路由
+    slide_subgraph.add_conditional_edges("check_svg_execution", route_svg_execution_check, {
             "check_slide_design": "check_slide_design",
-            "generate_slide_code": "generate_slide_code",
-            END: END
+            "generate_slide_svg": "generate_slide_svg",
+            END: END,
         }
     )
-    
+
     # 设计质量检查后的路由
     slide_subgraph.add_conditional_edges("check_slide_design", route_slide_design_check, {
-            "generate_slide_code": "generate_slide_code",
-            END: END
+            "generate_slide_svg": "generate_slide_svg",
+            END: END,
         }
     )
 
@@ -175,7 +171,6 @@ def build_graph(checkpointer: BaseCheckpointSaver):
 
     # --- 节点定义 ---
     workflow.add_node("extract_content_from_pdf", extract_content_from_pdf_node)
-    workflow.add_node("enhance_content", enhance_content_node)
 
     workflow.add_node("analyze_image_style", analyze_image_style_node)
     workflow.add_node("check_style_protocol", check_style_protocol_node)
@@ -191,8 +186,7 @@ def build_graph(checkpointer: BaseCheckpointSaver):
 
     # --- 边与流程拓扑定义 ---
     workflow.add_edge(START, "extract_content_from_pdf")
-    workflow.add_edge("extract_content_from_pdf", "enhance_content")
-    workflow.add_edge("enhance_content", "generate_presentation_plan")
+    workflow.add_edge("extract_content_from_pdf", "generate_presentation_plan")
     workflow.add_edge("generate_presentation_plan", "review_plan")
     workflow.add_conditional_edges("review_plan", route_presentation_plan_review, {
         "generate_presentation_plan": "generate_presentation_plan",
