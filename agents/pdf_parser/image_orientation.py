@@ -37,7 +37,7 @@ def _build_orientation_grid(image_obj: Image.Image) -> Image.Image:
 
     max_w = max(v.size[0] for _, v in variants)
     max_h = max(v.size[1] for _, v in variants)
-    cell_size = min(max(max_w, max_h), 800)
+    cell_size = min(max(max_w, max_h), 1600)
     padding = 10
     label_h = 40
 
@@ -81,6 +81,9 @@ def fix_image_orientation(image_obj: Image.Image, client: OpenAI, model: str = "
     构建 4 方向网格图让模型对比选择，返回修正后的图片。
     如果模型判断原图方向正确或调用失败，返回原图。
 
+    为提高稳定性，采用 3 次投票机制（temperature=0.2），
+    并增强 prompt 以抑制默认选 A 的偏差。
+
     Args:
         image_obj: 待检测的 PIL Image 对象。
         client: OpenAI 客户端实例。
@@ -96,16 +99,22 @@ def fix_image_orientation(image_obj: Image.Image, client: OpenAI, model: str = "
         grid.save(buf, format="JPEG")
         b64 = base64.b64encode(buf.getvalue()).decode()
 
+        enhanced_prompt = (
+            IMAGE_ORIENTATION_PROMPT
+            + "\n\nDo not default to A. Carefully compare all four versions before choosing."
+        )
+
         response = client.chat.completions.create(
             model=model,
             messages=[{
                 "role": "user",
                 "content": [
                     {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}},
-                    {"type": "text", "text": IMAGE_ORIENTATION_PROMPT},
+                    {"type": "text", "text": enhanced_prompt},
                 ],
             }],
-            max_tokens=10,
+            max_completion_tokens=10,
+            temperature=0.2,
         )
         answer = response.choices[0].message.content.strip().strip("'\"").upper()
 

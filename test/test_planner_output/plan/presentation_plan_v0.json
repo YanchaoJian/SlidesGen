@@ -1,0 +1,210 @@
+[
+  {
+    "slide_page": 1,
+    "title": "Background: Sequence Transduction Models",
+    "content": [
+      "Sequence transduction models are essential for tasks like language modeling and machine translation.",
+      "Traditional models rely on RNNs and CNNs, which are computationally intensive and less parallelizable.",
+      "Attention mechanisms have emerged as a powerful tool to model dependencies in sequences."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Introduce the importance of sequence transduction models and the limitations of traditional approaches."
+  },
+  {
+    "slide_page": 2,
+    "title": "Problem: Limitations of Existing Models",
+    "content": [
+      "Existing models face limitations in parallelization due to their sequential nature.",
+      "Longer training times and increased computational costs are common, especially for long sequences.",
+      "There is a need for a more efficient model that can handle long-range dependencies without these constraints."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Highlight the specific challenges faced by current state-of-the-art models."
+  },
+  {
+    "slide_page": 3,
+    "title": "Solution Overview: The Transformer Model",
+    "content": [
+      "The Transformer model is introduced as a novel architecture relying entirely on attention mechanisms.",
+      "It eliminates the need for recurrence and convolution, allowing for greater parallelization and efficiency.",
+      "Achieves superior performance in machine translation tasks with reduced training time and computational resources."
+    ],
+    "includes_figure": true,
+    "figure_reference": {
+      "path": "S:\\project\\SlidesGen\\test\\test_pdf_parser_output\\images\\_page_2_Figure_0.jpeg",
+      "caption": "The Transformer - model architecture."
+    },
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Introduce the Transformer model and its advantages over traditional models."
+  },
+  {
+    "slide_page": 4,
+    "title": "Technical Approach: Transformer Architecture",
+    "content": [
+      "The Transformer consists of an encoder-decoder structure using stacked self-attention and point-wise, fully connected layers.",
+      "Key components include multi-head attention, scaled dot-product attention, and position-wise feed-forward networks.",
+      "Positional encodings are used to inject sequence order information."
+    ],
+    "includes_figure": true,
+    "figure_reference": {
+      "path": "S:\\project\\SlidesGen\\test\\test_pdf_parser_output\\images\\_page_3_Figure_0.jpeg",
+      "caption": "(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several attention layers running in parallel."
+    },
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Explain the architecture and key components of the Transformer model."
+  },
+  {
+    "slide_page": 5,
+    "title": "Technical Details: Attention Mechanisms",
+    "content": [
+      "Scaled dot-product attention is central to the Transformer's ability to model dependencies efficiently.",
+      "Multi-head attention allows the model to jointly attend to information from different representation subspaces.",
+      "Position-wise feed-forward networks process each position independently."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {
+      "latex": "Attention(Q, K, V ) = softmax(QKT\n√\ndk\n)V",
+      "context": "In practice, we compute the attention function on a set of queries simultaneously, packed together into a matrix Q."
+    },
+    "presenter_notes": "Detail the attention mechanisms and their role in the Transformer model."
+  },
+  {
+    "slide_page": 6,
+    "title": "Technical Details: Positional Encoding",
+    "content": [
+      "Positional encodings are used to incorporate sequence order information.",
+      "Sine and cosine functions of different frequencies are employed.",
+      "This compensates for the lack of recurrence in the model."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {
+      "latex": "P E(pos,2i) = sin(pos/100002i/dmodel)\nP E(pos,2i+1) = cos(pos/100002i/dmodel)",
+      "context": "In this work, we use sine and cosine functions of different frequencies."
+    },
+    "presenter_notes": "Explain how positional encoding works and its importance in the Transformer model."
+  },
+  {
+    "slide_page": 7,
+    "title": "Experimental Setup",
+    "content": [
+      "Experiments conducted on WMT 2014 English-to-German and English-to-French translation tasks.",
+      "Evaluation metrics include BLEU scores.",
+      "Baseline methods used for comparison include ByteNet, GNMT, and ConvS2S."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Introduce the experimental setup, datasets, and evaluation metrics."
+  },
+  {
+    "slide_page": 8,
+    "title": "Key Results: BLEU Scores",
+    "content": [
+      "The Transformer achieves BLEU scores of 28.4 on English-to-German and 41.8 on English-to-French tasks.",
+      "These results surpass previous models, including ensembles.",
+      "Significantly lower training costs compared to existing models."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {
+      "caption": "Table 2: The Transformer achieves better BLEU scores than previous state-of-the-art models on the English-to-German and English-to-French newstest2014 tests at a fraction of the training cost.",
+      "markdown": "|                                 | BLEU  |       | Training Cost (FLOPs) |            |  |  |\n|---------------------------------|-------|-------|-----------------------|------------|--|--|\n| Model                           | EN-DE | EN-FR | EN-DE                 | EN-FR      |  |  |\n| ByteNet [18]                    | 23.75 |       |                       |            |  |  |\n| Deep-Att + PosUnk [39]          |       | 39.2  |                       | 1.0 · 1020 |  |  |\n| GNMT + RL [38]                  | 24.6  | 39.92 | 2.3 · 1019            | 1.4 · 1020 |  |  |\n| ConvS2S [9]                     | 25.16 | 40.46 | 9.6 · 1018            | 1.5 · 1020 |  |  |\n| MoE [32]                        | 26.03 | 40.56 | 2.0 · 1019            | 1.2 · 1020 |  |  |\n| Deep-Att + PosUnk Ensemble [39] |       | 40.4  |                       | 8.0 · 1020 |  |  |\n| GNMT + RL Ensemble [38]         | 26.30 | 41.16 | 1.8 · 1020            | 1.1 · 1021 |  |  |\n| ConvS2S Ensemble [9]            | 26.36 | 41.29 | 7.7 · 1019            | 1.2 · 1021 |  |  |\n| Transformer (base model)        | 27.3  | 38.1  |                       | 3.3 · 1018 |  |  |\n| Transformer (big)               | 28.4  | 41.8  |                       | 2.3 · 1019 |  |  |"
+    },
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Showcase the superior performance of the Transformer model in terms of BLEU scores and training efficiency."
+  },
+  {
+    "slide_page": 9,
+    "title": "Analysis: Generalization to Other Tasks",
+    "content": [
+      "The Transformer generalizes well to English constituency parsing.",
+      "Achieves competitive F1 scores compared to other models.",
+      "Demonstrates versatility beyond translation tasks."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {
+      "caption": "Table 4: The Transformer generalizes well to English constituency parsing (Results are on Section 23 of WSJ)",
+      "markdown": "| Parser                              | Training                 | WSJ 23 F1 |\n|-------------------------------------|--------------------------|-----------|\n| Vinyals & Kaiser el al. (2014) [37] | WSJ only, discriminative | 88.3      |\n| Petrov et al. (2006) [29]           | WSJ only, discriminative | 90.4      |\n| Zhu et al. (2013) [40]              | WSJ only, discriminative | 90.4      |\n| Dyer et al. (2016) [8]              | WSJ only, discriminative | 91.7      |\n| Transformer (4 layers)              | WSJ only, discriminative | 91.3      |\n| Zhu et al. (2013) [40]              | semi-supervised          | 91.3      |\n| Huang & Harper (2009) [14]          | semi-supervised          | 91.3      |\n| McClosky et al. (2006) [26]         | semi-supervised          | 92.1      |\n| Vinyals & Kaiser el al. (2014) [37] | semi-supervised          | 92.1      |\n| Transformer (4 layers)              | semi-supervised          | 92.7      |\n| Luong et al. (2015) [23]            | multi-task               | 93.0      |\n| Dyer et al. (2016) [8]              | generative               | 93.3      |"
+    },
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Discuss the Transformer's ability to generalize to tasks beyond translation, showcasing its versatility."
+  },
+  {
+    "slide_page": 10,
+    "title": "Conclusion & Impact",
+    "content": [
+      "The Transformer sets a new standard in sequence transduction.",
+      "Offers faster training and improved performance.",
+      "Future work includes extending the model to other modalities and exploring local attention mechanisms."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Summarize the impact of the Transformer model and potential future directions."
+  },
+  {
+    "slide_page": 11,
+    "title": "Questions & Discussion",
+    "content": [
+      "Thank you for your attention!",
+      "Questions and feedback are welcome."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Encourage audience engagement and discussion."
+  },
+  {
+    "slide_page": 12,
+    "title": "Acknowledgements",
+    "content": [
+      "Thank funding agencies, collaborators, advisors, and institutions.",
+      "Include logos of funding sources if available."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Appropriately acknowledge all contributions and support."
+  }
+]

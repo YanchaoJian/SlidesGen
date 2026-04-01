@@ -9,6 +9,7 @@ import torch
 from marker.converters.pdf import PdfConverter
 from marker.models import create_model_dict
 from marker.output import text_from_rendered
+from marker.schema import BlockTypes
 from openai import OpenAI
 from surya.settings import settings
 
@@ -106,9 +107,11 @@ class ContentExtractor:
             model_lst = create_model_dict(device=self.device)
             converter = PdfConverter(artifact_dict=model_lst)
 
-            # 2. 转换 PDF
+            # 2. 构建 Document 对象（用于块级导航获取公式上下文），然后渲染
             start_time = time.time()
-            rendered_output = converter(self.pdf_path)
+            document = converter.build_document(self.pdf_path)
+            renderer = converter.resolve_dependencies(converter.renderer)
+            rendered_output = renderer(document)
             duration = time.time() - start_time
             self.logger.info(f"PDF conversion finished in {duration:.2f} seconds.")
 
@@ -133,9 +136,9 @@ class ContentExtractor:
                 }
                 image_list.append(image_info)
 
-            # 5. 从 Markdown 中直接提取表格和公式（Marker 已识别）
+            # 5. 提取表格（从 Markdown）和公式（从 Document 块级导航获取上下文）
             tables = self._extract_tables_from_markdown(markdown_text)
-            equations = self._extract_equations_from_markdown(markdown_text)
+            equations = self._extract_equations_from_document(document)
 
             self.logger.info(f"Extracted {len(tables)} tables and {len(equations)} equations from Marker output.")
 
@@ -161,7 +164,7 @@ class ContentExtractor:
         Marker 会将 PDF 中的表格转换为标准 Markdown 表格语法。
 
         返回格式与下游 planner 兼容:
-            [{"caption": "...", "markdown": "...", "description": "..."}, ...]
+            [{"caption": "...", "markdown": "..."}, ...]
         """
         tables = []
         lines = markdown_text.split('\n')
@@ -208,7 +211,6 @@ class ContentExtractor:
                     tables.append({
                         "caption": caption if caption else f"Table {len(tables) + 1}",
                         "markdown": table_markdown,
-                        "description": "",
                     })
             else:
                 i += 1
@@ -230,43 +232,51 @@ class ContentExtractor:
         # 表格行应以 | 开头
         return stripped.startswith('|')
 
-    def _extract_equations_from_markdown(self, markdown_text: str) -> List[dict]:
+    def _extract_equations_from_document(self, document) -> List[dict]:
         """
-        从 Marker 生成的 Markdown 中提取公式。
-        Marker 会将 PDF 中的公式转换为 LaTeX 语法：
-          - 行内公式: $...$
-          - 块级公式: $$...$$
+        从 Marker Document 对象中提取公式块，并利用块级导航 API
+        获取每个公式前后各一个块的文本作为上下文。
 
-        返回格式与下游 planner 兼容:
-            [{"latex": "...", "description": "..."}, ...]
+        返回格式:
+            [{"latex": "...", "context": "..."}, ...]
         """
         equations = []
         seen = set()
 
-        # 1. 提取块级公式 $$...$$
-        block_pattern = r'\$\$\s*(.*?)\s*\$\$'
-        for match in re.finditer(block_pattern, markdown_text, re.DOTALL):
-            latex = match.group(1).strip()
-            if latex and latex not in seen and len(latex) > 3:
-                seen.add(latex)
-                equations.append({
-                    "latex": latex,
-                    "description": "",
-                })
+        for page in document.pages:
+            if not page.structure:
+                continue
+            for block_id in page.structure:
+                block = document.get_block(block_id)
+                if block is None or block.block_type != BlockTypes.Equation:
+                    continue
 
-        # 2. 提取有意义的行内公式 $...$（排除已提取的块级公式和简单变量）
-        inline_pattern = r'(?<!\$)\$(?!\$)(.*?)(?<!\$)\$(?!\$)'
-        for match in re.finditer(inline_pattern, markdown_text):
-            latex = match.group(1).strip()
-            # 过滤：跳过过短的（单个变量如 $x$）、纯数字、已提取的
-            if (latex and latex not in seen
-                and len(latex) > 5
-                and not re.match(r'^[a-zA-Z0-9]$', latex)
-                and any(c in latex for c in ['\\', '_', '^', '{', 'frac', 'sum', 'int'])):
+                # 获取公式 LaTeX 内容
+                latex = block.raw_text(document).strip()
+                if not latex or latex in seen or len(latex) <= 3:
+                    continue
                 seen.add(latex)
+
+                # 通过 Document 导航 API 获取前后块文本，拼接为公式上下文
+                parts = []
+
+                prev_block = document.get_prev_block(block)
+                if prev_block is not None:
+                    text = prev_block.raw_text(document).strip()
+                    if text:
+                        parts.append(text)
+
+                parts.append(latex)
+
+                next_block = document.get_next_block(block)
+                if next_block is not None:
+                    text = next_block.raw_text(document).strip()
+                    if text:
+                        parts.append(text)
+
                 equations.append({
                     "latex": latex,
-                    "description": "",
+                    "context": "\n".join(parts),
                 })
 
         return equations
@@ -318,7 +328,7 @@ class ContentExtractor:
     def save_content(self, content: dict, output_file: Optional[str] = None) -> str:
         """将提取的内容保存为 JSON 文件。"""
         if output_file is None:
-            output_file = os.path.join(self.raw_dir, "base_content.json")
+            output_file = os.path.join(self.raw_dir, "pdf-content.json")
 
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(content, f, ensure_ascii=False, indent=2)

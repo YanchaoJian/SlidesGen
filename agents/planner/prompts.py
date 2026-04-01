@@ -91,9 +91,9 @@ Return a **SINGLE JSON OBJECT**. Do not use Markdown code blocks. Strictly follo
   "equations": [
     {{
       "latex": "E = mc^2",
-      "description": "Formula Name",
+      "context": "Surrounding text that explains the equation in the paper",
       "analysis": "Analysis of formula's role",
-      "recommended_section": "technical_approach" 
+      "recommended_section": "technical_approach"
     }}
   ],
 
@@ -398,7 +398,7 @@ Please create a detailed, page-by-page slide plan for the paper based on all the
     "includes_equation": true,
     "equation_reference": {{
         "latex": "Attention(Q, K, V) = softmax(\\frac{{QK^T}}{{\\sqrt{{d_k}}}})V",
-        "description": "Scaled Dot-Product Attention Formula"
+        "context": "We employ a self-attention mechanism... The formula below shows the calculation of attention scores."
     }},
     "presenter_notes": "Explain how the formula helps the model make decisions, without diving deep into the math."
   }},

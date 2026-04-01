@@ -7,6 +7,7 @@ import asyncio
 
 from dotenv import load_dotenv
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+from langgraph.types import Command
 
 load_dotenv()
 from workflow.state import initialize_overall_state
@@ -39,41 +40,66 @@ def parse_args():
     parser.add_argument('--marker_path', default='models/marker', help='Path to the local Marker model directory.')
     
     parser.add_argument('--thread_id', default=None, help='A specific session ID to resume a previously interrupted workflow.')
-parser.add_argument('--verbose', action='store_true', help='Enable detailed debug logging.')
+    parser.add_argument('--verbose', action='store_true', help='Enable detailed debug logging.')
     
     return parser.parse_args()
 
 async def run_workflow(graph, initial_state, config):
-    """运行完整工作流"""
-    current_state = initial_state
-    
+    """运行完整工作流，通过 interrupt/Command 机制处理人工交互"""
+    graph_input = initial_state
+
     while True:
         try:
-            # 执行图直到下一个断点或完成
-            async for event in graph.astream(current_state, config=config, stream_mode="updates"):
+            # 执行图直到完成或遇到 interrupt
+            async for event in graph.astream(graph_input, config=config, stream_mode="updates"):
                 for node_name, _ in event.items():
                     logging.info(f"✅ Node '{node_name}' completed.")
-            
+
             # 获取当前状态快照
             snapshot = await graph.aget_state(config)
-            
-            # 检查是否完成
+
+            # 检查是否完成（无后续节点且无中断）
             if not snapshot.next:
                 logging.info("✅ Workflow Completed Successfully!")
                 final_pptx_path = snapshot.values.get("final_pptx_path")
                 if final_pptx_path:
                     logging.info(f"🎉 PPT file is ready at: {final_pptx_path}")
-                
+
                 # 保存最终状态快照
                 snapshot_file = os.path.join(config["configurable"]["output_dir"], "final_snapshot.json")
                 with open(snapshot_file, "w", encoding="utf-8") as f:
                     json.dump(snapshot.values, f, indent=2, ensure_ascii=False, default=str)
                 logging.info(f"📄 Snapshot saved to: {snapshot_file}")
                 break
-            
-            # 继续下一轮
-            current_state = None
-            
+
+            # 检查是否有 interrupt 需要处理
+            if snapshot.tasks:
+                interrupt_handled = False
+                for task in snapshot.tasks:
+                    if task.interrupts:
+                        interrupt_value = task.interrupts[0].value
+                        hitl_type = interrupt_value.get("type", "unknown")
+                        prompt_text = interrupt_value.get("prompt", ">> ")
+
+                        # HITL 2 额外提示 PPTX 路径
+                        if hitl_type == "pptx_review":
+                            pptx_path = interrupt_value.get("pptx_path", "")
+                            logging.info(f"\n✨ Preview Ready: Your presentation has been generated at '{pptx_path}'")
+
+                        logging.info(f"🛑 HITL: {hitl_type} - Waiting for user input.")
+                        user_input = input(f">> {prompt_text} ").strip()
+
+                        # 用 Command(resume=...) 恢复图执行
+                        graph_input = Command(resume=user_input)
+                        interrupt_handled = True
+                        break
+
+                if interrupt_handled:
+                    continue
+
+            # 无 interrupt 但有后续节点，继续执行（从 checkpoint 恢复）
+            graph_input = None
+
         except Exception as e:
             logging.error(f"❌ Workflow execution failed: {e}", exc_info=True)
             break
