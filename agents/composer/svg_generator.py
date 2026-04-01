@@ -110,10 +110,21 @@ def generate_slide_svg(
         ]
         response = llm.invoke(messages)
 
-        svg = extract_svg_content(response.content)
+        raw_content = response.content
+        if isinstance(raw_content, list):
+            # 某些 provider 返回 list[dict/text]，拼接为字符串
+            parts = []
+            for item in raw_content:
+                if isinstance(item, dict) and "text" in item:
+                    parts.append(item["text"])
+                elif isinstance(item, str):
+                    parts.append(item)
+            raw_content = "".join(parts)
+
+        svg = extract_svg_content(raw_content)
         if not svg:
             logger.error(f"   -> [Slide {slide_page}] Failed to extract SVG from LLM response.")
-            logger.debug(f"   -> Raw response (first 500 chars): {response.content[:500]}")
+            logger.debug(f"   -> Raw response (first 500 chars): {str(raw_content)[:500]}")
         return svg
 
     except Exception as e:

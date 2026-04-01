@@ -20,10 +20,26 @@ from workflow.state import OverallState, SlideState
 logger = logging.getLogger(__name__)
 
 
-def _get_llm_config(configurable: Dict[str, Any]) -> LLMConfig:
-    """从 configurable 字典中提取 LLM 连接配置。"""
+def _get_llm_config(configurable: Dict[str, Any], stage: str = "text") -> LLMConfig:
+    """
+    从 configurable 字典中提取 LLM 连接配置。
+
+    Args:
+        configurable: RunnableConfig["configurable"] 字典。
+        stage: 阶段标识，决定使用哪个模型。
+            - "vision": 风格提取、图片方向检测等视觉任务
+            - "svg": SVG 代码生成
+            - "text": 大纲规划、内容扩展、文本审查等（默认）
+    """
+    model_key = {
+        "vision": "vision_model",
+        "svg": "svg_model",
+        "text": "text_model",
+    }.get(stage, "text_model")
+
+    model_name = configurable.get(model_key) or configurable["model_name"]
     return LLMConfig(
-        model_name=configurable["model_name"],
+        model_name=model_name,
         api_key=configurable["api_key"],
         base_url=configurable["base_url"],
     )
@@ -38,13 +54,14 @@ def extract_content_from_pdf_node(state: OverallState, config: RunnableConfig) -
     logger.info("--- NODE: ExtractContentFromPDF ---")
     config = config["configurable"]
     
+    vision_config = _get_llm_config(config, stage="vision")
     base_content, _, _ = extract_pdf(
         pdf_path=config["pdf_path"],
         marker_path=config["marker_path"],
         output_dir=config["output_dir"],
         api_key=config.get("api_key"),
         base_url=config.get("base_url"),
-        model_name=config.get("model_name", "gpt-4o"),
+        model_name=vision_config["model_name"],
     )
     
     if not base_content:
@@ -67,7 +84,7 @@ def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dic
         style_protocol_verified=review.get("verified", False),
         style_image_path=config["style_image_path"],
         output_dir=config['output_dir'],
-        llm_config=_get_llm_config(config),
+        llm_config=_get_llm_config(config, stage="vision"),
     )
 
     if not style_data:
@@ -91,7 +108,7 @@ def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Di
         style_protocol=state["style_protocol"],
         output_dir=config["output_dir"],
         image_path=config["style_image_path"],
-        llm_config=_get_llm_config(config),
+        llm_config=_get_llm_config(config, stage="vision"),
     )
 
     if verified:
@@ -118,7 +135,7 @@ def generate_presentation_plan_node(state: OverallState, config: RunnableConfig)
         content=state["content"],
         presentation_plan_retry_count=review.get("retry_count", 0),
         output_dir=config["output_dir"],
-        llm_config=_get_llm_config(config),
+        llm_config=_get_llm_config(config, stage="text"),
     )
 
     if not presentation_plan:
@@ -134,8 +151,14 @@ def generate_presentation_plan_node(state: OverallState, config: RunnableConfig)
 def review_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] HITL 1: Plan Review - 使用 interrupt() 暂停图执行，等待用户反馈"""
     logger.info("--- NODE: ReviewPlan (HITL) ---")
+    configurable = config["configurable"]
     review = state.get("plan_review", {})
     retry_count = review.get("retry_count", 0)
+
+    # 如果设置了跳过标志，自动批准
+    if configurable.get("skip_plan_review"):
+        logger.info("   -> Auto-approved (--skip_plan_review).")
+        return {"plan_review": {"verified": True, "critique": None, "retry_count": retry_count}}
 
     # interrupt() 暂停整个图（包括并行路径），控制权交还给外层 run_workflow
     user_input = interrupt({
@@ -165,7 +188,7 @@ def expand_slide_plan_node(state: SlideState, config: RunnableConfig) -> Dict[st
     slide_detail = expand_slide_plan(
         slide_plan=state["slide_plan"],
         style_protocol=state["slide_style_protocol"],
-        llm_config=_get_llm_config(config),
+        llm_config=_get_llm_config(config, stage="text"),
     )
 
     if not slide_detail:
@@ -185,7 +208,7 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
     svg_code = generate_slide_svg(
         slide_plan=state["slide_plan"],
         style_protocol=state["slide_style_protocol"],
-        llm_config=_get_llm_config(config),
+        llm_config=_get_llm_config(config, stage="svg"),
         total_pages=total_pages,
         slide_detail=state.get("slide_detail"),
         failed_svg=state.get("svg_code"),
@@ -247,7 +270,7 @@ def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[s
         slide_code=state["svg_code"],
         svg_path=state.get("svg_path"),
         slide_style_protocol=state["slide_style_protocol"],
-        llm_config=_get_llm_config(config),
+        llm_config=_get_llm_config(config, stage="vision"),
     )
 
     design_review = state.get("design_review", {})
@@ -306,6 +329,11 @@ def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict
         logger.warning("   -> Final PPTX file not found. Skipping user review.")
         return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": None}}
 
+    # 如果设置了跳过标志，自动批准
+    if configurable.get("skip_pptx_review"):
+        logger.info(f"   -> Auto-approved (--skip_pptx_review). PPTX at: {pptx_path}")
+        return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": None}}
+
     # interrupt() 暂停整个图，控制权交还给外层 run_workflow
     user_input = interrupt({
         "type": "pptx_review",
@@ -323,7 +351,7 @@ def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict
     analysis_result = analyze_feedback(
         user_input=user_input,
         slide_count=len(slides_plan or []),
-        llm_config=_get_llm_config(configurable),
+        llm_config=_get_llm_config(configurable, stage="text"),
     )
 
     logger.info(f"   -> Feedback analysis result: Scope='{analysis_result.scope}', Target Pages={analysis_result.target_pages}")
