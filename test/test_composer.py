@@ -44,7 +44,7 @@ def main():
         style_protocol = f.read()
 
     llm_config: LLMConfig = {
-        "model_name": "gpt-4o",
+        "model_name": "gpt-5.1-codex-mini",
         "api_key": os.getenv("OPENAI_API_KEY"),
         "base_url": os.getenv("OPENAI_BASE_URL"),
     }

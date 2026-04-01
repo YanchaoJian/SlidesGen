@@ -36,9 +36,15 @@ def parse_args():
     parser.add_argument('--style_image_path', required=True, help='Path to the reference style image.')
     parser.add_argument('--output_dir', default='output', help='Root directory for all outputs.')
     
-    parser.add_argument('--model_name', default='gpt-4o', help='Name of the LLM to use.')
+    parser.add_argument('--model_name', default='gpt-4o', help='Default LLM model (fallback for all stages).')
+    parser.add_argument('--vision_model', default=None, help='Model for vision tasks (style extraction, image orientation). Defaults to --model_name.')
+    parser.add_argument('--svg_model', default=None, help='Model for SVG code generation. Defaults to --model_name.')
+    parser.add_argument('--text_model', default=None, help='Model for text generation (planning, expansion, critique). Defaults to --model_name.')
     parser.add_argument('--marker_path', default='models/marker', help='Path to the local Marker model directory.')
-    
+
+    parser.add_argument('--skip_plan_review', action='store_true', help='Auto-approve the plan without HITL review.')
+    parser.add_argument('--skip_pptx_review', action='store_true', help='Auto-approve the final PPTX without HITL review.')
+
     parser.add_argument('--thread_id', default=None, help='A specific session ID to resume a previously interrupted workflow.')
     parser.add_argument('--verbose', action='store_true', help='Enable detailed debug logging.')
     
@@ -113,6 +119,7 @@ async def main():
     thread_id = args.thread_id if is_resuming else datetime.now().strftime("%m%d_%H%M")
     session_dir = os.path.join(args.output_dir, thread_id)
     
+    default_model = args.model_name
     config = {
         "configurable": {
             "thread_id": thread_id,
@@ -122,9 +129,16 @@ async def main():
             "output_dir": session_dir,
             "marker_path": args.marker_path,
             "verbose": args.verbose,
-            "model_name": args.model_name,
+            # 各阶段模型：未指定时回退到 model_name
+            "model_name": default_model,
+            "vision_model": args.vision_model or default_model,
+            "svg_model": args.svg_model or default_model,
+            "text_model": args.text_model or default_model,
+            # HITL 跳过标志
+            "skip_plan_review": args.skip_plan_review,
+            "skip_pptx_review": args.skip_pptx_review,
             "base_url": os.getenv("OPENAI_BASE_URL"),
-            "api_key": os.getenv("OPENAI_API_KEY")
+            "api_key": os.getenv("OPENAI_API_KEY"),
         },
     }
 

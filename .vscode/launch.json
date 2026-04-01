@@ -13,10 +13,17 @@
                 "--style_image_path", "assets/ref-style-img.png",
                 // [Optional] Root output directory (default: output/)
                 "--output_dir", "output/",
-                // [Optional] LLM model name (default: gpt-4o)
+                // [Optional] Default LLM model, fallback for all stages (default: gpt-4o)
                 "--model_name", "gpt-4o",
+                // [Optional] Per-stage model overrides (default: use --model_name)
+                // "--vision_model", "gpt-4o",
+                // "--svg_model", "claude-sonnet-4-20250514",
+                // "--text_model", "gpt-4o-mini",
                 // [Optional] Path to local Marker model for PDF parsing (default: models/marker)
                 "--marker_path", "models/marker",
+                // [Optional] Skip human-in-the-loop review steps
+                "--skip_plan_review",
+                "--skip_pptx_review",
                 // [Optional] Enable debug-level logging
                 // "--verbose",
                 // [Optional] Resume an interrupted session by specifying its thread ID
