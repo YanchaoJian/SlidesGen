@@ -10,6 +10,7 @@ from agents.pdf_parser.extractor import extract_pdf
 from agents.style_analyst.analyzer import analyze_style
 from agents.style_analyst.critic import critique_style_protocol
 from agents.planner.planner import plan_presentation
+from agents.slide_planner.expander import expand_slide_plan
 from agents.composer.svg_generator import generate_slide_svg
 from agents.composer.svg_runner import execute_svg, merge_svgs_to_pptx
 from agents.slide_critic.critic import evaluate_and_critique_slide
@@ -155,6 +156,24 @@ def review_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, A
 # Phase 3: 执行 (Execution - Single Slide Generation)
 # ==============================================================================
 
+def expand_slide_plan_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
+    """[Node] 将简要大纲扩展为详细的单页描述"""
+    config = config["configurable"]
+    slide_page = state["slide_page"]
+    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): ExpandSlidePlan ---")
+
+    slide_detail = expand_slide_plan(
+        slide_plan=state["slide_plan"],
+        style_protocol=state["slide_style_protocol"],
+        llm_config=_get_llm_config(config),
+    )
+
+    if not slide_detail:
+        logger.warning(f"⚠️ [Slide {slide_page}] Slide plan expansion failed. SVG generator will use the original plan.")
+
+    return {"slide_detail": slide_detail}
+
+
 def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 调用 LLM 生成单张 slide 的 SVG 源码"""
     config = config["configurable"]
@@ -168,6 +187,7 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
         style_protocol=state["slide_style_protocol"],
         llm_config=_get_llm_config(config),
         total_pages=total_pages,
+        slide_detail=state.get("slide_detail"),
         failed_svg=state.get("svg_code"),
         error_context=state.get("error_log"),
         svg_verified=svg_review.get("verified"),

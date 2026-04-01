@@ -64,6 +64,7 @@ def generate_slide_svg(
     style_protocol: str,
     llm_config: LLMConfig,
     total_pages: int = 10,
+    slide_detail: Optional[str] = None,
     failed_svg: Optional[str] = None,
     error_context: Optional[str] = None,
     svg_verified: Optional[bool] = None,
@@ -73,9 +74,10 @@ def generate_slide_svg(
 
     Args:
         slide_plan: 单页计划 dict（含 slide_page, title, content 等）。
-        style_protocol: 风格协议字符串。
+        style_protocol: 设计规范字符串。
         llm_config: LLM 配置。
         total_pages: 总页数（用于页码显示）。
+        slide_detail: 由 expand_slide_plan 生成的详细页面描述（可选）。
         failed_svg: 上次失败的 SVG（重试时传入）。
         error_context: 上次的错误日志（重试时传入）。
         svg_verified: 上次 SVG 是否通过验证。
@@ -95,6 +97,7 @@ def generate_slide_svg(
         slide_plan=slide_plan,
         style_protocol=style_protocol,
         total_pages=total_pages,
+        slide_detail=slide_detail,
         failed_svg=failed_svg if is_retry else "",
         error_context=error_context if is_retry else "",
     )
