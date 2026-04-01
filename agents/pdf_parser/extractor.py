@@ -9,7 +9,10 @@ import torch
 from marker.converters.pdf import PdfConverter
 from marker.models import create_model_dict
 from marker.output import text_from_rendered
+from openai import OpenAI
 from surya.settings import settings
+
+from agents.pdf_parser.image_orientation import fix_image_orientation
 
 
 class ContentExtractor:
@@ -87,10 +90,14 @@ class ContentExtractor:
                 else:
                     self.logger.warning(f"Local model not found for {checkpoint}: {local_path}")
 
-    def extract_content(self):
+    def extract_content(self, openai_client: Optional[OpenAI] = None, model_name: str = "gpt-4o"):
         """
         使用 Marker 从 PDF 中提取 Markdown、图片、表格和公式。
         Marker 可直接识别表格和公式，无需 LLM 增强。
+
+        Args:
+            openai_client: OpenAI 客户端，用于图片方向检测。为 None 时跳过方向修正。
+            model_name: 多模态模型名称，用于图片方向检测。
         """
         try:
             self.logger.info(f"Starting content extraction for: {self.pdf_path}")
@@ -109,8 +116,12 @@ class ContentExtractor:
             markdown_text, _, images = text_from_rendered(rendered_output)
 
             # 4. 保存提取出的图片，并构建图片信息列表
+            #    如果提供了 OpenAI 客户端，先用多模态模型检测并修正图片方向
             image_list = []
             for filename, image_obj in images.items():
+                if openai_client is not None:
+                    image_obj = fix_image_orientation(image_obj, openai_client, model=model_name)
+
                 image_filepath = os.path.join(self.img_dir, filename)
                 image_obj.save(image_filepath, "JPEG")
 
@@ -318,14 +329,29 @@ class ContentExtractor:
 # ==============================================================================
 # 便捷函数 (用于在 LangGraph Node 中调用)
 # ==============================================================================
-def extract_pdf(pdf_path: str, marker_path: str, output_dir: str) -> tuple:
+def extract_pdf(pdf_path: str, marker_path: str, output_dir: str,
+                api_key: Optional[str] = None, base_url: Optional[str] = None,
+                model_name: str = "gpt-4o") -> tuple:
     """
     顶层便捷函数，实例化 ContentExtractor 并执行提取。
     现在直接提取文字、图片、表格和公式，无需后续 LLM 增强。
+
+    Args:
+        pdf_path: PDF 文件路径。
+        marker_path: Marker 模型目录。
+        output_dir: 输出目录。
+        api_key: OpenAI API Key，用于图片方向检测。为 None 时跳过。
+        base_url: OpenAI API Base URL。
+        model_name: 多模态模型名称。
     """
     try:
         extractor = ContentExtractor(pdf_path, marker_path, output_dir)
-        content = extractor.extract_content()
+
+        openai_client = None
+        if api_key:
+            openai_client = OpenAI(api_key=api_key, base_url=base_url)
+
+        content = extractor.extract_content(openai_client=openai_client, model_name=model_name)
 
         if content:
             output_file = extractor.save_content(content)

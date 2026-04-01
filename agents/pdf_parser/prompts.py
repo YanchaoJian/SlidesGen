@@ -1,3 +1,15 @@
+IMAGE_ORIENTATION_PROMPT = """\
+This image shows four versions (A, B, C, D) of the same figure, each rotated differently.
+Only ONE version has the correct orientation where:
+- All text and labels read normally (left-to-right, top-to-bottom)
+- Charts, axes, and diagrams are upright
+- The figure looks natural as it would appear in an academic paper
+
+Look carefully at the text direction in each version. Which single version (A, B, C, or D) has the correct upright orientation?
+
+Reply with EXACTLY one letter: A, B, C, or D."""
+
+
 EXTRACT_TABLES_AND_EQUATIONS_PROMPT = """
 # Role: Academic Data Extraction Specialist
 

@@ -1,40 +1,42 @@
-"""手动合并指定目录下各 slide 的代码文件为完整 PPTX。
+"""手动合并指定目录下各 slide 的 SVG 文件为完整 PPTX。
 
 用法: python -m scripts.merge_slides --result_dir output/0116_2040/result --output_dir output/0116_2040
 """
 import argparse
 from pathlib import Path
 
-from agents.composer.pptx_runner import merge_slides as merge_slides_to_deck
+from agents.composer.svg_runner import merge_svgs_to_pptx
 
 
 def merge_slides(result_dir: str, output_dir: str):
-    """收集各 slide 目录下最新的 code_v*.py，合并为完整 PPTX。"""
+    """收集各 slide 目录下最新的 slide_v*.svg，合并为完整 PPTX。"""
     result_dir = Path(result_dir).resolve()
     output_dir = Path(output_dir).resolve()
 
-    # 收集每个 slide_XX 目录下版本号最大的 code_v*.py
-    code_paths = []
+    svg_paths = []
     for slide_dir in sorted(result_dir.glob("slide_*")):
         if not slide_dir.is_dir():
             continue
-        code_files = sorted(slide_dir.glob("code_v*.py"))
-        if code_files:
-            code_paths.append(str(code_files[-1]))  # 取最新版本
+        svg_files = sorted(slide_dir.glob("slide_v*.svg"))
+        if svg_files:
+            svg_paths.append(str(svg_files[-1]))
 
-    if not code_paths:
-        print(f"  No slide code files found at: {result_dir}")
+    if not svg_paths:
+        print(f"  No slide SVG files found at: {result_dir}")
         return
 
-    print(f"Found {len(code_paths)} slide code files:")
-    for path in code_paths:
+    print(f"Found {len(svg_paths)} slide SVG files:")
+    for path in svg_paths:
         print(f"  - {path}")
 
     final_path = output_dir / "result" / "Final_Presentation.pptx"
     final_path.parent.mkdir(parents=True, exist_ok=True)
     print(f"\nMerging to: {final_path}")
-    merge_slides_to_deck(code_paths, str(final_path))
-    print(f"Done! Saved to: {final_path}")
+    result = merge_svgs_to_pptx(svg_paths, str(final_path))
+    if result:
+        print(f"Done! Saved to: {final_path}")
+    else:
+        print("Merge failed.")
 
 
 if __name__ == "__main__":

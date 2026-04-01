@@ -6,13 +6,11 @@ from langchain_core.runnables import RunnableConfig
 
 from workflow.feedback_router import analyze_feedback
 from agents.pdf_parser.extractor import extract_pdf
-from agents.pdf_parser.fallback_enhancer import enhance_tables_and_equations
 from agents.style_analyst.analyzer import analyze_style
 from agents.style_analyst.critic import critique_style_protocol
 from agents.planner.planner import plan_presentation
-from agents.layout_planner.directive_generator import generate_layout_directive
-from agents.composer.code_generator import generate_slide_code
-from agents.composer.pptx_runner import merge_slides, execute_slide_script
+from agents.composer.svg_generator import generate_slide_svg
+from agents.composer.svg_runner import execute_svg, merge_svgs_to_pptx
 from agents.slide_critic.critic import evaluate_and_critique_slide
 from utils.llm import LLMConfig
 from workflow.state import OverallState, SlideState
@@ -39,9 +37,12 @@ def extract_content_from_pdf_node(state: OverallState, config: RunnableConfig) -
     config = config["configurable"]
     
     base_content, _, _ = extract_pdf(
-        pdf_path=config["pdf_path"], 
+        pdf_path=config["pdf_path"],
         marker_path=config["marker_path"],
-        output_dir=config["output_dir"]
+        output_dir=config["output_dir"],
+        api_key=config.get("api_key"),
+        base_url=config.get("base_url"),
+        model_name=config.get("model_name", "gpt-4o"),
     )
     
     if not base_content:
@@ -50,32 +51,6 @@ def extract_content_from_pdf_node(state: OverallState, config: RunnableConfig) -
         
     return {"content": base_content}
 
-def enhance_content_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] 内容增强（表格和公式已由 Marker 直接提取，此步骤可跳过）"""
-    logger.info("--- NODE: EnhanceContent ---")
-    config = config["configurable"]
-
-    content = state["content"]
-    has_tables = bool(content.get("tables"))
-    has_equations = bool(content.get("equations"))
-
-    if has_tables or has_equations:
-        logger.info(f"   -> Marker already extracted {len(content.get('tables', []))} tables "
-                    f"and {len(content.get('equations', []))} equations. Skipping LLM enhancement.")
-        return {}
-
-    # 仅当 Marker 未提取到表格/公式且配置了增强时，才使用 LLM 补充
-    if config.get("enhance_marker"):
-        logger.info("   -> No tables/equations from Marker, falling back to LLM enhancement...")
-        enhanced_content = enhance_tables_and_equations(
-            base_content=content,
-            output_dir=config["output_dir"],
-            llm_config=_get_llm_config(config),
-        )
-        return {"content": enhanced_content}
-    else:
-        logger.info("   -> Skipping LLM enhancement step as per configuration.")
-        return {}
 
 def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 分析参考图,提取自然语言形式的主题风格描述"""
@@ -174,100 +149,66 @@ def review_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, A
 # Phase 3: 执行 (Execution - Single Slide Generation)
 # ==============================================================================
 
-def generate_code_directive_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] 生成单张 slide 的布局指令"""
+def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
+    """[Node] 调用 LLM 生成单张 slide 的 SVG 源码"""
     config = config["configurable"]
     slide_page = state["slide_page"]
-    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): GenerateCodeDirective ---")
-    
-    slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
-    os.makedirs(slide_dir, exist_ok=True)
+    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): GenerateSlideSVG ---")
 
-    directive = generate_layout_directive(
-        slide_style_protocol=state["slide_style_protocol"],
-        slide_content=state["slide_plan"],
+    svg_review = state.get("svg_review", {})
+
+    svg_code = generate_slide_svg(
+        slide_plan=state["slide_plan"],
+        style_protocol=state["slide_style_protocol"],
         llm_config=_get_llm_config(config),
-        output_dir=slide_dir,
-    )
-    
-    if not directive:
-        logger.error(f"❌ [Slide {slide_page}] Failed to generate layout directive. Aborting slide.")
-        # Propagate error state
-        return {"code_directive": None, "error_log": "Layout directive generation failed."}
-
-    logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): GenerateCodeDirective completed.")
-    return {"code_directive": directive}
-
-def generate_slide_code_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] 生成单张 slide 的 Python 代码"""
-    config = config["configurable"]
-    slide_page = state["slide_page"]
-    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): GenerateSlideCode ---")
-    
-    slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
-    os.makedirs(slide_dir, exist_ok=True)
-    output_pptx_path = os.path.join(slide_dir, f"slide.pptx")
-
-    code_review = state.get("code_review", {})
-
-    code = generate_slide_code(
-        code_directive=state["code_directive"],
-        failed_code=state.get('code'),
+        total_pages=total_pages,
+        failed_svg=state.get("svg_code"),
         error_context=state.get("error_log"),
-        slide_code_verified=code_review.get("verified"),
-        output_pptx_path=output_pptx_path,
-        llm_config=_get_llm_config(config),
+        svg_verified=svg_review.get("verified"),
     )
 
-    if not code:
-        logger.error(f"❌ [Slide {slide_page}] Code generation failed. Aborting slide.")
-        return {"code": None, "error_log": "Code generation returned empty result"}
+    if not svg_code:
+        logger.error(f"❌ [Slide {slide_page}] SVG generation failed.")
+        return {"svg_code": None, "error_log": "SVG generation returned empty result"}
 
-    # 保存代码
-    code_attempt = code_review.get("retry_count", 0)
-    code_path = os.path.join(slide_dir, f"code_v{code_attempt}.py")
-    with open(code_path, "w", encoding='utf-8') as f: 
-        f.write(code)
-    
-    logger.info(f"   -> Python code generated and saved to {code_path}")
-    logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): GenerateSlideCode completed.")
-    return {"code": code, "code_path": code_path, "error_log": None}
+    logger.info(f"   -> SVG generated for slide {slide_page} ({len(svg_code)} chars)")
+    return {"svg_code": svg_code, "error_log": None}
 
-def check_code_execution_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] 检查代码能否正常执行"""
+def check_svg_execution_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
+    """[Node] 验证 SVG 并执行后处理（写入文件 + finalize pipeline）"""
     config = config["configurable"]
     slide_page = state["slide_page"]
-    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): CheckCodeExecution ---")
-    
-    if not state.get("code"):
-        logger.error(f"❌ [Slide {slide_page}] No code to execute.")
-        return {"code_review": {"verified": False, "retry_count": 0, "critique": "No code available to execute"}, "error_log": "No code available to execute"}
+    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): CheckSVGExecution ---")
 
-    code_path = state.get("code_path")
-    if not code_path or not os.path.exists(code_path):
-        logger.error(f"❌ [Slide {slide_page}] Code file not found: {code_path}")
-        return {"code_review": {"verified": False, "retry_count": 0, "critique": f"Code file not found: {code_path}"}, "error_log": f"Code file not found: {code_path}"}
+    if not state.get("svg_code"):
+        logger.error(f"❌ [Slide {slide_page}] No SVG code available.")
+        return {
+            "svg_review": {"verified": False, "retry_count": 0, "critique": "No SVG code available"},
+            "error_log": "No SVG code available",
+        }
 
-    logger.info(f"   -> Executing Python script: {code_path}")
-    success, exec_error = execute_slide_script(code_path)
+    slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
+    os.makedirs(slide_dir, exist_ok=True)
 
-    code_review = state.get("code_review", {})
-    retry_count = code_review.get("retry_count", 0)
+    svg_review = state.get("svg_review", {})
+    retry_count = svg_review.get("retry_count", 0)
+    svg_path = os.path.join(slide_dir, f"slide_v{retry_count}.svg")
+
+    success, error = execute_svg(state["svg_code"], svg_path)
 
     if success:
-        logger.info(f"   -> ✅ Code executed successfully for slide {slide_page}.")
-        logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): CheckCodeExecution completed.")
+        logger.info(f"   -> ✅ SVG validated and finalized for slide {slide_page}.")
         return {
-            "code_review": {"verified": True, "retry_count": retry_count, "critique": None},
+            "svg_review": {"verified": True, "retry_count": retry_count, "critique": None},
+            "svg_path": svg_path,
             "error_log": None,
-            "generated_slide_paths": [state["code_path"]]  # 收集代码路径，用于最终合并
+            "generated_slide_paths": [svg_path],
         }
     else:
-        logger.warning(f"   -> ❌ Code execution failed for slide {slide_page} (Attempt {retry_count + 1}). Error: {exec_error}")
-        logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): CheckCodeExecution completed (with failure).")
+        logger.warning(f"   -> ❌ SVG execution failed for slide {slide_page} (Attempt {retry_count + 1}). Error: {error}")
         return {
-            "code_review": {"verified": False, "retry_count": retry_count + 1, "critique": exec_error},
-            "error_log": exec_error,
+            "svg_review": {"verified": False, "retry_count": retry_count + 1, "critique": error},
+            "error_log": error,
         }
 
 def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
@@ -276,13 +217,10 @@ def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[s
     slide_page = state["slide_page"]
     logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): CheckSlideDesign ---")
 
-    slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
-    output_pptx_path = os.path.join(slide_dir, f"slide.pptx")
-  
     critique_feedback = evaluate_and_critique_slide(
-        slide_code=state["code"],
+        slide_code=state["svg_code"],
+        svg_path=state.get("svg_path"),
         slide_style_protocol=state["slide_style_protocol"],
-        pptx_path=output_pptx_path,
         llm_config=_get_llm_config(config),
     )
 
@@ -311,17 +249,21 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
     config = config["configurable"]
     logger.info("--- NODE: MergeSlidesToDeck ---")
     
-    slide_paths = sorted(state.get("generated_slide_paths", []))
-    
-    if not slide_paths:
-        logger.warning("   -> No slides were generated to merge.")
+    svg_paths = sorted(state.get("generated_slide_paths", []))
+
+    if not svg_paths:
+        logger.warning("   -> No SVG slides were generated to merge.")
         return {"final_pptx_path": None}
-    
+
     final_path = os.path.join(config["output_dir"], "result", "Final_Presentation.pptx")
-    merge_slides(slide_paths, final_path)
-    
-    logger.info(f"   -> ✅ Merged {len(slide_paths)} slides into {final_path}")
-    return {"final_pptx_path": final_path}
+    result = merge_svgs_to_pptx(svg_paths, final_path)
+
+    if result:
+        logger.info(f"   -> ✅ Merged {len(svg_paths)} SVG(s) into {final_path}")
+        return {"final_pptx_path": final_path}
+    else:
+        logger.error("   -> ❌ SVG to PPTX merge failed.")
+        return {"final_pptx_path": None}
 
 def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] HITL 2: Final Inspection - 集成人工交互逻辑"""

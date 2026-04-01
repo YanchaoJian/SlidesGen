@@ -55,6 +55,7 @@ class OverallState(TypedDict):
 class SlideState(TypedDict):
     """
     定义分发给并行"单页生成"节点的"任务数据包"。
+    SVG 管线：LLM 生成 SVG → 验证+后处理 → 设计质量检查。
     """
     # --- 任务标识 ---
     slide_page: int
@@ -64,13 +65,12 @@ class SlideState(TypedDict):
     slide_style_protocol: str
 
     # --- 运行状态 ---
-    code_directive: Optional[str]
-    code: Optional[str]
-    code_path: Optional[str]
+    svg_code: Optional[str]                        # LLM 生成的 SVG 源码
+    svg_path: Optional[str]                        # 保存到磁盘的 SVG 文件路径
     error_log: Optional[str]
 
     # --- 审查循环 ---
-    code_review: ReviewCycle                       # 代码执行验证
+    svg_review: ReviewCycle                        # SVG 验证+后处理
     design_review: ReviewCycle                     # 设计质量验证
 
     # --- 输出 ---
@@ -105,11 +105,10 @@ def initialize_slide_state(
         "slide_page": slide_page,
         "slide_plan": slide_plan,
         "slide_style_protocol": slide_style_protocol,
-        "code_directive": None,
-        "code": None,
-        "code_path": None,
+        "svg_code": None,
+        "svg_path": None,
         "error_log": None,
-        "code_review": _default_review_cycle(),
+        "svg_review": _default_review_cycle(),
         "design_review": _default_review_cycle(),
         "generated_slide_paths": [],
     }

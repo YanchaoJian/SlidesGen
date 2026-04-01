@@ -39,8 +39,7 @@ def parse_args():
     parser.add_argument('--marker_path', default='models/marker', help='Path to the local Marker model directory.')
     
     parser.add_argument('--thread_id', default=None, help='A specific session ID to resume a previously interrupted workflow.')
-    parser.add_argument('--enhance_marker', action='store_true', help='Enable content enhancement using Marker model.')
-    parser.add_argument('--verbose', action='store_true', help='Enable detailed debug logging.')
+parser.add_argument('--verbose', action='store_true', help='Enable detailed debug logging.')
     
     return parser.parse_args()
 
@@ -96,7 +95,6 @@ async def main():
             "style_image_path": args.style_image_path,
             "output_dir": session_dir,
             "marker_path": args.marker_path,
-            "enhance_marker": args.enhance_marker,
             "verbose": args.verbose,
             "model_name": args.model_name,
             "base_url": os.getenv("OPENAI_BASE_URL"),
