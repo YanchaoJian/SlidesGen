@@ -18,7 +18,7 @@ def load_env_config():
     config = {
         'base_url': os.getenv('OPENAI_BASE_URL'),
         'api_key': os.getenv('OPENAI_API_KEY'),
-        'model': os.getenv('OPENAI_MODEL')
+        'model': 'gpt-4o'
     }
     
     # 检查配置是否完整

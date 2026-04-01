@@ -1,0 +1,38 @@
+### Design Brief Execution Directive
+
+**Step 1: Layout Context Analysis (Mental Scratchpad)**
+- **Content Analysis**: The current slide contains a title, three bullet points, and one image. The image is referenced as a visual illustration supporting the text content.
+- **Style Adaptation**: The original style protocol suggests a structured layout with a top title area, content area, and bottom area. This is suitable for the current content, but adjustments are needed to accommodate the image alongside the text.
+- **Structure Planning**: The layout will consist of a top title bar, text content on the left, and the image on the right. The title will be positioned at the top, followed by text and image in a two-column format.
+
+**Step 2: Generate Execution Directives**
+
+**[1. Global Settings]**
+- Create a slide.
+- Set background color to light gray `(245, 245, 245)`.
+
+**[2. Static Decoration Layer (Static Elements)]**
+- Draw a top title area with a deep blue background `(0, 63, 135)` occupying the top 1.125 inches of the slide.
+- Draw a thin horizontal line below the title area using deep blue `(0, 63, 135)` with 1pt thickness.
+- Draw a bottom area with light gray background `(245, 245, 245)` occupying the bottom 1.125 inches of the slide.
+- Ensure no large geometric color blocks obscure the body text.
+
+**[3. Dynamic Layout Layer (Dynamic Content Layout)]**
+- **Title**:
+  - Position the title "Methodology: Attention Mechanisms" at the top of the slide, starting at 0.5 inches from the top.
+  - Use Microsoft YaHei + Arial, 32pt, bold, with deep blue color `(0, 63, 135)`.
+- **Body/List**:
+  - Position the text box for bullet points on the left side, starting at 1.5 inches from the top and 0.5 inches from the left.
+  - Set text box dimensions to width: 4.5 inches, height: 3.375 inches.
+  - Use Microsoft YaHei + Arial, 18pt, regular, with dark text color `(51, 51, 51)`.
+  - Write the bullet points:
+    1. "The Transformer uses scaled dot-product attention to compute attention weights efficiently."
+    2. "Multi-head attention allows the model to focus on different parts of the input sequence simultaneously."
+    3. "Positional encoding helps the model understand the order of tokens in a sequence."
+- **Visual Assets**:
+  - Position the image on the right side, starting at 1.5 inches from the top and 5.5 inches from the left.
+  - Maintain the aspect ratio of the image. Use the image path: "output/0324_1557/images/_page_3_Figure_0.jpeg".
+  - Write the caption below the image: "(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several attention layers running in parallel."
+
+**[4. Notes]**
+- Write speaker notes: "Explain the core attention mechanisms used in the Transformer, supported by visual illustrations."
