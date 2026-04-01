@@ -3,6 +3,7 @@ import logging
 from typing import Any, Dict
 
 from langchain_core.runnables import RunnableConfig
+from langgraph.types import interrupt
 
 from workflow.feedback_router import analyze_feedback
 from agents.pdf_parser.extractor import extract_pdf
@@ -130,13 +131,18 @@ def generate_presentation_plan_node(state: OverallState, config: RunnableConfig)
     }
 
 def review_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] HITL 1: Plan Review - 集成人工交互逻辑"""
+    """[Node] HITL 1: Plan Review - 使用 interrupt() 暂停图执行，等待用户反馈"""
     logger.info("--- NODE: ReviewPlan (HITL) ---")
     review = state.get("plan_review", {})
     retry_count = review.get("retry_count", 0)
 
-    logger.info("🛑 HITL [1/2]: Plan Review - Waiting for user input.")
-    user_input = input(">> Enter feedback to revise the plan, or press Enter to approve: ").strip()
+    # interrupt() 暂停整个图（包括并行路径），控制权交还给外层 run_workflow
+    user_input = interrupt({
+        "type": "plan_review",
+        "prompt": "Enter feedback to revise the plan, or press Enter to approve:",
+    })
+
+    user_input = (user_input or "").strip()
 
     if user_input:
         logger.info(f"   -> User provided feedback for plan revision.")
@@ -266,9 +272,9 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
         return {"final_pptx_path": None}
 
 def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] HITL 2: Final Inspection - 集成人工交互逻辑"""
+    """[Node] HITL 2: Final Inspection - 使用 interrupt() 暂停图执行，等待用户反馈"""
     logger.info("--- NODE: ReviewPPTXDesign (HITL) ---")
-    config = config["configurable"]
+    configurable = config["configurable"]
 
     pptx_path = state.get("final_pptx_path")
     slides_plan = state.get("presentation_plan")
@@ -280,10 +286,14 @@ def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict
         logger.warning("   -> Final PPTX file not found. Skipping user review.")
         return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": None}}
 
-    logger.info(f"\n✨ Preview Ready: Your presentation has been generated at '{pptx_path}'")
-    logger.info("🛑 HITL [2/2]: Final Inspection - Waiting for user input.")
+    # interrupt() 暂停整个图，控制权交还给外层 run_workflow
+    user_input = interrupt({
+        "type": "pptx_review",
+        "prompt": "Enter feedback for refinements, or press Enter to accept:",
+        "pptx_path": pptx_path,
+    })
 
-    user_input = input(">> Enter feedback for refinements, or press Enter to accept: ").strip()
+    user_input = (user_input or "").strip()
 
     if not user_input:
         logger.info("   -> ✅ User accepted the final presentation. Workflow will now complete.")
@@ -293,7 +303,7 @@ def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict
     analysis_result = analyze_feedback(
         user_input=user_input,
         slide_count=len(slides_plan or []),
-        llm_config=_get_llm_config(config),
+        llm_config=_get_llm_config(configurable),
     )
 
     logger.info(f"   -> Feedback analysis result: Scope='{analysis_result.scope}', Target Pages={analysis_result.target_pages}")

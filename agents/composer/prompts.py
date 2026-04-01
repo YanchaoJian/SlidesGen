@@ -47,6 +47,8 @@ cannot handle them and PPTX export will fail:
 
 Use **system fonts only**. Apply fonts via inline `font-family` attribute.
 
+**Default sizes** (override with the Design Specification if provided):
+
 | Role | Size | Font (Chinese) | Font (English) | Weight |
 |------|------|----------------|----------------|--------|
 | Main title | 36-48px | Microsoft YaHei | Arial | bold |
@@ -54,6 +56,9 @@ Use **system fonts only**. Apply fonts via inline `font-family` attribute.
 | Body text | 18-22px | Microsoft YaHei | Calibri | normal |
 | Caption / annotation | 12-14px | Microsoft YaHei | Arial | normal |
 | Page number | 12-14px | — | Arial | normal |
+
+> If the user prompt includes a "Design Specification" section with a Typography System table, \
+use those sizes, fonts, and weights instead of the defaults above.
 
 **Text rules**:
 - Use `text-anchor="middle"` for centered text (x = center point).
@@ -150,6 +155,8 @@ Define in `<defs>`, reference with `fill="url(#id)"`. Converts to native PPTX gr
 
 ## Layout Patterns (1280×720 canvas)
 
+**Default layouts** (override with the Design Specification if provided):
+
 | Pattern | Description | Key Coordinates |
 |---------|-------------|----------------|
 | Title + subtitle centered | Cover / chapter page | Title y≈300, subtitle y≈380 |
@@ -157,6 +164,9 @@ Define in `<defs>`, reference with `fill="url(#id)"`. Converts to native PPTX gr
 | Left-right split | Image + text | Left x=40..620, Right x=660..1240 |
 | Three-column cards | Feature list | x=40,440,840 each w=380, gap=20 |
 | Full-image + overlay | Visual impact cover | Image fills canvas, gradient overlay, text on top |
+
+> If the user prompt includes a "Design Specification" with Layout Principles (zone heights, margins, \
+spacing), use those values for page structure instead of the defaults above.
 
 ---
 
@@ -204,8 +214,10 @@ def build_svg_slide_prompt(
 
     sections.append(f"## Slide {page} / {total_pages}\n")
 
-    # 风格协议
-    sections.append("### Style Protocol\n")
+    # 设计规范（从参考图提取的主题风格）
+    sections.append("### Design Specification\n")
+    sections.append("Follow the color scheme, typography, layout principles, and visual features ")
+    sections.append("defined below. These override the default values in the system prompt.\n")
     sections.append(f"{style_protocol}\n")
 
     # 页面内容
@@ -242,7 +254,7 @@ def build_svg_slide_prompt(
         eq = slide_plan["equation_reference"]
         sections.append("**Equation** (render as SVG `<text>` with mathematical symbols):")
         sections.append(f"  - LaTeX: `{eq.get('latex', '')}`")
-        sections.append(f"  - Description: {eq.get('description', '')}")
+        sections.append(f"  - Context: {eq.get('context', '')}")
         sections.append("")
 
     # 演讲备注
@@ -297,32 +309,79 @@ if __name__ == "__main__":
         "includes_equation": True,
         "equation_reference": {
             "latex": r"\text{Attention}(Q, K, V) = \text{softmax}(\frac{QK^T}{\sqrt{d_k}})V",
-            "description": "Scaled Dot-Product Attention formula",
+            "context": "We employ a self-attention mechanism... The formula below shows the calculation of attention scores.",
         },
         "presenter_notes": "Explain the attention mechanism and its role in the Transformer.",
     }
 
-    example_style = """[Theme Name] Academic Blue
+    example_style = """## I. Theme Overview
 
-[Color System]
-- Primary: #003366 (titles, header bar)
-- Accent: #E94560 (highlights, key numbers)
-- Background: #F5F5F5 (main), #FFFFFF (cards)
-- Text: #333333 (body), #FFFFFF (on dark backgrounds)
+| Item | Value |
+| ---- | ----- |
+| **Theme Name** | Academic Blue |
+| **Atmosphere** | Professional, clean academic style for technical reports |
+| **Tone** | professional / academic / minimalist |
+| **Theme Mode** | Light |
 
-[Typography]
-- Title: Microsoft YaHei + Arial, 36px, bold, #FFFFFF on dark header
-- Body: Microsoft YaHei + Calibri, 18px, regular, #333333
+## II. Color Scheme
 
-[Visual Features]
-- Rounded cards (rx=12) with soft shadow
+| Role | HEX | Purpose |
+| ---- | --- | ------- |
+| **Background** | `#F5F5F5` | Page background |
+| **Secondary bg** | `#FFFFFF` | Card background |
+| **Primary** | `#003366` | Title decorations, header bar |
+| **Accent** | `#E94560` | Data highlights, key numbers |
+| **Body text** | `#333333` | Main body text |
+| **Secondary text** | `#666666` | Captions |
+| **Tertiary text** | `#999999` | Page numbers |
+| **Border / divider** | `#E0E0E0` | Card borders |
+
+### Gradient Definitions
+```
+<linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+  <stop offset="0%" stop-color="#003366"/>
+  <stop offset="100%" stop-color="#005599"/>
+</linearGradient>
+```
+
+## III. Typography System
+
+| Role | Size (px) | Weight | Color Role |
+| ---- | --------- | ------ | ---------- |
+| Cover title | 48px | Bold | Light text (#FFFFFF) |
+| Section title | 36px | Bold | Primary (#003366) |
+| Subtitle | 24px | SemiBold | Body text |
+| **Body** | **18px** | Normal | Body text |
+| Annotation | 14px | Normal | Secondary text |
+| Page number | 12px | Normal | Tertiary text |
+
+**Font stack**: `Arial, 'Microsoft YaHei', sans-serif`
+
+## IV. Layout Principles
+
+| Zone | Y-range (px) | Height (px) | Description |
+| ---- | ------------ | ----------- | ----------- |
+| Header area | 0 – 100 | 100px | Dark blue gradient, white title text |
+| Content area | 140 – 660 | 520px | White/light gray cards |
+| Footer area | 680 – 720 | 40px | Page number, subtle line |
+
+| Element | Value (px) |
+| ------- | ---------- |
+| Left / right margin | 40px |
+| Card gap | 24px |
+| Card border radius | 12px |
+
+## V. Visual Features
+
+### Decorative Elements
 - Header bar with gradient fill (#003366 → #005599)
 - Subtle separator lines between sections
 
-[Layout Principles]
-- Top header: 100px tall, dark blue gradient, white title text
-- Content area: y=140 to y=660, white/light gray cards
-- Side margins: 40px left and right"""
+### Shadow Effects
+- Soft card shadow: color #000000, opacity 0.1, offset 0 4px, blur 12px
+
+### Shape Style
+- Rounded rectangles (rx=12)"""
 
     prompt = build_svg_slide_prompt(
         slide_plan=example_plan,
