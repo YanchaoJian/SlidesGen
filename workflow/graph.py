@@ -14,6 +14,7 @@ from workflow.nodes import (
     merge_slides_to_deck_node,
     review_pptx_design_node,
     review_plan_node,
+    expand_slide_plan_node,
     generate_slide_svg_node,
     check_svg_execution_node,
     check_slide_design_node,
@@ -140,12 +141,14 @@ def build_slide_subgraph():
     slide_subgraph = StateGraph(SlideState)
 
     # 子图节点
+    slide_subgraph.add_node("expand_slide_plan", expand_slide_plan_node)
     slide_subgraph.add_node("generate_slide_svg", generate_slide_svg_node)
     slide_subgraph.add_node("check_svg_execution", check_svg_execution_node)
     slide_subgraph.add_node("check_slide_design", check_slide_design_node)
 
-    # 子图流程: START → generate_slide_svg → check_svg_execution → (route)
-    slide_subgraph.add_edge(START, "generate_slide_svg")
+    # 子图流程: START → expand_slide_plan → generate_slide_svg → check_svg_execution → (route)
+    slide_subgraph.add_edge(START, "expand_slide_plan")
+    slide_subgraph.add_edge("expand_slide_plan", "generate_slide_svg")
     slide_subgraph.add_edge("generate_slide_svg", "check_svg_execution")
 
     # SVG 验证+后处理检查后的路由

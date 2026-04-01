@@ -185,6 +185,7 @@ def build_svg_slide_prompt(
     slide_plan: dict,
     style_protocol: str,
     total_pages: int = 10,
+    slide_detail: str = "",
     failed_svg: str = "",
     error_context: str = "",
 ) -> str:
@@ -196,8 +197,9 @@ def build_svg_slide_prompt(
                     includes_figure, figure_reference, includes_table,
                     table_reference, includes_equation, equation_reference,
                     presenter_notes 等字段。
-        style_protocol: 风格协议字符串（来自 style_analyst）。
+        style_protocol: 设计规范字符串（来自 style_analyst）。
         total_pages: 总页数，用于页码显示。
+        slide_detail: 由 expand_slide_plan 生成的详细页面描述（可选）。
         failed_svg: 上次失败的 SVG 代码（重试时传入）。
         error_context: 上次的错误日志（重试时传入）。
 
@@ -219,6 +221,13 @@ def build_svg_slide_prompt(
     sections.append("Follow the color scheme, typography, layout principles, and visual features ")
     sections.append("defined below. These override the default values in the system prompt.\n")
     sections.append(f"{style_protocol}\n")
+
+    # 详细页面描述（由 expand_slide_plan 生成）
+    if slide_detail:
+        sections.append("### Detailed Slide Description\n")
+        sections.append("The following is a detailed layout and content description expanded from the outline. ")
+        sections.append("Use this as the primary guide for element placement and visual decisions.\n")
+        sections.append(f"{slide_detail}\n")
 
     # 页面内容
     sections.append("### Page Content\n")
