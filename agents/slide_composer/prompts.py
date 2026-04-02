@@ -151,6 +151,33 @@ Define in `<defs>`, reference with `fill="url(#id)"`. Converts to native PPTX gr
 
 `text-decoration="underline"` and `text-decoration="line-through"` are supported.
 
+### Image Card (MANDATORY for all `<image>` elements)
+
+Images extracted from academic papers always have **white backgrounds**. When the slide \
+background is colored, the white edges look jarring. You **MUST** wrap every `<image>` \
+element with a white rounded-rectangle card + soft shadow to make the white background \
+look intentional and professional.
+
+**Pattern** (always use this when placing an image):
+
+```xml
+<!-- Step 1: White card backing (slightly larger than the image, with padding) -->
+<rect x="648" y="148" width="424" height="324"
+      rx="8" fill="#FFFFFF" filter="url(#shadow)"/>
+<!-- Step 2: Image on top of the card (inset by the padding) -->
+<image href="figure.png" x="660" y="160" width="400" height="300"
+       preserveAspectRatio="xMidYMid meet"/>
+```
+
+Rules:
+- Card padding: **12px** on each side (card is 24px wider and 24px taller than the image).
+- Card corner radius: `rx="8"` (or match the design spec's border radius).
+- Card fill: always `#FFFFFF` regardless of slide background color.
+- Card shadow: use the `filter="url(#shadow)"` defined in `<defs>`. If no shadow filter \
+is defined yet, add one (see the shadow pattern above).
+- The `<rect>` card must appear **before** the `<image>` in SVG source (z-order: card below image).
+- Caption text (if any) should sit **below the card**, not overlapping it.
+
 ---
 
 ## Layout Patterns (1280×720 canvas)
@@ -167,6 +194,37 @@ Define in `<defs>`, reference with `fill="url(#id)"`. Converts to native PPTX gr
 
 > If the user prompt includes a "Design Specification" with Layout Principles (zone heights, margins, \
 spacing), use those values for page structure instead of the defaults above.
+
+---
+
+## Geometry & Spacing Rules (CRITICAL — violations cause rejection)
+
+### Safe Zone
+All visible content **must** stay within the safe zone: **x: 40–1240, y: 40–680**.
+Elements outside this range will be clipped or overflow the slide.
+
+### Minimum Spacing
+- Adjacent elements (text blocks, images, shapes) must have **≥20px gap** between their bounding boxes.
+- Between title and body content: **≥30px** vertical gap.
+- Between body text lines: use `dy="1.6em"` to `"2.0em"` (never less than `"1.4em"`).
+
+### Text Box Sizing
+- Estimate characters per line: `line_width / (font_size × 0.55)` for Latin, `line_width / (font_size × 1.0)` for CJK.
+- If text is longer than one line, split into multiple `<tspan>` elements.
+- Always set text block width explicitly — do NOT let long text overflow into adjacent elements.
+
+### Image + Text Coexistence
+When a slide has both text and an image:
+- **Left-right layout**: text zone x=40..600, image zone x=640..1240 (or vice versa). Zones must NOT overlap.
+- **Top-bottom layout**: allocate vertical space proportionally. Image + caption must fit within their zone.
+- After placing all elements, mentally verify: no bounding box intersects another.
+
+### Pre-output Self-Check
+Before outputting SVG, verify:
+1. Every element's `x + width ≤ 1280` and `y + height ≤ 720`.
+2. No two sibling elements share overlapping coordinate ranges (both x-range AND y-range overlap = collision).
+3. Text blocks have enough height for all `<tspan>` lines (count lines × line-height).
+4. Images do not extend beyond their allocated zone.
 
 ---
 
@@ -188,6 +246,7 @@ def build_svg_slide_prompt(
     slide_detail: str = "",
     failed_svg: str = "",
     error_context: str = "",
+    design_critique: str = "",
 ) -> str:
     """
     构建单页 SVG 生成的 user prompt。
@@ -201,7 +260,8 @@ def build_svg_slide_prompt(
         total_pages: 总页数，用于页码显示。
         slide_detail: 由 expand_slide_plan 生成的详细页面描述（可选）。
         failed_svg: 上次失败的 SVG 代码（重试时传入）。
-        error_context: 上次的错误日志（重试时传入）。
+        error_context: 上次的错误日志（语法/结构验证失败时传入）。
+        design_critique: 视觉评审反馈（设计质量检查未通过时传入）。
 
     Returns:
         完整的 user prompt 字符串。
@@ -282,13 +342,23 @@ def build_svg_slide_prompt(
                         "thank-you message, key takeaway, or call to action.\n")
 
     # 重试上下文
-    if failed_svg or error_context:
+    if failed_svg or error_context or design_critique:
         sections.append("### ⚠️ Retry Context\n")
-        sections.append("The previous SVG generation failed. Fix the issues below.\n")
-        if error_context:
+
+        if design_critique:
+            sections.append("The previous SVG **passed syntax validation** but **failed visual design review**. "
+                            "A visual auditor examined the rendered slide screenshot and found layout/aesthetic issues.\n")
+            sections.append(f"**Visual Critique (you MUST fix all issues listed below)**:\n```\n{design_critique}\n```\n")
+            sections.append("**Instructions**: Carefully read the critique above. Each issue includes the specific SVG element "
+                            "and attribute that needs to change, along with the suggested fix values. Apply ALL suggested fixes "
+                            "to the previous SVG below. Do NOT just regenerate from scratch — modify the specific coordinates, "
+                            "sizes, and positions mentioned in the critique.\n")
+        elif error_context:
+            sections.append("The previous SVG generation failed **syntax/structure validation**. Fix the issues below.\n")
             sections.append(f"**Error Log**:\n```\n{error_context}\n```\n")
+
         if failed_svg:
-            sections.append(f"**Previous Failed SVG**:\n```xml\n{failed_svg}\n```\n")
+            sections.append(f"**Previous SVG (apply fixes to this)**:\n```xml\n{failed_svg}\n```\n")
 
     # 最终指令
     sections.append("---\n")

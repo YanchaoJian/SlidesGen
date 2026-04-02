@@ -68,6 +68,7 @@ def generate_slide_svg(
     failed_svg: Optional[str] = None,
     error_context: Optional[str] = None,
     svg_verified: Optional[bool] = None,
+    design_critique: Optional[str] = None,
 ) -> Optional[str]:
     """
     调用 LLM 生成单页幻灯片的 SVG 源码。
@@ -81,14 +82,18 @@ def generate_slide_svg(
         failed_svg: 上次失败的 SVG（重试时传入）。
         error_context: 上次的错误日志（重试时传入）。
         svg_verified: 上次 SVG 是否通过验证。
+        design_critique: 视觉评审反馈（设计质量检查未通过时传入）。
 
     Returns:
         提取出的 SVG 字符串，失败返回 None。
     """
     slide_page = slide_plan.get("slide_page", 1)
     is_retry = failed_svg and not svg_verified
+    is_design_retry = bool(failed_svg and design_critique)
 
-    if is_retry:
+    if is_design_retry:
+        logger.info(f"   -> [Slide {slide_page}] SVG design retry mode: fixing visual issues from critique.")
+    elif is_retry:
         logger.info(f"   -> [Slide {slide_page}] SVG retry mode: fixing previous errors.")
     else:
         logger.info(f"   -> [Slide {slide_page}] SVG generation: creating from plan.")
@@ -98,8 +103,9 @@ def generate_slide_svg(
         style_protocol=style_protocol,
         total_pages=total_pages,
         slide_detail=slide_detail,
-        failed_svg=failed_svg if is_retry else "",
+        failed_svg=failed_svg if (is_retry or is_design_retry) else "",
         error_context=error_context if is_retry else "",
+        design_critique=design_critique if is_design_retry else "",
     )
 
     try:

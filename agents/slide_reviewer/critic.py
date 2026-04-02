@@ -51,7 +51,7 @@ def evaluate_and_critique_slide(
 
             # 2. PPTX → 截图
             logger.info("   -> Converting slide to image for review...")
-            image_count = pptx_to_images(temp_pptx, temp_dir, dpi=150)
+            image_count = pptx_to_images(temp_pptx, temp_dir, dpi=300)
             if image_count == 0:
                 logger.warning("   -> ⚠️ PPTX to image conversion resulted in 0 images.")
                 return "Failed to render slide image for evaluation."

@@ -205,6 +205,7 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
     logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): GenerateSlideSVG ---")
 
     svg_review = state.get("svg_review", {})
+    design_review = state.get("design_review", {})
 
     svg_code = generate_slide_svg(
         slide_plan=state["slide_plan"],
@@ -215,6 +216,7 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
         failed_svg=state.get("svg_code"),
         error_context=state.get("error_log"),
         svg_verified=svg_review.get("verified"),
+        design_critique=design_review.get("critique"),
     )
 
     if not svg_code:

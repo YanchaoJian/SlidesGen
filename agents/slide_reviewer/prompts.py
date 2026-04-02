@@ -27,8 +27,8 @@ You must scan in the following priority order. If you find a P0 error, directly 
 **[P0] Fatal Geometry Errors (Geometry & Layout Fatalities)**
 *   **Element Collision (Collision/Overlap)**: Does text overlap with shapes or images? Does the title cover the body text? Do elements stack on top of each other?
     *   *SVG Clue*: Check `x`, `y`, `width`, `height` attributes. Usually elements with close `y` values collide.
-*   **Content Overflow (Overflow/Out of Bounds)**: Does content exceed the SVG canvas boundary (960x540)?  Is text truncated?
-    *   *SVG Clue*: Check whether element `x + width` or `y + height` exceeds `viewBox` dimensions.
+*   **Content Overflow (Overflow/Out of Bounds)**: Does content exceed the SVG canvas boundary (1280×720)?  Is text truncated?
+    *   *SVG Clue*: Check whether element `x + width > 1280` or `y + height > 720`. Safe content zone is x: 40–1240, y: 40–680.
 *   **Text Too Long**: Does text overflow its containing rectangle due to excessive length?
 
 **[P1] General Aesthetics & Readability (Aesthetics & Readability)**
