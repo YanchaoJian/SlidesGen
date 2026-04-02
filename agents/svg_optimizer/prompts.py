@@ -22,6 +22,14 @@ structurally clearer version.
 6. **Keep the same visual theme**: Do not change the color palette or overall style direction. Only refine positioning, sizing, spacing, and emphasis.
 7. **Maintain all existing elements**: Do not remove content elements. You may add subtle decorative improvements (alignment guides via spacing, visual grouping via proximity) but never delete information.
 
+## Geometry Constraints (MUST FIX)
+
+Before applying CRAP principles, first fix any geometry violations. These are hard errors that must be resolved:
+
+1. **No overflow**: Every element must stay within the canvas bounds. For any element, `x + width ≤ canvas_width` and `y + height ≤ canvas_height`. Allow at most 5px tolerance.
+2. **No content overlap**: Text elements must not overlap with other text or image elements. Maintain at least 10px gap between content elements.
+3. **Text must not be clipped**: If a text element is too close to the canvas edge, move it inward. Ensure all text is fully readable.
+
 ## Four Core Design Principles
 
 ### 1. Alignment
@@ -69,30 +77,13 @@ structurally clearer version.
 - Use background rects or spacing to reinforce group boundaries
 """
 
-
-def build_crap_optimize_prompt(
-    svg_code: str,
-    canvas_width: int = 1280,
-    canvas_height: int = 720,
-) -> str:
-    """
-    构建 CRAP 优化器的用户提示词。
-
-    Args:
-        svg_code: 原始 SVG 源码。
-        canvas_width: 画布宽度。
-        canvas_height: 画布高度。
-
-    Returns:
-        用户提示词字符串。
-    """
-    return f"""\
+CRAP_OPTIMIZER_USER_PROMPT = """\
 ## Task
 
-Optimize the following SVG slide code by applying CRAP design principles.
+Optimize the following SVG slide code. First fix any geometry issues, then apply CRAP design principles.
 
 **Canvas**: {canvas_width} x {canvas_height} (DO NOT change)
-
+{geo_section}
 ## Original SVG Code
 
 ```svg
@@ -101,7 +92,7 @@ Optimize the following SVG slide code by applying CRAP design principles.
 
 ## Instructions
 
-1. Analyze the SVG for violations of each CRAP principle
+1. **Fix geometry issues first**: Resolve any overflow, overlap, or clipping problems listed above (if any), and check for others yourself
 2. Fix alignment issues: snap elements to consistent grid lines, unify margins
 3. Fix contrast issues: ensure title vs body size difference is clear, key info stands out
 4. Fix repetition issues: make same-type elements (cards, badges, headings) visually consistent

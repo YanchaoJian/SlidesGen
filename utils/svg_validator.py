@@ -83,11 +83,6 @@ def validate_svg(svg_content: str) -> Tuple[bool, str]:
     if violations:
         return False, f"SVG contains banned features: {', '.join(violations)}"
 
-    # 几何预检：检查元素越界和重叠
-    geo_warnings = _check_geometry(root)
-    if geo_warnings:
-        return False, "Geometry issues detected:\n" + "\n".join(geo_warnings)
-
     return True, ""
 
 

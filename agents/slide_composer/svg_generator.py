@@ -11,7 +11,7 @@ from typing import Optional
 
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from agents.slide_composer.prompts import SVG_GENERATION_SYSTEM_PROMPT, build_svg_slide_prompt
+from agents.slide_composer.prompts import SVG_GENERATION_SYSTEM_PROMPT
 from utils.llm import LLMConfig, create_llm
 
 logger = logging.getLogger(__name__)
@@ -57,6 +57,135 @@ def _find_svg_tag(text: str) -> Optional[str]:
     """从文本中提取 <svg ...>...</svg> 标签，支持多行。"""
     match = re.search(r"(<svg\b[^>]*>.*?</svg>)", text, re.DOTALL)
     return match.group(1).strip() if match else None
+
+
+def build_svg_slide_prompt(
+    slide_plan: dict,
+    style_protocol: str,
+    total_pages: int = 10,
+    slide_detail: str = "",
+    failed_svg: str = "",
+    error_context: str = "",
+    design_critique: str = "",
+) -> str:
+    """
+    构建单页 SVG 生成的 user prompt。
+
+    Args:
+        slide_plan: 单页幻灯片计划 dict，包含 slide_page, title, content,
+                    includes_figure, figure_reference, includes_table,
+                    table_reference, includes_equation, equation_reference,
+                    presenter_notes 等字段。
+        style_protocol: 设计规范字符串（来自 style_analyst）。
+        total_pages: 总页数，用于页码显示。
+        slide_detail: 由 expand_slide_plan 生成的详细页面描述（可选）。
+        failed_svg: 上次失败的 SVG 代码（重试时传入）。
+        error_context: 上次的错误日志（语法/结构验证失败时传入）。
+        design_critique: 视觉评审反馈（设计质量检查未通过时传入）。
+
+    Returns:
+        完整的 user prompt 字符串。
+    """
+    page = slide_plan.get("slide_page", 1)
+    title = slide_plan.get("title", "")
+    content_items = slide_plan.get("content", [])
+    notes = slide_plan.get("presenter_notes", "")
+
+    # ── 构建内容描述 ──
+    sections = []
+
+    sections.append(f"## Slide {page} / {total_pages}\n")
+
+    # 设计规范（从参考图提取的主题风格）
+    sections.append("### Design Specification\n")
+    sections.append("Follow the color scheme, typography, layout principles, and visual features ")
+    sections.append("defined below. These override the default values in the system prompt.\n")
+    sections.append(f"{style_protocol}\n")
+
+    # 详细页面描述（由 expand_slide_plan 生成）
+    if slide_detail:
+        sections.append("### Detailed Slide Description\n")
+        sections.append("The following is a detailed layout and content description expanded from the outline. ")
+        sections.append("Use this as the primary guide for element placement and visual decisions.\n")
+        sections.append(f"{slide_detail}\n")
+
+    # 页面内容
+    sections.append("### Page Content\n")
+    sections.append(f"**Title**: {title}\n")
+
+    if content_items:
+        sections.append("**Body Points**:")
+        for i, item in enumerate(content_items, 1):
+            sections.append(f"  {i}. {item}")
+        sections.append("")
+
+    # 图片引用
+    if slide_plan.get("includes_figure") and slide_plan.get("figure_reference"):
+        fig = slide_plan["figure_reference"]
+        fig_path = fig.get("path", "")
+        fig_caption = fig.get("caption", "")
+        sections.append("**Figure**:")
+        sections.append(f"  - Path: `{fig_path}`")
+        sections.append(f"  - Caption: {fig_caption}")
+        sections.append(f'  - Use: `<image href="{fig_path}" preserveAspectRatio="xMidYMid slice"/>`')
+        sections.append("")
+
+    # 表格引用
+    if slide_plan.get("includes_table") and slide_plan.get("table_reference"):
+        tbl = slide_plan["table_reference"]
+        sections.append("**Table** (render as SVG rectangles + text, NOT as HTML):")
+        sections.append(f"  - Caption: {tbl.get('caption', '')}")
+        sections.append(f"  - Data:\n```\n{tbl.get('markdown', '')}\n```")
+        sections.append("")
+
+    # 公式引用
+    if slide_plan.get("includes_equation") and slide_plan.get("equation_reference"):
+        eq = slide_plan["equation_reference"]
+        sections.append("**Equation** (render as SVG `<text>` with mathematical symbols):")
+        sections.append(f"  - LaTeX: `{eq.get('latex', '')}`")
+        sections.append(f"  - Context: {eq.get('context', '')}")
+        sections.append("")
+
+    # 演讲备注
+    if notes:
+        sections.append(f"**Presenter Notes** (for context, do NOT display on slide): {notes}\n")
+
+    # 页面类型提示
+    if page == 1:
+        sections.append("### Layout Hint\n")
+        sections.append("This is the **cover page**. Use a visually striking layout: "
+                        "large centered title, subtitle below, decorative elements, "
+                        "and the page background should make a strong first impression.\n")
+    elif page == total_pages:
+        sections.append("### Layout Hint\n")
+        sections.append("This is the **closing page**. Use a clean, memorable layout: "
+                        "thank-you message, key takeaway, or call to action.\n")
+
+    # 重试上下文
+    if failed_svg or error_context or design_critique:
+        sections.append("### ⚠️ Retry Context\n")
+
+        if design_critique:
+            sections.append("The previous SVG **passed syntax validation** but **failed visual design review**. "
+                            "A visual auditor examined the rendered slide screenshot and found layout/aesthetic issues.\n")
+            sections.append(f"**Visual Critique (you MUST fix all issues listed below)**:\n```\n{design_critique}\n```\n")
+            sections.append("**Instructions**: Carefully read the critique above. Each issue includes the specific SVG element "
+                            "and attribute that needs to change, along with the suggested fix values. Apply ALL suggested fixes "
+                            "to the previous SVG below. Do NOT just regenerate from scratch — modify the specific coordinates, "
+                            "sizes, and positions mentioned in the critique.\n")
+        elif error_context:
+            sections.append("The previous SVG generation failed **syntax/structure validation**. Fix the issues below.\n")
+            sections.append(f"**Error Log**:\n```\n{error_context}\n```\n")
+
+        if failed_svg:
+            sections.append(f"**Previous SVG (apply fixes to this)**:\n```xml\n{failed_svg}\n```\n")
+
+    # 最终指令
+    sections.append("---\n")
+    sections.append("Generate the complete SVG source code for this slide. "
+                    "Output only the SVG, nothing else.")
+
+    return "\n".join(sections)
 
 
 def generate_slide_svg(

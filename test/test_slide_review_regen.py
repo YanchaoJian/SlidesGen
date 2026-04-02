@@ -1,7 +1,7 @@
 """
-测试 Slide 生成-审查-重生成完整流程。
+测试 Slide 完整生成流程（含 CRAP 优化）。
 使用 test_slide_planner_output/slide_04_expansion.md 作为输入，
-依次调用：生成 SVG → 验证保存 → 转 PPTX → 转图片 → 视觉评判 → 若未通过则利用 critique 重生成 SVG → 再次评判。
+依次调用：生成 SVG -> 验证保存（raw） -> CRAP 优化 -> 重新 finalize -> 转 PPTX -> 转图片 -> 视觉评判 -> 若未通过则利用 design_critique 重生成 SVG -> 再次评判。
 产物输出到 test/test_slide_review_regen_output/。
 """
 
@@ -15,10 +15,11 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from dotenv import load_dotenv
 from agents.slide_composer.svg_generator import generate_slide_svg
-from utils.svg_validator import execute_svg
+from utils.svg_validator import execute_svg, finalize_single_svg
 from utils.pptx_merger import merge_svgs_to_pptx
 from utils.pptx_imaging import pptx_to_images
 from agents.slide_reviewer.critic import evaluate_and_critique_slide
+from agents.svg_optimizer.optimizer import optimize_svg_crap
 from utils.llm import LLMConfig
 
 
@@ -34,7 +35,6 @@ def main():
     load_dotenv(PROJECT_ROOT / ".env")
     llm_config = build_llm_config()
 
-    # 输入素材
     plan_path = PROJECT_ROOT / "test" / "test_planner_output" / "plan" / "presentation_plan_v0.json"
     detail_path = PROJECT_ROOT / "test" / "test_slide_planner_output" / "slide_04_expansion.md"
     style_path = PROJECT_ROOT / "test" / "test_style_analyst_output" / "style" / "style_protocol_v0.md"
@@ -60,10 +60,9 @@ def main():
     print(f"[Test] Slide page: 4 / {total_pages}")
     print(f"[Test] Output dir: {output_dir}")
 
-    # 初始状态
-    svg_code = None
     failed_svg = None
     error_context = None
+    design_critique = None
     max_iterations = 2
 
     for iteration in range(max_iterations):
@@ -78,6 +77,7 @@ def main():
             slide_detail=slide_detail,
             failed_svg=failed_svg,
             error_context=error_context,
+            design_critique=design_critique,
         )
 
         if not svg_code:
@@ -86,21 +86,45 @@ def main():
 
         print(f"[Test] SVG generated ({len(svg_code)} chars).")
 
-        # 2. 验证并保存 SVG
-        svg_path = output_dir / f"slide_04_v{iteration}.svg"
-        success, error = execute_svg(svg_code, str(svg_path))
+        # 2. 验证并保存 raw SVG
+        raw_svg_path = output_dir / f"slide_04_v{iteration}_raw.svg"
+        success, error = execute_svg(svg_code, str(raw_svg_path))
         if not success:
             print(f"[Test] SVG validation failed at iteration {iteration}: {error}")
-            # 强制保存原始 SVG，以便继续后续流程查看效果
-            svg_path.write_text(svg_code, encoding="utf-8")
-            print(f"[Test] SVG forcibly saved for inspection: {svg_path}")
+            raw_svg_path.write_text(svg_code, encoding="utf-8")
+            print(f"[Test] Raw SVG forcibly saved: {raw_svg_path}")
             failed_svg = svg_code
             error_context = error or "SVG validation failed"
-        else:
-            print(f"[Test] SVG saved: {svg_path}")
+            design_critique = None
+            # 仍然生成 raw PPTX/图片供查看
+            raw_pptx_path = output_dir / f"slide_04_v{iteration}_raw.pptx"
+            raw_img_dir = output_dir / f"images_v{iteration}_raw"
+            merge_svgs_to_pptx([str(raw_svg_path)], str(raw_pptx_path))
+            pptx_to_images(str(raw_pptx_path), str(raw_img_dir), dpi=150)
+            continue
 
-        # 3. 转 PPTX
+        print(f"[Test] Raw SVG validated and saved: {raw_svg_path}")
+
+        # 3. CRAP 优化
+        optimized_svg = optimize_svg_crap(svg_code, llm_config)
+        if optimized_svg:
+            opt_svg_path = output_dir / f"slide_04_v{iteration}.svg"
+            opt_svg_path.write_text(optimized_svg, encoding="utf-8")
+            finalize_ok, finalize_err = finalize_single_svg(str(opt_svg_path))
+            if finalize_ok:
+                svg_code = optimized_svg
+                svg_path = opt_svg_path
+                print(f"[Test] CRAP optimization applied: {svg_path}")
+            else:
+                print(f"[Test] CRAP optimization finalize failed: {finalize_err}. Using raw SVG.")
+                svg_path = raw_svg_path
+        else:
+            print(f"[Test] CRAP optimization skipped/failed. Using raw SVG.")
+            svg_path = raw_svg_path
+
+        # 4. 转 PPTX 和图片（最终版本）
         pptx_path = output_dir / f"slide_04_v{iteration}.pptx"
+        img_dir = output_dir / f"images_v{iteration}"
         result = merge_svgs_to_pptx([str(svg_path)], str(pptx_path))
         if not result:
             print(f"[Test] FAILED: PPTX conversion failed at iteration {iteration}.")
@@ -108,8 +132,6 @@ def main():
 
         print(f"[Test] PPTX created: {pptx_path}")
 
-        # 4. 转图片（用于视觉评判）
-        img_dir = output_dir / f"images_v{iteration}"
         img_dir.mkdir(parents=True, exist_ok=True)
         image_count = pptx_to_images(str(pptx_path), str(img_dir), dpi=150)
         if image_count == 0:
@@ -117,7 +139,7 @@ def main():
         else:
             print(f"[Test] Generated {image_count} image(s) in {img_dir}")
 
-        # 5. 视觉评判
+        # 5. 视觉评判（针对最终版本）
         critique = evaluate_and_critique_slide(
             slide_code=svg_code,
             svg_path=str(svg_path),
@@ -133,7 +155,8 @@ def main():
             print(f"[Test] [REVISE] Critique received at iteration {iteration}:")
             print(critique)
             failed_svg = svg_code
-            error_context = critique
+            design_critique = critique
+            error_context = None
 
     print(f"\n[Test] Reached max iterations ({max_iterations}). Final critique was not resolved.")
     print("[Test] Done (with remaining issues).")

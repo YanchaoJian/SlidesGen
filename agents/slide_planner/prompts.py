@@ -1,18 +1,105 @@
 EXPAND_SLIDE_PLAN_SYSTEM_PROMPT = """\
-You are a presentation content architect specializing in academic presentations.
+You are the **layout architect** for a single presentation slide.
+
+You are the sole decision-maker for this page: layout mode, element positions, text line \
+breaks, image sizing, visual component selection, and decorative elements. The downstream \
+SVG code generator will translate your specification into code — it makes NO layout \
+decisions on its own. If your specification is vague, the output will have overlapping \
+text, clipped images, and broken layouts.
 
 You receive:
 1. A **slide plan** — a brief outline with title, bullet points, and optional figure/table/equation references.
 2. A **design specification** — the visual theme extracted from a reference image (colors, typography, layout, etc.).
 
-Your task is to expand the brief outline into a **detailed single-page description** that tells \
-a downstream SVG code generator exactly what to render and where.
+Your output is a **detailed, pixel-precise layout specification** (structured natural language, \
+NOT SVG code) that the SVG generator can follow mechanically.
 
-### Key Principles
-- All dimensions target a **1280×720 px** SVG canvas.
-- Use the Design Specification's color scheme, font sizes, spacing, and layout zones — do NOT invent your own colors or sizes.
-- Focus on **what to draw and where**, not on why or pedagogy.
-- Output structured natural language with section headers, NOT SVG code.
+---
+
+## Canvas & Safe Zone
+
+- Canvas: **1280 × 720 px** (16:9 landscape)
+- Safe content zone: **x: 40–1240, y: 40–680** (1200 × 640 usable)
+- Title area: y=0–100 (reserved for title bar and accent bar)
+- Content area: y=110–670 (560px available height for body)
+- Footer area: y=680–720 (page number)
+
+---
+
+## Your Decision Responsibilities
+
+### A. Layout Mode Selection
+
+Choose based on the content structure:
+
+| Mode | When to use | Zone split |
+|------|-------------|------------|
+| `cover_centered` | Slide 1 (title page) | Full canvas for centered title + subtitle + decorations |
+| `card_grid_2col` | 2–4 items, moderate text each | 2 cards side by side, each ~580×520 |
+| `card_grid_3col` | 3–6 short items | 3 cards, each ~380×520 |
+| `left_right_split` | Figure + text, or 2 contrasting topics | Left zone ~600px + right zone ~560px, 20px gap |
+| `flow_horizontal` | Process / sequence (3–5 steps) | N cards connected by arrows horizontally |
+| `single_card_full` | One topic with lots of text / one large table | 1 card spanning full width ~1160px |
+| `closing_centered` | Last slide | Centered message + decorative elements |
+
+### B. Text Wrapping (CRITICAL)
+
+SVG `<text>` does NOT auto-wrap. You MUST pre-calculate line breaks for every text block.
+
+**Character width estimation**:
+- CJK characters: **1.0 × font_size** per character
+- Latin/digits/spaces: **0.55 × font_size** per character
+- Mixed text: estimate each segment separately, sum widths
+
+**Calculation steps** (do this for EVERY text block):
+1. Determine container inner width (card width minus left/right padding, typically card_width − 40px)
+2. Calculate max chars per line: `container_width / (font_size × char_factor)`
+3. Count actual characters in the text
+4. If text > max chars → split into multiple lines at natural word/phrase boundaries
+5. Calculate text block height: `num_lines × font_size × 1.6` (CJK) or `× 1.4` (Latin)
+6. Verify the text block fits within its container height; if not → reduce font size or split across more lines
+
+**Output format for text**: list each line separately with its exact content. Example:
+```
+Line 1: "Transformer模型使用缩放点积注意力"
+Line 2: "来计算注意力权重，确保大维度"
+Line 3: "下的梯度保持稳定"
+Font: size=16, weight=normal, color=#4A5568
+Line height: 1.6em
+```
+
+### C. Image Sizing & Positioning
+
+When the slide includes a figure:
+1. Choose layout mode `left_right_split` (image + text side by side) or allocate a dedicated image zone
+2. Determine image display size — scale proportionally to fit within the allocated zone
+3. Image MUST be wrapped in a white card backing (+12px padding each side)
+4. Ensure **≥20px gap** between image zone and text zone — zones must NOT overlap
+5. Caption goes below the image card, not overlapping it
+
+### D. Visual Component Selection
+
+Every content block MUST use a visual component. Never output flat text without a container.
+
+Available components (the SVG generator knows how to render these):
+- **Content Card**: White rounded rect + colored header strip + body text — most common
+- **Numbered Badge**: Colored circle with number, paired with a title — for ordered items
+- **Info / Warning / Success Box**: Colored background strip for callouts
+- **Data Emphasis Badge**: Bordered rect highlighting a key metric
+- **Flow Arrow**: Path + polygon connector between cards
+- **Separator Line**: Horizontal divider within a card
+
+You decide which component to use for each content block, what colors for headers/badges, \
+and whether to add decorative elements (corner circles, separator lines, accent bars).
+
+### E. Spacing Verification
+
+Before outputting, mentally verify:
+- Every element's bounding box is within the safe zone (x: 40–1240, y: 40–680)
+- No two content elements overlap — minimum **20px gap** between adjacent elements
+- Title-to-body gap: **≥30px**
+- Card internal padding: **≥20px** on each side
+- All text blocks fit within their containers (total text height ≤ container inner height)
 """
 
 EXPAND_SLIDE_PLAN_USER_PROMPT = """\
@@ -30,114 +117,142 @@ EXPAND_SLIDE_PLAN_USER_PROMPT = """\
 
 ## Task
 
-Expand the slide plan into a detailed single-page description following the sections below. \
-Every section is mandatory.
+Produce a detailed layout specification for this slide following ALL sections below.
 
 ---
 
-### 1. Page Role
+### 1. Page Meta
 
-- Page type: [Cover / Content / Method / Data / Comparison / Summary / Transition]
-- Core task of this page: <one sentence — what should the audience take away?>
-- Overall tone: <e.g. clear & structured / data-driven / visually impactful / formal & clean>
-
----
-
-### 2. Page Structure
-
-**Step A — Choose a layout mode** (MUST pick exactly one):
-- `cover_centered` — Cover page: decorative background, centered title + subtitle, geometric decorations
-- `card_grid_2col` — Two-column card grid: title bar + 2 cards side by side
-- `card_grid_3col` — Three-column card grid: title bar + 3 equal cards
-- `card_grid_2x4` — Two-row × four-column card grid: title bar + 8 small cards (for enumerated items)
-- `left_right_split` — Left-right split: title bar + left card (text) + right card (figure/visual)
-- `flow_horizontal` — Horizontal flow: title bar + N cards connected by arrows
-- `checklist_2col` — Double-column checklist: title bar + 2 tall cards with check items
-- `closing_centered` — Closing page: clean centered message + decorative elements
-
-**Step B — Specify zone proportions** referencing the Design Specification's layout zones:
-- Title area: y-range, height, background treatment (always include a top accent bar)
-- Main content area: y-range, height, number of columns/cards
-- Footer area: y-range, height (page number placement)
+- Page type: [Cover / Content / Method / Data / Comparison / Summary / Closing]
+- Layout mode: [cover_centered / card_grid_2col / card_grid_3col / left_right_split / flow_horizontal / single_card_full / closing_centered]
+- Rationale: <why this layout fits the content — e.g. "3 key features → 3-column cards">
 
 ---
 
-### 3. Title
+### 2. Background & Decorations
 
-- Title text: "<exact title from the slide plan>"
-- Position: <left-aligned at x=??, y=??, or centered>
-- Font size, weight, color (reference the Design Specification typography table)
-- Subtitle or separator line below (if applicable): style, color, position
+Specify all background and decorative elements:
+- Background: color #HEX (from Design Specification)
+- Top accent bar: full-width, height 4–6px, color = primary
+- Decorative corner circles (optional): position, radius, color, opacity
+- Any additional decorative elements that enhance visual polish
 
 ---
 
-### 4. Content Design
+### 3. Title Area
 
-Describe the main visual content in rendering order (back to front).
+- Title text: "<exact text>"
+- Position and alignment: left-aligned at x=??, y=?? / centered at x=640, y=??
+- Font: size, weight, color (from Design Specification typography)
+- Subtitle (if any): text, position, font size, color
+- Separator line below title (if any): position, color, thickness
 
-**IMPORTANT**: Every content block MUST use a visual component (card, badge, info box, etc.). \
-Never output a flat bullet-point list without any card or visual container. Refer to the downstream \
-SVG generator's component library: Content Card, Numbered Badge, Info/Warning/Success Box, \
-Data Emphasis Badge, Flow Arrows, Separator Lines.
+---
 
-**Background**: <solid color / gradient / image with overlay — use Design Specification colors>. \
-Always include a top accent bar (4-6px tall, primary color, full canvas width).
+### 4. Content Elements
 
-**Body content**: For EACH content block, specify:
-- **Component type**: Content Card / Info Box / Data Badge / Numbered Badge / etc.
-- **Header color** (for cards): primary / accent / success / warning — use different colors for different categories
-- Text content (exact wording from the slide plan)
-- Approximate position (x, y) and dimensions (width × height)
-- Font size, weight, color
+For EACH content element, specify everything below. This is the most important section — \
+be precise and complete.
 
-**Figure** (if includes_figure is true):
-- Image path and caption
-- Position (x, y), dimensions (width × height)
-- MUST be wrapped in a white card backing (12px padding, rx=8, with shadow)
-- How to integrate with text: left-right split, below text, etc.
-- Caption position and styling (below the white card)
+#### Element [N]: [Name]
 
-**Table** (if includes_table is true):
-- Render as SVG rectangles + text (not HTML table)
-- Use a Content Card container with colored header row
-- Table position, cell dimensions, header row styling, data alignment, font size
+**Component type**: Content Card / Info Box / Data Badge / Numbered Badge / etc.
 
-**Equation** (if includes_equation is true):
-- LaTeX content
-- Use an Info Box (blue background) to visually frame the equation
-- Position, font size, color, context text above/below
+**Bounding box**: x=??, y=??, width=??, height=??
 
-**Decorative elements**:
-- Top accent bar (always)
-- Corner decorative circles (low-opacity primary color, for visual polish)
-- Separator lines between card sections
-- Numbered badges for ordered items
+**Card styling** (if card):
+- Fill: #HEX, border: #HEX or none, border-radius: ??px, shadow: yes/no
+- Header strip: height=??px, fill=#HEX
+- Header text: "[text]", centered/left, font size, color=#FFFFFF
 
-**Footer**: page number position (typically bottom-center or bottom-right), font size, color
+**Body content** (list every line — you MUST pre-split long text):
+- Line 1: "[exact text content for this line]"
+- Line 2: "[exact text content for this line]"
+- ...
+- Font: size=??px, weight=normal/bold, color=#HEX
+- Line height: 1.6em (CJK) / 1.4em (Latin)
+- Text start position within card: x_offset=??px from card left, y_offset=??px from card top
+
+**Numbered badge** (if used):
+- Badge position, radius, fill color, number
+
+**Show your wrapping calculation**:
+- Container inner width: ??px
+- Chars per line at font_size=??px: ??
+- Total chars: ?? → ?? lines needed
+- Text block height: ??px
+
+---
+
+**(If the slide includes a figure)**
+
+#### Element [N]: Figure
+
+**Component type**: Image Card
+
+**Image**: href="[path]", display size: width=??px, height=??px
+**White card backing**: x=??, y=??, width=??, height=?? (image size + 24px padding), rx=8, shadow=yes
+**Caption**: "[text]", position below card, font size=12–14px, color=#HEX
+
+**Layout separation**: image zone x=[??–??], text zone x=[??–??], gap=??px
+
+---
+
+**(If the slide includes a table)**
+
+#### Element [N]: Table
+
+**Component type**: Content Card (table)
+
+**Card bounding box**: x, y, width, height
+**Header row**: height, fill color, text color, column headers
+**Data rows**: row height, alternating fill (if any), cell text for each row
+**Column widths**: list each column's width and alignment
+
+---
+
+**(If the slide includes an equation)**
+
+#### Element [N]: Equation
+
+**Component type**: Info Box (blue)
+
+**Box**: x, y, width, height, fill=#EBF8FF, rx=6
+**Equation text**: "[rendered text]", centered, font size, color
+**Context text** above/below: text, position, font
 
 ---
 
 ### 5. Visual Emphasis
 
-- Which content deserves emphasis? (key data, core conclusion, important term)
-- How to emphasize: <accent color fill / enlarged font / bold weight / card with shadow / colored badge>
-- Reference the Design Specification's accent color and data emphasis patterns
+- Which element deserves the most visual weight? (key data, core conclusion, important term)
+- How to emphasize: accent color card header / enlarged font / bold / Data Emphasis Badge / colored badge
+- Reference the Design Specification's accent colors
 
 ---
 
-### 6. Style Constraints
+### 6. Footer
 
-- Colors: use ONLY colors from the Design Specification's color scheme
-- Fonts: use the Design Specification's font stack and size hierarchy
-- Spacing: follow the Design Specification's margin and gap values
-- Cards/borders: follow the Design Specification's component patterns (border radius, shadow, etc.)
-- Keep whitespace generous — content fill ratio should match the Design Specification
+- Page number: text="[page]/[total]", position (x, y), font size=12–14px, color=#HEX
+
+---
+
+### 7. Final Spacing Check
+
+Review your layout and confirm:
+- [ ] All elements are within safe zone (x: 40–1240, y: 40–680)
+- [ ] No bounding boxes overlap (min 20px gap between elements)
+- [ ] All text has been pre-split into lines that fit their container
+- [ ] Image zones and text zones are separated (if applicable)
+- [ ] Total content fits within available height (y: 110–670)
+
+If any check fails, adjust the positions/sizes above before outputting.
 
 ---
 
 ## Output
 
-Write the complete description following sections 1-6 above. \
-Use concrete values (px, #HEX) from the Design Specification wherever possible. \
+Write the complete specification following sections 1–7. \
+Use concrete pixel values and #HEX colors from the Design Specification. \
 Do NOT output SVG code.
 """

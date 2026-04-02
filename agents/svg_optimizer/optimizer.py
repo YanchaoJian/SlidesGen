@@ -7,11 +7,13 @@ CRAP 设计原则优化器。
 import logging
 import re
 from typing import Optional
+from xml.etree import ElementTree as ET
 
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from agents.svg_optimizer.prompts import CRAP_OPTIMIZER_SYSTEM_PROMPT, build_crap_optimize_prompt
+from agents.svg_optimizer.prompts import CRAP_OPTIMIZER_SYSTEM_PROMPT, CRAP_OPTIMIZER_USER_PROMPT
 from agents.slide_composer.svg_generator import extract_svg_content
+from utils.svg_validator import _check_geometry
 from utils.llm import LLMConfig, create_llm
 
 logger = logging.getLogger(__name__)
@@ -56,10 +58,31 @@ def optimize_svg_crap(
     canvas_w, canvas_h = _get_canvas_dimensions(svg_code)
     logger.info(f"   -> CRAP optimizer: canvas {canvas_w}x{canvas_h}, input {len(svg_code)} chars")
 
-    user_prompt = build_crap_optimize_prompt(
-        svg_code=svg_code,
+    # 运行几何预检，将问题作为提示信息传给 LLM
+    geometry_warnings = ""
+    try:
+        root = ET.fromstring(svg_code)
+        geo_issues = _check_geometry(root)
+        if geo_issues:
+            geometry_warnings = "\n".join(f"- {w}" for w in geo_issues)
+            logger.info(f"   -> CRAP optimizer: {len(geo_issues)} geometry issue(s) detected, passing to LLM for fixing.")
+    except ET.ParseError:
+        pass  # SVG 已通过 validate_svg，这里不应该失败
+
+    geo_section = ""
+    if geometry_warnings:
+        geo_section = (
+            "\n## Pre-detected Geometry Issues (MUST FIX FIRST)\n\n"
+            "The following geometry problems were detected by automated analysis. "
+            "You MUST fix all of them:\n\n"
+            f"{geometry_warnings}\n"
+        )
+
+    user_prompt = CRAP_OPTIMIZER_USER_PROMPT.format(
         canvas_width=canvas_w,
         canvas_height=canvas_h,
+        geo_section=geo_section,
+        svg_code=svg_code,
     )
 
     try:
