@@ -125,8 +125,9 @@ def map_slides_to_tasks(state: OverallState):
         
         task_input: SlideState = initialize_slide_state(
             slide_page=slide_page,
-            slide_plan=slide_plan, 
-            slide_style_protocol=state["style_protocol"]
+            slide_plan=slide_plan,
+            slide_style_protocol=state["style_protocol"],
+            total_pages=len(slides_plan),
         )
         tasks.append(Send("generate_single_slide", task_input))
     

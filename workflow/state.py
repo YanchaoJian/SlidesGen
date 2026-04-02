@@ -59,6 +59,7 @@ class SlideState(TypedDict):
     """
     # --- 任务标识 ---
     slide_page: int
+    total_pages: int
 
     # --- 任务输入 (由主图在分发时提供) ---
     slide_plan: Dict[str, Any]
@@ -103,9 +104,11 @@ def initialize_slide_state(
     slide_page: int,
     slide_plan: Dict[str, Any],
     slide_style_protocol: str,
+    total_pages: int = 10,
 ) -> SlideState:
     return {
         "slide_page": slide_page,
+        "total_pages": total_pages,
         "slide_plan": slide_plan,
         "slide_style_protocol": slide_style_protocol,
         "slide_detail": None,
