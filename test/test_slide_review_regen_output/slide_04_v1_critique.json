@@ -2,5 +2,9 @@
   {
     "pass": false,
     "critique": "FAIL: 1. **Text Overlap**: The body text overlaps with itself due to insufficient line spacing. **Fix**: Increase `dy` values in `<tspan>` elements to `dy='2.5em'` for better spacing. 2. **Image Overlap**: The image overlaps with the descriptive text below it. **Fix**: Move the image up by changing `<image y='160'>` to `y='140'` or adjust the text position. 3. **Text Overflow**: The descriptive text at the bottom is cut off. **Fix**: Move the text up by changing `<text y='490'>` to `y='470'`."
+  },
+  {
+    "pass": false,
+    "critique": "FAIL: 1. **Text Overlap**: The text in the left text area is too close to the right visual area, causing overlap with the image. **Fix**: Move the right visual area to the right by setting `<rect x='900'>` and `<image x='912'>`. 2. **Text Spacing**: The text in the left text area is cramped, with insufficient spacing between lines. **Fix**: Increase `dy` in `<tspan>` elements to `2.5em` for better readability."
   }
 ]
