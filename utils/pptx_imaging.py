@@ -3,6 +3,8 @@ import logging
 import tempfile
 import argparse
 import subprocess
+import shutil
+import sys
 from pathlib import Path
 
 # 安装依赖: pip install python-pptx pdf2image tenacity
@@ -13,14 +15,50 @@ from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_t
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+def _get_poppler_path() -> str | None:
+    """在 Windows 上查找可用的 Poppler bin 目录。"""
+    if sys.platform != "win32":
+        return None
+
+    # 1. 优先使用环境变量
+    env_path = os.environ.get("POPPLER_PATH")
+    if env_path and Path(env_path).exists():
+        return env_path
+
+    # 2. 遍历 PATH，找同时包含 pdftoppm.exe 和 pdfinfo.exe 的目录
+    # 优先选择路径中带 "poppler" 的，排除明显不兼容的 "texlive"
+    candidates = []
+    for path_dir in os.environ.get("PATH", "").split(os.pathsep):
+        path_dir = path_dir.strip('"')
+        if not path_dir:
+            continue
+        lowered = path_dir.lower()
+        if "texlive" in lowered:
+            continue
+        bin_path = Path(path_dir)
+        if (bin_path / "pdftoppm.exe").exists() and (bin_path / "pdfinfo.exe").exists():
+            candidates.append(str(bin_path))
+
+    for c in candidates:
+        if "poppler" in c.lower():
+            return c
+    return candidates[0] if candidates else None
+
+
 def _save_images_blocking(pdf_path: str, output_dir: str, dpi: int):
     """私有函数：将PDF渲染为图片并保存"""
     try:
+        convert_kwargs = {}
+        poppler_path = _get_poppler_path()
+        if poppler_path:
+            convert_kwargs["poppler_path"] = poppler_path
+
         images = convert_from_path(
             pdf_path,
             dpi=dpi,
             fmt="jpeg",
-            thread_count=4,
+            thread_count=1,
+            **convert_kwargs,
         )
         
         if not images:

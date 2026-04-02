@@ -90,7 +90,7 @@ def route_slide_design_check(state: SlideState):
         return END
 
     retry_count = design_review.get("retry_count", 0)
-    if retry_count >= 3:
+    if retry_count >= 5:
         logger.warning(f"⚠️ [Slide {slide_page}] Design check failed after {retry_count} retries. Accepting the last generated version to ensure output.")
         return END
 
