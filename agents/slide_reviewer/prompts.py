@@ -38,6 +38,19 @@ You must scan in the following priority order. If you find a P0 error, directly 
 *   **Alignment**: Are elements in the same column left-aligned?
 *   **Contrast**: Is the text color clearly visible on the background?
 
+**[P2] Design Quality & Visual Richness (Design Polish)**
+*   **Card Usage**: Does the slide use card components (white `<rect>` with rounded corners, colored header strips) to organize content? A slide that is just flat text on a background is LOW QUALITY.
+    *   *SVG Clue*: Look for `<rect rx="..." fill="#FFFFFF">` containers around content groups.
+*   **Visual Hierarchy**: Are there at least 3 levels of visual hierarchy (title → card headers → body text)? Are card headers using distinct colors?
+*   **Decorative Elements**: Does the slide have a top accent bar, decorative shapes, or separator lines? Bare slides without any decoration feel unfinished.
+*   **Color Variety**: Does the slide use the style protocol's color palette effectively (primary, accent, success, warning), or is everything a single color?
+*   **Information Density**: Does the slide make good use of the 1280×720 canvas? Too much empty space (< 30% content fill) or too crowded (> 80% fill) both fail.
+    *   *Exception*: Cover and closing slides can have lower content density.
+
+> **P2 Severity**: P2 issues alone should result in `pass: false` if the slide looks significantly \
+> worse than a professional template (no cards, no hierarchy, no decoration). Include specific \
+> suggestions like "Wrap the 3 bullet points in a 3-column card layout with colored headers."
+
 ---
 
 ### 3. Diagnosis & Fix Logic (Diagnosis & Fix Logic)

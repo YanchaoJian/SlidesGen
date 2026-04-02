@@ -180,17 +180,124 @@ is defined yet, add one (see the shadow pattern above).
 
 ---
 
+## Design Component Library (USE THESE to build professional slides)
+
+You MUST compose slides using these component patterns rather than flat text lists. \
+Every content slide should use **at least one** card or visual component below. \
+Plain bullet-point text without any card or visual structure is considered LOW QUALITY.
+
+### Component 1: Content Card (most common — use for body content)
+
+A white rounded-rectangle with a colored header strip, optional numbered badge, and body content.
+
+```xml
+<!-- Card container -->
+<rect x="60" y="110" width="360" height="480" rx="12" fill="#FFFFFF"
+      stroke="#E2E8F0" stroke-width="1" filter="url(#shadow)"/>
+<!-- Colored header strip (use primary/accent color, match card width) -->
+<rect x="60" y="110" width="360" height="55" rx="12" fill="#1A5F9E"/>
+<rect x="60" y="155" width="360" height="10" fill="#1A5F9E"/>
+<!-- Header title (white text on colored strip) -->
+<text x="240" y="145" text-anchor="middle" font-size="22" font-weight="bold"
+      fill="#FFFFFF">Card Title</text>
+<!-- Body content inside card -->
+<text x="85" y="195" font-size="14" fill="#4A5568">• Item one</text>
+<text x="85" y="220" font-size="14" fill="#718096">• Item two</text>
+```
+
+Use different header colors for different categories (primary, accent, success, warning). \
+Multiple cards can be arranged in 2-column, 3-column, or 2×N grid layouts.
+
+### Component 2: Numbered Badge (for ordered items inside cards or flows)
+
+```xml
+<circle cx="84" cy="145" r="14" fill="#1A5F9E"/>
+<text x="84" y="150" text-anchor="middle" font-size="12" font-weight="bold"
+      fill="#FFFFFF">1</text>
+<text x="108" y="150" font-size="18" font-weight="bold" fill="#2D3748">Item Title</text>
+```
+
+### Component 3: Info / Warning / Success Box
+
+Colored background strip for tips, warnings, or highlights inside cards.
+
+```xml
+<!-- Success box (green) -->
+<rect x="85" y="395" width="310" height="35" rx="6" fill="#F0FFF4"/>
+<text x="240" y="418" text-anchor="middle" font-size="13" fill="#38A169">
+    ✓ Correct: use this approach</text>
+
+<!-- Warning box (red) -->
+<rect x="85" y="440" width="310" height="35" rx="6" fill="#FFF5F5"/>
+<text x="240" y="463" text-anchor="middle" font-size="12" fill="#E53E3E">
+    ⚠ Warning: avoid this pattern</text>
+
+<!-- Info box (blue) -->
+<rect x="85" y="275" width="310" height="50" rx="6" fill="#EBF8FF"/>
+<text x="240" y="300" text-anchor="middle" font-size="12" fill="#1A5F9E">
+    💡 Tip: additional context here</text>
+```
+
+### Component 4: Decorative Page Elements
+
+Use these on EVERY page for visual polish:
+
+```xml
+<!-- Top accent bar (4-6px, spans full width) -->
+<rect x="0" y="0" width="1280" height="4" fill="#1A5F9E"/>
+
+<!-- Page title with subtitle -->
+<text x="640" y="55" text-anchor="middle" font-size="32" font-weight="bold"
+      fill="#1A5F9E">Page Title</text>
+<text x="640" y="82" text-anchor="middle" font-size="15" fill="#718096">
+    Subtitle · Secondary description</text>
+
+<!-- Corner decorative circles (subtle, low opacity) -->
+<circle cx="80" cy="80" r="120" fill="#1A5F9E" fill-opacity="0.06"/>
+<circle cx="1200" cy="640" r="150" fill="#1A5F9E" fill-opacity="0.06"/>
+```
+
+### Component 5: Flow Diagram with Arrows (for processes / sequences)
+
+```xml
+<!-- Arrow connector between cards -->
+<path d="M 260 350 L 300 350" stroke="#CBD5E0" stroke-width="3" fill="none"/>
+<polygon points="300,346 308,350 300,354" fill="#CBD5E0"/>
+```
+
+### Component 6: Data Emphasis Badges (for key numbers / stats)
+
+```xml
+<!-- Colored background badge for key data -->
+<rect x="100" y="300" width="200" height="60" rx="8" fill="#FFFAF0"
+      stroke="#E07C24" stroke-width="1"/>
+<text x="200" y="325" text-anchor="middle" font-size="13" font-weight="bold"
+      fill="#C05621">Key Metric</text>
+<text x="200" y="348" text-anchor="middle" font-size="18" font-weight="bold"
+      fill="#2D3748">42.5%</text>
+```
+
+### Component 7: Separator Line
+
+```xml
+<line x1="85" y1="350" x2="335" y2="350" stroke="#E2E8F0" stroke-width="1"/>
+```
+
+---
+
 ## Layout Patterns (1280×720 canvas)
 
-**Default layouts** (override with the Design Specification if provided):
+Choose layouts **based on content type**, not randomly. Use the Design Specification's values if provided.
 
-| Pattern | Description | Key Coordinates |
-|---------|-------------|----------------|
-| Title + subtitle centered | Cover / chapter page | Title y≈300, subtitle y≈380 |
-| Top header bar + body | Standard content page | Header h=100-120, body starts y≈160 |
-| Left-right split | Image + text | Left x=40..620, Right x=660..1240 |
-| Three-column cards | Feature list | x=40,440,840 each w=380, gap=20 |
-| Full-image + overlay | Visual impact cover | Image fills canvas, gradient overlay, text on top |
+| Pattern | When to Use | Structure |
+|---------|-------------|-----------|
+| **Cover** (centered) | Slide 1 only | Decorative bg + centered title y≈300 + subtitle y≈380 + decorative shapes |
+| **Page title + card grid** | Lists, categories, features | Title area y=0-100, 2/3/4-column cards below y=110 |
+| **Page title + left-right cards** | Comparison, pros/cons | Title area, two equal-width cards side by side |
+| **Page title + flow diagram** | Processes, sequences | Title area, horizontal cards connected by arrows |
+| **Left-right split** | Image + text, figure analysis | Left card x=60..600, right card x=640..1220 |
+| **Checklist / table layout** | Requirements, specs | Two-column cards with list items using check marks |
+| **Closing** | Last slide | Clean centered "Thank you" + takeaway + decorative shapes |
 
 > If the user prompt includes a "Design Specification" with Layout Principles (zone heights, margins, \
 spacing), use those values for page structure instead of the defaults above.
