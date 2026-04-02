@@ -1,5 +1,17 @@
+# Python
+**/__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.venv/
+
+# Project-specific
 models/
 
-.env
-
-
+# IDE
+.vscode/

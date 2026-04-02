@@ -1,0 +1,14 @@
+langchain-core
+langchain-openai
+langgraph
+langgraph-checkpoint-sqlite
+pydantic
+python-pptx
+marker-pdf
+pdf2image
+tenacity
+torch
+surya-ocr
+python-dotenv
+requests
+matplotlib
