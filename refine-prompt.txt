@@ -1,8 +1,0 @@
-我测试后，想要改进pdf解析模块，要求如下
-产物base_content.json可以调整为pdf-content.json，因为不需要llm增强了
-提取出的表格和公式，因为没有llm加持，description字段为空，去掉这个字段
-公式只有单独的一个公式，没有描述来解释，可以marker模型利用 Document 对象的导航 API，Document 类提供了强大的上下文获取方法，见 marker github库的document.pyL45-L63：get_next_block(block): 获取当前块的下一个块、get_prev_block(block): 获取当前块的上一个块、get_page(page_id): 获取指定页面、get_block(block_id): 通过 ID 获取任意块。把该公式的前后各一个块作为公式上下文字段，写入到输出json。使用示例逻辑：
-    equation_block = document.get_block(equation_id)
-    prev_block = document.get_prev_block(equation_block)
-    next_block = document.get_next_block(equation_block)
-注意要把agents\pdf_parser\image_orientation.py集成到项目中，如果已经集成了就不用管了

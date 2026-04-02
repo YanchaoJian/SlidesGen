@@ -5,7 +5,7 @@
 import argparse
 from pathlib import Path
 
-from agents.composer.svg_runner import merge_svgs_to_pptx
+from utils.pptx_merger import merge_svgs_to_pptx
 
 
 def merge_slides(result_dir: str, output_dir: str):

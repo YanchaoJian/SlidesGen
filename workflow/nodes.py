@@ -9,11 +9,12 @@ from workflow.feedback_router import analyze_feedback
 from agents.pdf_parser.extractor import extract_pdf
 from agents.style_analyst.analyzer import analyze_style
 from agents.style_analyst.critic import critique_style_protocol
-from agents.planner.planner import plan_presentation
+from agents.ppt_planner.planner import plan_presentation
 from agents.slide_planner.expander import expand_slide_plan
-from agents.composer.svg_generator import generate_slide_svg
-from agents.composer.svg_runner import execute_svg, merge_svgs_to_pptx
-from agents.slide_critic.critic import evaluate_and_critique_slide
+from agents.slide_composer.svg_generator import generate_slide_svg
+from utils.svg_validator import execute_svg
+from utils.pptx_merger import merge_svgs_to_pptx
+from agents.slide_reviewer.critic import evaluate_and_critique_slide
 from utils.llm import LLMConfig
 from workflow.state import OverallState, SlideState
 
@@ -209,7 +210,7 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
         slide_plan=state["slide_plan"],
         style_protocol=state["slide_style_protocol"],
         llm_config=_get_llm_config(config, stage="svg"),
-        total_pages=total_pages,
+        total_pages=state.get("total_pages", 10),
         slide_detail=state.get("slide_detail"),
         failed_svg=state.get("svg_code"),
         error_context=state.get("error_log"),

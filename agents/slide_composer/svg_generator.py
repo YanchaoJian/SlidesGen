@@ -11,7 +11,7 @@ from typing import Optional
 
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from agents.composer.prompts import SVG_GENERATION_SYSTEM_PROMPT, build_svg_slide_prompt
+from agents.slide_composer.prompts import SVG_GENERATION_SYSTEM_PROMPT, build_svg_slide_prompt
 from utils.llm import LLMConfig, create_llm
 
 logger = logging.getLogger(__name__)
