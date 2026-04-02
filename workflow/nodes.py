@@ -15,6 +15,7 @@ from agents.slide_composer.svg_generator import generate_slide_svg
 from utils.svg_validator import execute_svg
 from utils.pptx_merger import merge_svgs_to_pptx
 from agents.slide_reviewer.critic import evaluate_and_critique_slide
+from agents.svg_optimizer.optimizer import optimize_svg_crap
 from utils.llm import LLMConfig
 from workflow.state import OverallState, SlideState
 
@@ -262,6 +263,50 @@ def check_svg_execution_node(state: SlideState, config: RunnableConfig) -> Dict[
             "svg_review": {"verified": False, "retry_count": retry_count + 1, "critique": error},
             "error_log": error,
         }
+
+def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
+    """[Node] 使用 CRAP 设计原则对 SVG 进行代码级视觉优化"""
+    config = config["configurable"]
+    slide_page = state["slide_page"]
+    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): OptimizeSVGCRAP ---")
+
+    svg_code = state.get("svg_code")
+    svg_path = state.get("svg_path")
+
+    if not svg_code or not svg_path:
+        logger.warning(f"   -> [Slide {slide_page}] No SVG code/path available. Skipping CRAP optimization.")
+        return {}
+
+    optimized_svg = optimize_svg_crap(
+        svg_code=svg_code,
+        llm_config=_get_llm_config(config, stage="svg"),
+    )
+
+    if not optimized_svg:
+        logger.info(f"   -> [Slide {slide_page}] CRAP optimization returned no result. Keeping original SVG.")
+        return {}
+
+    # 重新验证并执行后处理
+    from utils.svg_validator import validate_svg, finalize_single_svg
+
+    is_valid, error = validate_svg(optimized_svg)
+    if not is_valid:
+        logger.warning(f"   -> [Slide {slide_page}] CRAP-optimized SVG failed validation: {error}. Keeping original.")
+        return {}
+
+    # 写入优化后的 SVG（覆盖原文件）
+    with open(svg_path, "w", encoding="utf-8") as f:
+        f.write(optimized_svg)
+
+    # 重新执行后处理管线
+    success, finalize_error = finalize_single_svg(svg_path)
+    if not success:
+        logger.warning(f"   -> [Slide {slide_page}] Finalize failed after CRAP optimization: {finalize_error}. Keeping original.")
+        return {}
+
+    logger.info(f"   -> [Slide {slide_page}] CRAP optimization applied and finalized successfully.")
+    return {"svg_code": optimized_svg}
+
 
 def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 检查单张 slide 的视觉质量"""

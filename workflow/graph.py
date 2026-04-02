@@ -17,6 +17,7 @@ from workflow.nodes import (
     expand_slide_plan_node,
     generate_slide_svg_node,
     check_svg_execution_node,
+    optimize_svg_crap_node,
     check_slide_design_node,
 )
 
@@ -70,8 +71,8 @@ def route_svg_execution_check(state: SlideState):
     slide_page = state.get('slide_page')
     svg_review = state.get("svg_review", {})
     if svg_review.get("verified"):
-        logger.info(f"🔀 [Slide {slide_page}] SVG validated successfully. Proceeding to slide design check.")
-        return "check_slide_design"
+        logger.info(f"🔀 [Slide {slide_page}] SVG validated successfully. Proceeding to CRAP optimization.")
+        return "optimize_svg_crap"
 
     retry_count = svg_review.get("retry_count", 0)
     if retry_count >= 3:
@@ -145,6 +146,7 @@ def build_slide_subgraph():
     slide_subgraph.add_node("expand_slide_plan", expand_slide_plan_node)
     slide_subgraph.add_node("generate_slide_svg", generate_slide_svg_node)
     slide_subgraph.add_node("check_svg_execution", check_svg_execution_node)
+    slide_subgraph.add_node("optimize_svg_crap", optimize_svg_crap_node)
     slide_subgraph.add_node("check_slide_design", check_slide_design_node)
 
     # 子图流程: START → expand_slide_plan → generate_slide_svg → check_svg_execution → (route)
@@ -152,13 +154,16 @@ def build_slide_subgraph():
     slide_subgraph.add_edge("expand_slide_plan", "generate_slide_svg")
     slide_subgraph.add_edge("generate_slide_svg", "check_svg_execution")
 
-    # SVG 验证+后处理检查后的路由
+    # SVG 验证+后处理检查后的路由：成功 → CRAP 优化；失败 → 重试
     slide_subgraph.add_conditional_edges("check_svg_execution", route_svg_execution_check, {
-            "check_slide_design": "check_slide_design",
+            "optimize_svg_crap": "optimize_svg_crap",
             "generate_slide_svg": "generate_slide_svg",
             END: END,
         }
     )
+
+    # CRAP 优化后直接进入设计质量检查
+    slide_subgraph.add_edge("optimize_svg_crap", "check_slide_design")
 
     # 设计质量检查后的路由
     slide_subgraph.add_conditional_edges("check_slide_design", route_slide_design_check, {
