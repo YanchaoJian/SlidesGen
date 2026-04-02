@@ -6,5 +6,9 @@
   {
     "pass": false,
     "critique": "FAIL: 1. **Text overlap issue**: The body text `<text x='100' y='160'>` and `<text x='100' y='260'>` overlap due to insufficient vertical spacing between lines. **Fix**: Increase the `dy` attribute of `<tspan>` elements from `1.4em` to `2em` to provide adequate spacing. 2. **Image and caption overlap**: The image `<image x='800' y='160' width='400' height='300'>` overlaps with the caption `<text x='800' y='470'>`. **Fix**: Move the caption down by increasing its `y` attribute to `y='490'`. 3. **Footer text misalignment**: The page number `<text x='1180' y='680'>` is too close to the right edge. **Fix**: Adjust its `x` attribute to `x='1150'` for better alignment."
+  },
+  {
+    "pass": false,
+    "critique": "FAIL: 1. **Text Overlap**: The text in the left text area overlaps due to insufficient spacing between lines. **Fix**: Increase `dy` in `<tspan>` elements to `2em` for better readability. 2. **Text Overflow**: The text in the left text area is too close to the right visual area. **Fix**: Adjust the `x` attribute of the right visual area `<rect x='788'>` to `x='850'` to provide more space. 3. **Image Caption Overlap**: The caption text overlaps with the image. **Fix**: Move the caption text `<text y='490'>` to `y='470'`."
   }
 ]
