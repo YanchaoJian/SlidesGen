@@ -45,16 +45,20 @@ Every section is mandatory.
 
 ### 2. Page Structure
 
-Choose and describe the layout:
-- [Top title + main body area + bottom footer]
-- or [Top title + left text area + right visual area]
-- or [Top title + N-column card grid + bottom summary]
-- or [Full-screen visual + overlay title] (for covers)
+**Step A — Choose a layout mode** (MUST pick exactly one):
+- `cover_centered` — Cover page: decorative background, centered title + subtitle, geometric decorations
+- `card_grid_2col` — Two-column card grid: title bar + 2 cards side by side
+- `card_grid_3col` — Three-column card grid: title bar + 3 equal cards
+- `card_grid_2x4` — Two-row × four-column card grid: title bar + 8 small cards (for enumerated items)
+- `left_right_split` — Left-right split: title bar + left card (text) + right card (figure/visual)
+- `flow_horizontal` — Horizontal flow: title bar + N cards connected by arrows
+- `checklist_2col` — Double-column checklist: title bar + 2 tall cards with check items
+- `closing_centered` — Closing page: clean centered message + decorative elements
 
-Specify zone proportions referencing the Design Specification's layout zones:
-- Title area: y-range, height, background treatment
-- Main content area: y-range, height
-- Footer area: y-range, height
+**Step B — Specify zone proportions** referencing the Design Specification's layout zones:
+- Title area: y-range, height, background treatment (always include a top accent bar)
+- Main content area: y-range, height, number of columns/cards
+- Footer area: y-range, height (page number placement)
 
 ---
 
@@ -69,35 +73,47 @@ Specify zone proportions referencing the Design Specification's layout zones:
 
 ### 4. Content Design
 
-Describe the main visual content in rendering order (back to front):
+Describe the main visual content in rendering order (back to front).
 
-**Background**: <solid color / gradient / image with overlay — use Design Specification colors>
+**IMPORTANT**: Every content block MUST use a visual component (card, badge, info box, etc.). \
+Never output a flat bullet-point list without any card or visual container. Refer to the downstream \
+SVG generator's component library: Content Card, Numbered Badge, Info/Warning/Success Box, \
+Data Emphasis Badge, Flow Arrows, Separator Lines.
 
-**Body content**: For each bullet point or content block:
+**Background**: <solid color / gradient / image with overlay — use Design Specification colors>. \
+Always include a top accent bar (4-6px tall, primary color, full canvas width).
+
+**Body content**: For EACH content block, specify:
+- **Component type**: Content Card / Info Box / Data Badge / Numbered Badge / etc.
+- **Header color** (for cards): primary / accent / success / warning — use different colors for different categories
 - Text content (exact wording from the slide plan)
-- Approximate position (x, y) and dimensions
+- Approximate position (x, y) and dimensions (width × height)
 - Font size, weight, color
-- Any visual treatment: card background, icon, accent border, number badge, etc.
 
 **Figure** (if includes_figure is true):
 - Image path and caption
 - Position (x, y), dimensions (width × height)
-- How to integrate with text: left-right split, below text, full-width, etc.
-- Caption position and styling
+- MUST be wrapped in a white card backing (12px padding, rx=8, with shadow)
+- How to integrate with text: left-right split, below text, etc.
+- Caption position and styling (below the white card)
 
 **Table** (if includes_table is true):
 - Render as SVG rectangles + text (not HTML table)
-- Table position, cell dimensions, header row styling
-- Data alignment, font size
+- Use a Content Card container with colored header row
+- Table position, cell dimensions, header row styling, data alignment, font size
 
 **Equation** (if includes_equation is true):
 - LaTeX content
-- Position, font size, color
-- Context text above/below
+- Use an Info Box (blue background) to visually frame the equation
+- Position, font size, color, context text above/below
 
-**Decorative elements**: lines, shapes, accent bars, corner decorations — with position, color, dimensions
+**Decorative elements**:
+- Top accent bar (always)
+- Corner decorative circles (low-opacity primary color, for visual polish)
+- Separator lines between card sections
+- Numbered badges for ordered items
 
-**Footer**: page number position (typically bottom-right), font size, color
+**Footer**: page number position (typically bottom-center or bottom-right), font size, color
 
 ---
 
