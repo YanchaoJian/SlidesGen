@@ -8,4 +8,5 @@
         "ALL_PROXY": "socks5://127.0.0.1:7897"
     },
     "git.path": "S:\\dev\\Git\\cmd\\git.exe",
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
 }
