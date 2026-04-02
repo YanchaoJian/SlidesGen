@@ -90,12 +90,14 @@ def main():
         svg_path = output_dir / f"slide_04_v{iteration}.svg"
         success, error = execute_svg(svg_code, str(svg_path))
         if not success:
-            print(f"[Test] SVG execution failed at iteration {iteration}: {error}")
+            print(f"[Test] SVG validation failed at iteration {iteration}: {error}")
+            # 强制保存原始 SVG，以便继续后续流程查看效果
+            svg_path.write_text(svg_code, encoding="utf-8")
+            print(f"[Test] SVG forcibly saved for inspection: {svg_path}")
             failed_svg = svg_code
-            error_context = error or "SVG execution failed"
-            continue
-
-        print(f"[Test] SVG saved: {svg_path}")
+            error_context = error or "SVG validation failed"
+        else:
+            print(f"[Test] SVG saved: {svg_path}")
 
         # 3. 转 PPTX
         pptx_path = output_dir / f"slide_04_v{iteration}.pptx"
