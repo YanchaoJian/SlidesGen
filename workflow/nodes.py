@@ -1,25 +1,77 @@
 import os
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List, Literal
 
 from langchain_core.runnables import RunnableConfig
 from langgraph.types import interrupt
+from pydantic import BaseModel, Field, model_validator
 
-from workflow.feedback_router import analyze_feedback
+from workflow.prompts import FEEDBACK_ANALYSIS_SYSTEM_PROMPT, FEEDBACK_ANALYSIS_USER_TEMPLATE
 from agents.pdf_parser.extractor import extract_pdf
 from agents.style_analyst.analyzer import analyze_style
 from agents.style_analyst.critic import critique_style_protocol
 from agents.ppt_planner.planner import plan_presentation
 from agents.slide_planner.expander import expand_slide_plan
 from agents.slide_composer.svg_generator import generate_slide_svg
-from utils.svg_validator import execute_svg
 from utils.pptx_merger import merge_svgs_to_pptx
 from agents.slide_reviewer.critic import evaluate_and_critique_slide
 from agents.svg_optimizer.optimizer import optimize_svg_crap
-from utils.llm import LLMConfig
+from utils.llm import LLMConfig, create_llm
 from workflow.state import OverallState, SlideState
 
 logger = logging.getLogger(__name__)
+
+
+# ==============================================================================
+# 反馈分析（原 feedback_router.py）
+# ==============================================================================
+
+class FeedbackAnalysis(BaseModel):
+    """定义 LLM 的结构化输出模型"""
+    scope: Literal["local", "global_style", "global_plan", "ambiguous"] = Field(
+        description="The scope of the requested change."
+    )
+    target_pages: List[int] = Field(
+        description="A list of page numbers to modify if the scope is 'local'.",
+        default=[]
+    )
+
+    @model_validator(mode="after")
+    def _sanitize(self) -> "FeedbackAnalysis":
+        if self.scope != "local":
+            self.target_pages = []
+        if self.scope == "local" and not self.target_pages:
+            logger.warning("   -> scope='local' but target_pages is empty. Downgrading to 'ambiguous'.")
+            self.scope = "ambiguous"
+            self.target_pages = []
+        return self
+
+
+def analyze_feedback(
+    user_input: str,
+    slide_count: int,
+    llm_config: LLMConfig,
+) -> FeedbackAnalysis:
+    """使用 LLM 分析用户反馈的范围。"""
+    try:
+        llm = create_llm(llm_config, temperature=0)
+        structured_llm = llm.with_structured_output(FeedbackAnalysis)
+
+        prompt = (
+            FEEDBACK_ANALYSIS_SYSTEM_PROMPT +
+            "\n" +
+            FEEDBACK_ANALYSIS_USER_TEMPLATE.format(
+                slide_count=slide_count,
+                user_feedback=user_input,
+            )
+        )
+
+        result = structured_llm.invoke(prompt)
+        logger.info(f"   -> Feedback analyzed: Scope='{result.scope}', Target Pages={result.target_pages}")
+        return result
+    except Exception as e:
+        logger.error(f"   -> Feedback analysis failed: {e}. Defaulting to 'ambiguous' scope.")
+        return FeedbackAnalysis(scope="ambiguous", target_pages=[])
 
 
 def _get_llm_config(configurable: Dict[str, Any], stage: str = "text") -> LLMConfig:
@@ -225,87 +277,83 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
         return {"svg_code": None, "error_log": "SVG generation returned empty result"}
 
     logger.info(f"   -> SVG generated for slide {slide_page} ({len(svg_code)} chars)")
-    return {"svg_code": svg_code, "error_log": None}
+    # 重置 svg_review，避免上一轮的 retry_count 污染下一轮验证
+    return {
+        "svg_code": svg_code,
+        "error_log": None,
+        "svg_review": {"verified": False, "retry_count": 0, "critique": None},
+    }
 
-def check_svg_execution_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] 验证 SVG 并执行后处理（写入文件 + finalize pipeline）"""
+def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
+    """[Node] 验证 SVG → CRAP 优化 → 后处理 → 写入文件"""
     config = config["configurable"]
     slide_page = state["slide_page"]
-    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): CheckSVGExecution ---")
+    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): OptimizeSVGCRAP ---")
 
-    if not state.get("svg_code"):
+    svg_code = state.get("svg_code")
+    if not svg_code:
         logger.error(f"❌ [Slide {slide_page}] No SVG code available.")
         return {
             "svg_review": {"verified": False, "retry_count": 0, "critique": "No SVG code available"},
             "error_log": "No SVG code available",
         }
 
-    slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
-    os.makedirs(slide_dir, exist_ok=True)
+    # 1. 基础验证（XML 合法性 + 禁用特性）
+    from utils.svg_validator import validate_svg, finalize_single_svg
 
+    is_valid, error = validate_svg(svg_code)
     svg_review = state.get("svg_review", {})
     retry_count = svg_review.get("retry_count", 0)
-    svg_path = os.path.join(slide_dir, f"slide_v{retry_count}.svg")
 
-    success, error = execute_svg(state["svg_code"], svg_path)
-
-    if success:
-        logger.info(f"   -> ✅ SVG validated and finalized for slide {slide_page}.")
-        return {
-            "svg_review": {"verified": True, "retry_count": retry_count, "critique": None},
-            "svg_path": svg_path,
-            "error_log": None,
-            "generated_slide_paths": [svg_path],
-        }
-    else:
-        logger.warning(f"   -> ❌ SVG execution failed for slide {slide_page} (Attempt {retry_count + 1}). Error: {error}")
+    if not is_valid:
+        logger.warning(f"   -> ❌ [Slide {slide_page}] SVG validation failed (Attempt {retry_count + 1}): {error}")
         return {
             "svg_review": {"verified": False, "retry_count": retry_count + 1, "critique": error},
             "error_log": error,
         }
 
-def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
-    """[Node] 使用 CRAP 设计原则对 SVG 进行代码级视觉优化"""
-    config = config["configurable"]
-    slide_page = state["slide_page"]
-    logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): OptimizeSVGCRAP ---")
-
-    svg_code = state.get("svg_code")
-    svg_path = state.get("svg_path")
-
-    if not svg_code or not svg_path:
-        logger.warning(f"   -> [Slide {slide_page}] No SVG code/path available. Skipping CRAP optimization.")
-        return {}
-
+    # 2. CRAP 优化
     optimized_svg = optimize_svg_crap(
         svg_code=svg_code,
         llm_config=_get_llm_config(config, stage="svg"),
     )
 
-    if not optimized_svg:
-        logger.info(f"   -> [Slide {slide_page}] CRAP optimization returned no result. Keeping original SVG.")
-        return {}
+    final_svg = svg_code
+    if optimized_svg:
+        # 验证优化后的 SVG
+        opt_valid, opt_error = validate_svg(optimized_svg)
+        if opt_valid:
+            final_svg = optimized_svg
+            logger.info(f"   -> [Slide {slide_page}] CRAP optimization applied.")
+        else:
+            logger.warning(f"   -> [Slide {slide_page}] CRAP-optimized SVG failed validation: {opt_error}. Keeping original.")
+    else:
+        logger.info(f"   -> [Slide {slide_page}] CRAP optimization returned no result. Keeping original.")
 
-    # 重新验证并执行后处理
-    from utils.svg_validator import validate_svg, finalize_single_svg
+    # 3. 写入文件 + 后处理
+    slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
+    os.makedirs(slide_dir, exist_ok=True)
+    svg_path = os.path.join(slide_dir, f"slide_v{retry_count}.svg")
 
-    is_valid, error = validate_svg(optimized_svg)
-    if not is_valid:
-        logger.warning(f"   -> [Slide {slide_page}] CRAP-optimized SVG failed validation: {error}. Keeping original.")
-        return {}
-
-    # 写入优化后的 SVG（覆盖原文件）
     with open(svg_path, "w", encoding="utf-8") as f:
-        f.write(optimized_svg)
+        f.write(final_svg)
 
-    # 重新执行后处理管线
     success, finalize_error = finalize_single_svg(svg_path)
     if not success:
-        logger.warning(f"   -> [Slide {slide_page}] Finalize failed after CRAP optimization: {finalize_error}. Keeping original.")
-        return {}
+        logger.warning(f"   -> [Slide {slide_page}] Finalize failed: {finalize_error}")
+        return {
+            "svg_review": {"verified": False, "retry_count": retry_count + 1, "critique": finalize_error},
+            "error_log": finalize_error,
+        }
 
-    logger.info(f"   -> [Slide {slide_page}] CRAP optimization applied and finalized successfully.")
-    return {"svg_code": optimized_svg}
+    logger.info(f"   -> ✅ [Slide {slide_page}] SVG optimized and finalized: {svg_path}")
+    return {
+        "svg_review": {"verified": True, "retry_count": retry_count, "critique": None},
+        "svg_code": final_svg,
+        "svg_path": svg_path,
+        "error_log": None,
+        "generated_slide_paths": [svg_path],
+    }
 
 
 def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:

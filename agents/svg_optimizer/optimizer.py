@@ -13,7 +13,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 
 from agents.svg_optimizer.prompts import CRAP_OPTIMIZER_SYSTEM_PROMPT, CRAP_OPTIMIZER_USER_PROMPT
 from agents.slide_composer.svg_generator import extract_svg_content
-from utils.svg_validator import _check_geometry
+from utils.svg_validator import check_geometry
 from utils.llm import LLMConfig, create_llm
 
 logger = logging.getLogger(__name__)
@@ -62,7 +62,7 @@ def optimize_svg_crap(
     geometry_warnings = ""
     try:
         root = ET.fromstring(svg_code)
-        geo_issues = _check_geometry(root)
+        geo_issues = check_geometry(root)
         if geo_issues:
             geometry_warnings = "\n".join(f"- {w}" for w in geo_issues)
             logger.info(f"   -> CRAP optimizer: {len(geo_issues)} geometry issue(s) detected, passing to LLM for fixing.")

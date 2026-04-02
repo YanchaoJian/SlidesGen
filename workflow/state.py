@@ -78,7 +78,7 @@ class SlideState(TypedDict):
     design_review: ReviewCycle                     # 设计质量验证
 
     # --- 输出 ---
-    generated_slide_paths: Optional[List[str]]
+    generated_slide_paths: List[str]
 
 
 # ==============================================================================

@@ -6,7 +6,6 @@ SVG 验证与后处理模块。
 """
 
 import logging
-import os
 import re
 from pathlib import Path
 from typing import Tuple
@@ -173,7 +172,7 @@ def _boxes_overlap(a: tuple, b: tuple, min_gap: int = 0) -> bool:
     return True
 
 
-def _check_geometry(root: ET.Element) -> list:
+def check_geometry(root: ET.Element) -> list:
     """
     检查 SVG 元素的几何合理性。
 
@@ -345,39 +344,3 @@ def finalize_single_svg(svg_path: str) -> Tuple[bool, str]:
 
     except Exception as e:
         return False, f"SVG finalize failed: {e}"
-
-
-# ==============================================================================
-# SVG 执行（验证 + 后处理 + 写文件）
-# ==============================================================================
-
-def execute_svg(svg_content: str, output_svg_path: str) -> Tuple[bool, str]:
-    """
-    验证 SVG 内容，写入文件，并执行后处理。
-
-    Args:
-        svg_content: LLM 生成的原始 SVG 字符串。
-        output_svg_path: SVG 文件保存路径。
-
-    Returns:
-        (success, error_message)。成功时 error_message 为空字符串。
-    """
-    # 1. 验证
-    is_valid, error = validate_svg(svg_content)
-    if not is_valid:
-        logger.warning(f"   -> SVG validation failed: {error}")
-        return False, error
-
-    # 2. 写入文件
-    os.makedirs(os.path.dirname(output_svg_path), exist_ok=True)
-    with open(output_svg_path, "w", encoding="utf-8") as f:
-        f.write(svg_content)
-    logger.info(f"   -> SVG saved: {output_svg_path}")
-
-    # 3. 后处理
-    success, finalize_error = finalize_single_svg(output_svg_path)
-    if not success:
-        return False, finalize_error
-
-    logger.info(f"   -> SVG finalized: {output_svg_path}")
-    return True, ""

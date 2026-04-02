@@ -16,7 +16,6 @@ from workflow.nodes import (
     review_plan_node,
     expand_slide_plan_node,
     generate_slide_svg_node,
-    check_svg_execution_node,
     optimize_svg_crap_node,
     check_slide_design_node,
 )
@@ -66,20 +65,20 @@ def route_pptx_design_review(state: OverallState) -> Literal["analyze_image_styl
         logger.info("🤔 User feedback was ambiguous or empty. Ending review cycle.")
         return "END"
 
-def route_svg_execution_check(state: SlideState):
-    """路由：SVG 验证+后处理检查"""
+def route_svg_crap_check(state: SlideState):
+    """路由：SVG 验证 + CRAP 优化检查"""
     slide_page = state.get('slide_page')
     svg_review = state.get("svg_review", {})
     if svg_review.get("verified"):
-        logger.info(f"🔀 [Slide {slide_page}] SVG validated successfully. Proceeding to CRAP optimization.")
-        return "optimize_svg_crap"
+        logger.info(f"🔀 [Slide {slide_page}] SVG optimized successfully. Proceeding to design check.")
+        return "check_slide_design"
 
     retry_count = svg_review.get("retry_count", 0)
     if retry_count >= 3:
-        logger.warning(f"⚠️ [Slide {slide_page}] SVG validation failed after {retry_count} retries. Aborting this slide.")
+        logger.warning(f"⚠️ [Slide {slide_page}] SVG failed after {retry_count} retries. Aborting this slide.")
         return END
 
-    logger.info(f"🔀 [Slide {slide_page}] SVG validation failed. Routing back to SVG generation for fixes (Attempt {retry_count + 1}).")
+    logger.info(f"🔀 [Slide {slide_page}] SVG validation failed. Routing back to SVG generation (Attempt {retry_count + 1}).")
     return "generate_slide_svg"
 
 def route_slide_design_check(state: SlideState):
@@ -145,25 +144,21 @@ def build_slide_subgraph():
     # 子图节点
     slide_subgraph.add_node("expand_slide_plan", expand_slide_plan_node)
     slide_subgraph.add_node("generate_slide_svg", generate_slide_svg_node)
-    slide_subgraph.add_node("check_svg_execution", check_svg_execution_node)
     slide_subgraph.add_node("optimize_svg_crap", optimize_svg_crap_node)
     slide_subgraph.add_node("check_slide_design", check_slide_design_node)
 
-    # 子图流程: START → expand_slide_plan → generate_slide_svg → check_svg_execution → (route)
+    # 子图流程: START → expand_slide_plan → generate_slide_svg → optimize_svg_crap → (route)
     slide_subgraph.add_edge(START, "expand_slide_plan")
     slide_subgraph.add_edge("expand_slide_plan", "generate_slide_svg")
-    slide_subgraph.add_edge("generate_slide_svg", "check_svg_execution")
+    slide_subgraph.add_edge("generate_slide_svg", "optimize_svg_crap")
 
-    # SVG 验证+后处理检查后的路由：成功 → CRAP 优化；失败 → 重试
-    slide_subgraph.add_conditional_edges("check_svg_execution", route_svg_execution_check, {
-            "optimize_svg_crap": "optimize_svg_crap",
+    # CRAP 优化节点内含验证：成功 → 设计检查；失败 → 重试生成
+    slide_subgraph.add_conditional_edges("optimize_svg_crap", route_svg_crap_check, {
+            "check_slide_design": "check_slide_design",
             "generate_slide_svg": "generate_slide_svg",
             END: END,
         }
     )
-
-    # CRAP 优化后直接进入设计质量检查
-    slide_subgraph.add_edge("optimize_svg_crap", "check_slide_design")
 
     # 设计质量检查后的路由
     slide_subgraph.add_conditional_edges("check_slide_design", route_slide_design_check, {

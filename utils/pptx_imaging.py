@@ -11,8 +11,6 @@ from pathlib import Path
 from pdf2image import convert_from_path
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 
-# --- 配置日志 ---
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 def _get_poppler_path() -> str | None:

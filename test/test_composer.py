@@ -16,7 +16,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from dotenv import load_dotenv
 from agents.slide_composer.svg_generator import generate_slide_svg
-from utils.svg_validator import execute_svg
+from utils.svg_validator import validate_svg, finalize_single_svg
 from utils.pptx_merger import merge_svgs_to_pptx
 from utils.llm import LLMConfig
 
@@ -70,12 +70,14 @@ def main():
     print(f"[Test] SVG generated ({len(svg_code)} chars).")
 
     # 2. 验证并保存 SVG
-    svg_path = output_dir / "slide_04.svg"
-    success, error = execute_svg(svg_code, str(svg_path))
-    if not success:
-        print(f"[Test] FAILED: SVG execution failed: {error}")
+    is_valid, error = validate_svg(svg_code)
+    if not is_valid:
+        print(f"[Test] FAILED: SVG validation failed: {error}")
         sys.exit(1)
 
+    svg_path = output_dir / "slide_04.svg"
+    svg_path.write_text(svg_code, encoding="utf-8")
+    finalize_single_svg(str(svg_path))
     print(f"[Test] SVG validated and saved: {svg_path}")
 
     # 3. 转换为 PPTX
