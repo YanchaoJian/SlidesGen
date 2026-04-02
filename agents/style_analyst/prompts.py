@@ -149,18 +149,32 @@ the downstream SVG generator has no access to the original image and relies enti
 ## VI. Component Patterns
 
 ### Content Cards
-- Background: <fill color or gradient>
-- Border: <color, width, radius>
+- Background: <fill color, typically #FFFFFF>
+- Border: <color, width, radius — e.g. "#E2E8F0, 1px, rx=12">
 - Shadow: <yes/no, parameters>
+- **Card header strip**: <height (typically 45-55px), color (primary/accent/success/warning), corner radius matching card>
+- **Card header text**: <font size, weight, color (typically white on colored strip)>
+- **Card body padding**: <internal padding from card edges — e.g. 20-25px>
+
+### Numbered Badges
+- <How ordered items are numbered: filled circle with number, color, size — e.g. "14px radius circle, primary color fill, white bold text">
+
+### Info / Warning / Success Boxes
+- **Info box**: <background color (light blue family), text color (primary), corner radius>
+- **Warning box**: <background color (light red family), text color (warning/red), corner radius>
+- **Success box**: <background color (light green family), text color (success/green), corner radius>
+- <Box height, padding, typical placement (inside cards or standalone)>
 
 ### Title Treatment
-- <How titles are styled: underline accent, left-border bar, background highlight, etc.>
+- <How page titles are styled: top accent bar + centered title, or left-aligned with underline, etc.>
+- <Subtitle style: smaller text below title, secondary text color>
 
 ### Data Emphasis
-- <How key numbers / data points are highlighted: enlarged size, accent color, bold, background badge, etc.>
+- <How key numbers / data points are highlighted: background badge with accent border, enlarged font, bold weight, etc.>
 
 ### Icon Style (if visible)
 - <Line icons / filled icons / geometric icons, color, approximate size>
+- <Or: "No icons — use geometric shapes and colored badges instead">
 
 ---
 
