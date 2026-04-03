@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 from typing import List, Optional
 
-from utils.svg_to_pptx import create_pptx_with_native_svg
+from pipeline.svg_to_pptx import create_pptx_with_native_svg
 
 logger = logging.getLogger(__name__)
 

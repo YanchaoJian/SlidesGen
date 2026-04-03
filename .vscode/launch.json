@@ -5,6 +5,9 @@
             "name": "Run SlidesGen Pipeline",
             "type": "debugpy",
             "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
             "program": "main.py",
             "args": [
                 // [Required] Path to the input academic paper PDF
@@ -16,9 +19,9 @@
                 // [Optional] Default LLM model, fallback for all stages (default: gpt-4o)
                 "--model_name", "gpt-4o",
                 // [Optional] Per-stage model overrides (default: use --model_name)
-                // "--vision_model", "gpt-4o",
-                // "--svg_model", "claude-sonnet-4-20250514",
-                // "--text_model", "gpt-4o-mini",
+                // "--vision_model", "gemini-3.1-pro-preview",
+                // "--svg_model", "gpt-5.3-codex-2026-02-24",
+                // "--text_model", "gpt-4o",
                 // [Optional] Path to local Marker model for PDF parsing (default: models/marker)
                 "--marker_path", "models/marker",
                 // [Optional] Skip human-in-the-loop review steps
@@ -28,10 +31,7 @@
                 // "--verbose",
                 // [Optional] Resume an interrupted session by specifying its thread ID
                 // "--thread_id", "0324_1530",
-            ],
-            "cwd": "${workspaceFolder}",
-            "envFile": "${workspaceFolder}/.env",
-            "console": "integratedTerminal",
+            ]
         }
     ]
 }

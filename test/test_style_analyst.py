@@ -13,8 +13,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from dotenv import load_dotenv
-from agents.style_analyst.analyzer import analyze_style
-from agents.style_analyst.critic import critique_style_protocol
+from agents.perception.style_analyst.analyzer import analyze_style
+from agents.perception.style_analyst.critic import critique_style_protocol
 from utils.llm import LLMConfig
 
 

@@ -55,7 +55,7 @@ def _save_images_blocking(pdf_path: str, output_dir: str, dpi: int):
             pdf_path,
             dpi=dpi,
             fmt="jpeg",
-            thread_count=1,
+            thread_count=3,
             **convert_kwargs,
         )
         
@@ -64,7 +64,7 @@ def _save_images_blocking(pdf_path: str, output_dir: str, dpi: int):
 
         saved_files = []
         for i, img in enumerate(images):
-            filename = f"slide_{i + 1:03d}.jpg"
+            filename = f"slide_{i + 1:02d}.jpg"
             save_path = os.path.join(output_dir, filename)
             img.save(save_path, "JPEG", quality=90)
             saved_files.append(save_path)

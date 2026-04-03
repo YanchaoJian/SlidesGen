@@ -1,77 +1,24 @@
 import os
 import logging
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict
 
 from langchain_core.runnables import RunnableConfig
 from langgraph.types import interrupt
-from pydantic import BaseModel, Field, model_validator
 
-from workflow.prompts import FEEDBACK_ANALYSIS_SYSTEM_PROMPT, FEEDBACK_ANALYSIS_USER_TEMPLATE
-from agents.pdf_parser.extractor import extract_pdf
-from agents.style_analyst.analyzer import analyze_style
-from agents.style_analyst.critic import critique_style_protocol
-from agents.ppt_planner.planner import plan_presentation
-from agents.slide_planner.expander import expand_slide_plan
-from agents.slide_composer.svg_generator import generate_slide_svg
-from utils.pptx_merger import merge_svgs_to_pptx
-from agents.slide_reviewer.critic import evaluate_and_critique_slide
-from agents.svg_optimizer.optimizer import optimize_svg_crap
+from agents.perception.pdf_parser.extractor import extract_pdf
+from agents.perception.style_analyst.analyzer import analyze_style
+from agents.perception.style_analyst.critic import critique_style_protocol
+from agents.planning.ppt_planner import plan_presentation
+from agents.planning.slide_expander import expand_slide_plan
+from agents.execution.svg_generator import generate_slide_svg
+from agents.execution.slide_critic import evaluate_and_critique_slide
+from agents.execution.svg_optimizer import optimize_svg_crap
+from agents.delivery.feedback_analyzer import analyze_feedback
+from pipeline.pptx_merger import merge_svgs_to_pptx
 from utils.llm import LLMConfig, create_llm
 from workflow.state import OverallState, SlideState
 
 logger = logging.getLogger(__name__)
-
-
-# ==============================================================================
-# 反馈分析（原 feedback_router.py）
-# ==============================================================================
-
-class FeedbackAnalysis(BaseModel):
-    """定义 LLM 的结构化输出模型"""
-    scope: Literal["local", "global_style", "global_plan", "ambiguous"] = Field(
-        description="The scope of the requested change."
-    )
-    target_pages: List[int] = Field(
-        description="A list of page numbers to modify if the scope is 'local'.",
-        default=[]
-    )
-
-    @model_validator(mode="after")
-    def _sanitize(self) -> "FeedbackAnalysis":
-        if self.scope != "local":
-            self.target_pages = []
-        if self.scope == "local" and not self.target_pages:
-            logger.warning("   -> scope='local' but target_pages is empty. Downgrading to 'ambiguous'.")
-            self.scope = "ambiguous"
-            self.target_pages = []
-        return self
-
-
-def analyze_feedback(
-    user_input: str,
-    slide_count: int,
-    llm_config: LLMConfig,
-) -> FeedbackAnalysis:
-    """使用 LLM 分析用户反馈的范围。"""
-    try:
-        llm = create_llm(llm_config, temperature=0)
-        structured_llm = llm.with_structured_output(FeedbackAnalysis)
-
-        prompt = (
-            FEEDBACK_ANALYSIS_SYSTEM_PROMPT +
-            "\n" +
-            FEEDBACK_ANALYSIS_USER_TEMPLATE.format(
-                slide_count=slide_count,
-                user_feedback=user_input,
-            )
-        )
-
-        result = structured_llm.invoke(prompt)
-        logger.info(f"   -> Feedback analyzed: Scope='{result.scope}', Target Pages={result.target_pages}")
-        return result
-    except Exception as e:
-        logger.error(f"   -> Feedback analysis failed: {e}. Defaulting to 'ambiguous' scope.")
-        return FeedbackAnalysis(scope="ambiguous", target_pages=[])
 
 
 def _get_llm_config(configurable: Dict[str, Any], stage: str = "text") -> LLMConfig:
@@ -299,7 +246,7 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
         }
 
     # 1. 基础验证（XML 合法性 + 禁用特性）
-    from utils.svg_validator import validate_svg, finalize_single_svg
+    from pipeline.svg_validator import validate_svg, finalize_single_svg
 
     is_valid, error = validate_svg(svg_code)
     svg_review = state.get("svg_review", {})

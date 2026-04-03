@@ -4,7 +4,7 @@ from typing import Optional
 
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from agents.style_analyst.prompts import ANALYZE_STYLE_SYSTEM_PROMPT, ANALYZE_STYLE_USER_PROMPT, ANALYZE_STYLE_REFINEMENT_USER_PROMPT
+from agents.perception.style_analyst.prompts import ANALYZE_STYLE_SYSTEM_PROMPT, ANALYZE_STYLE_USER_PROMPT, ANALYZE_STYLE_REFINEMENT_USER_PROMPT
 from utils.llm import LLMConfig, create_llm, encode_image_to_base64
 
 logger = logging.getLogger(__name__)

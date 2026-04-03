@@ -15,9 +15,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from dotenv import load_dotenv
-from agents.slide_composer.svg_generator import generate_slide_svg
-from utils.svg_validator import validate_svg, finalize_single_svg
-from utils.pptx_merger import merge_svgs_to_pptx
+from agents.execution.svg_generator import generate_slide_svg
+from pipeline.svg_validator import validate_svg, finalize_single_svg
+from pipeline.pptx_merger import merge_svgs_to_pptx
 from utils.llm import LLMConfig
 
 

@@ -13,7 +13,7 @@ from marker.schema import BlockTypes
 from openai import OpenAI
 from surya.settings import settings
 
-from agents.pdf_parser.image_orientation import fix_image_orientation
+from agents.perception.pdf_parser.image_orientation import fix_image_orientation
 
 
 class ContentExtractor:

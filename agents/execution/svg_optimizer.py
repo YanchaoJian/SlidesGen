@@ -11,9 +11,9 @@ from xml.etree import ElementTree as ET
 
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from agents.svg_optimizer.prompts import CRAP_OPTIMIZER_SYSTEM_PROMPT, CRAP_OPTIMIZER_USER_PROMPT
-from agents.slide_composer.svg_generator import extract_svg_content
-from utils.svg_validator import check_geometry
+from agents.execution.prompts import CRAP_OPTIMIZER_SYSTEM_PROMPT, CRAP_OPTIMIZER_USER_PROMPT
+from agents.execution.svg_generator import extract_svg_content
+from pipeline.svg_validator import check_geometry
 from utils.llm import LLMConfig, create_llm
 
 logger = logging.getLogger(__name__)

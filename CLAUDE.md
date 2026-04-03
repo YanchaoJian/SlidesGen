@@ -55,7 +55,6 @@ python test/test_planner.py
 
 ```bash
 python scripts/visualize_workflow.py   # Visualize the LangGraph workflow as PNG
-python scripts/merge_slides.py         # Manually merge slide SVGs into one PPTX
 ```
 
 ## Architecture
@@ -99,25 +98,38 @@ Two TypedDict state classes (`workflow/state.py`):
 
 `retry_slide_pages`: `None` = regenerate all; non-empty list = specific pages only; empty list = skip all.
 
-### Agent Modules
+### Agent Modules (organized by phase)
 
-| Module | Purpose | Key Files |
-|--------|---------|-----------|
-| `agents/pdf_parser` | PDF content extraction via Marker + image orientation fix | `extractor.py`, `image_orientation.py` |
-| `agents/style_analyst` | Visual style analysis and critique from reference image | `analyzer.py`, `critic.py` |
-| `agents/ppt_planner` | Presentation outline generation | `planner.py` |
-| `agents/slide_planner` | Per-slide layout expansion (layout mode, text wrapping, positioning) | `expander.py` |
-| `agents/slide_composer` | SVG code generation from expanded plan + style protocol | `svg_generator.py` |
-| `agents/svg_optimizer` | CRAP design principle optimization (Contrast, Repetition, Alignment, Proximity) | `optimizer.py` |
-| `agents/slide_reviewer` | Visual quality critique (SVG→PPTX→screenshot→multimodal LLM) | `critic.py` |
+Agents are grouped under `agents/` by workflow phase:
+
+| Phase | Module | Purpose | Key Files |
+|-------|--------|---------|-----------|
+| Perception | `agents/perception/pdf_parser` | PDF content extraction via Marker + image orientation fix | `extractor.py`, `image_orientation.py` |
+| Perception | `agents/perception/style_analyst` | Visual style analysis and critique from reference image | `analyzer.py`, `critic.py` |
+| Planning | `agents/planning` | Presentation outline + per-slide layout expansion | `ppt_planner.py`, `slide_expander.py` |
+| Execution | `agents/execution` | SVG generation + CRAP optimization + visual critique | `svg_generator.py`, `svg_optimizer.py`, `slide_critic.py` |
+| Delivery | `agents/delivery` | User feedback analysis for final PPTX review routing | `feedback_analyzer.py` |
+
+Each phase directory has a `prompts.py` containing only string constants (prompt/code separation convention).
+
+### Pipeline Modules (non-LLM processing)
+
+SVG processing pipeline under `pipeline/`:
+
+| Module | Purpose |
+|--------|---------|
+| `pipeline/svg_validator.py` | XML validation + banned feature checks + geometry detection + `finalize_single_svg` entry |
+| `pipeline/svg_finalize/` | 5-step SVG post-processing (fix aspect → add image cards → embed images → flatten tspan → rect to path) |
+| `pipeline/svg_to_pptx/` | SVG → DrawingML conversion engine (11 files) |
+| `pipeline/pptx_merger.py` | Merge multiple SVG slides into one PPTX |
 
 ### SVG Pipeline
 
-1. **Generation** (`agents/slide_composer/svg_generator.py`): LLM generates SVG from expanded plan + style protocol
-2. **Validation** (`utils/svg_validator.py:validate_svg`): Checks XML well-formedness + 15 banned features (clipPath, mask, `<style>`, class, foreignObject, etc.)
-3. **CRAP Optimization** (`agents/svg_optimizer/optimizer.py`): Runs geometry checks → feeds issues + SVG to LLM for design improvement
-4. **Finalize** (`utils/svg_validator.py:finalize_single_svg`): 5-step post-processing — `fix_image_aspect` → `add_image_cards` → `embed_images` → `flatten_tspan` → `svg_rect_to_path`
-5. **SVG→PPTX** (`agents/slide_composer/svg_converter/`): Converts SVG elements to native DrawingML XML
+1. **Generation** (`agents/execution/svg_generator.py`): LLM generates SVG from expanded plan + style protocol
+2. **Validation** (`pipeline/svg_validator.py:validate_svg`): Checks XML well-formedness + 15 banned features (clipPath, mask, `<style>`, class, foreignObject, etc.)
+3. **CRAP Optimization** (`agents/execution/svg_optimizer.py`): Runs geometry checks → feeds issues + SVG to LLM for design improvement
+4. **Finalize** (`pipeline/svg_validator.py:finalize_single_svg`): 5-step post-processing — `fix_image_aspect` → `add_image_cards` → `embed_images` → `flatten_tspan` → `svg_rect_to_path`
+5. **SVG→PPTX** (`pipeline/svg_to_pptx/`): Converts SVG elements to native DrawingML XML
 
 ### Node Configuration
 
@@ -145,7 +157,7 @@ Two `interrupt()` checkpoints:
 1. **Plan Review** (`review_plan_node`): User approves/revises outline
 2. **Final PPTX Review** (`review_pptx_design_node`): User approves or requests changes
 
-Feedback analysis (`analyze_feedback()` in `workflow/nodes.py`) returns a `FeedbackAnalysis` Pydantic model:
+Feedback analysis (`analyze_feedback()` in `agents/delivery/feedback_analyzer.py`) returns a `FeedbackAnalysis` Pydantic model:
 - `scope`: `"local"` | `"global_style"` | `"global_plan"` | `"ambiguous"`
 - Routing: `global_style` → re-analyze style, `global_plan` → regenerate plan, `local` → regenerate specific slides, `ambiguous` → end
 

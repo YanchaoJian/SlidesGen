@@ -13,7 +13,7 @@ from typing import Dict
 from openai import OpenAI
 from PIL import Image, ImageDraw, ImageFont
 
-from agents.pdf_parser.prompts import IMAGE_ORIENTATION_PROMPT
+from agents.perception.pdf_parser.prompts import IMAGE_ORIENTATION_PROMPT
 
 logger = logging.getLogger(__name__)
 

@@ -11,7 +11,7 @@ from typing import Optional
 
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from agents.slide_planner.prompts import (
+from agents.planning.prompts import (
     EXPAND_SLIDE_PLAN_SYSTEM_PROMPT,
     EXPAND_SLIDE_PLAN_USER_PROMPT,
 )

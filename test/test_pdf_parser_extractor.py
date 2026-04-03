@@ -13,7 +13,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from dotenv import load_dotenv
-from agents.pdf_parser.extractor import extract_pdf
+from agents.perception.pdf_parser.extractor import extract_pdf
 
 
 def main():

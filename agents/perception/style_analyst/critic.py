@@ -6,7 +6,7 @@ from typing import Tuple
 
 from pydantic import BaseModel, Field
 
-from agents.style_analyst.prompts import STYLE_CRITIC_SYSTEM_PROMPT, STYLE_CRITIC_USER_PROMPT
+from agents.perception.style_analyst.prompts import STYLE_CRITIC_SYSTEM_PROMPT, STYLE_CRITIC_USER_PROMPT
 from utils.llm import LLMConfig, create_llm, encode_image_to_base64
 
 # 初始化日志记录器

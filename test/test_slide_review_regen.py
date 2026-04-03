@@ -14,12 +14,12 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from dotenv import load_dotenv
-from agents.slide_composer.svg_generator import generate_slide_svg
-from utils.svg_validator import validate_svg, finalize_single_svg
-from utils.pptx_merger import merge_svgs_to_pptx
+from agents.execution.svg_generator import generate_slide_svg
+from pipeline.svg_validator import validate_svg, finalize_single_svg
+from pipeline.pptx_merger import merge_svgs_to_pptx
 from utils.pptx_imaging import pptx_to_images
-from agents.slide_reviewer.critic import evaluate_and_critique_slide
-from agents.svg_optimizer.optimizer import optimize_svg_crap
+from agents.execution.slide_critic import evaluate_and_critique_slide
+from agents.execution.svg_optimizer import optimize_svg_crap
 from utils.llm import LLMConfig
 
 

@@ -2,11 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(grep -E \"\\\\.py$\")",
-      "Bash(find /media/data_2/jyc/code/AI-Slides/SlidesGen -type f \\\\\\(-name README* -o -name *.md -o -name INSTALL* \\\\\\))",
-      "WebFetch(domain:github.com)",
-      "Bash(pip show:*)",
+      "Bash(find S:/project/SlidesGen/ -type f \\\\\\(-name README* -o -name *.md -o -name INSTALL* \\\\\\))",
       "Bash(python3 -c \"from marker.config.parser import ConfigParser; help\\(ConfigParser\\)\")",
       "Bash(python3:*)",
+      "Bash(pip show:*)",
       "Bash(pip uninstall:*)",
       "Bash(pip install:*)",
       "Read",
@@ -18,6 +17,7 @@
       "Pip",
       "Grep",
       "Glob",
+      "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:api.github.com)"
     ]

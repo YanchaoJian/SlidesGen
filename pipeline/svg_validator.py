@@ -11,11 +11,11 @@ from pathlib import Path
 from typing import Tuple
 from xml.etree import ElementTree as ET
 
-from utils.svg_finalize.svg_rect_to_path import process_svg
-from utils.svg_finalize.flatten_tspan import flatten_text_with_tspans
-from utils.svg_finalize.embed_images import embed_images_in_svg
-from utils.svg_finalize.fix_image_aspect import fix_image_aspect_in_svg
-from utils.svg_finalize.add_image_card import add_image_cards
+from pipeline.svg_finalize.svg_rect_to_path import process_svg
+from pipeline.svg_finalize.flatten_tspan import flatten_text_with_tspans
+from pipeline.svg_finalize.embed_images import embed_images_in_svg
+from pipeline.svg_finalize.fix_image_aspect import fix_image_aspect_in_svg
+from pipeline.svg_finalize.add_image_card import add_image_cards
 
 logger = logging.getLogger(__name__)
 

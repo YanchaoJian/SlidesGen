@@ -5,7 +5,7 @@ from typing import Dict, Any, Optional
 
 from langchain_core.prompts import ChatPromptTemplate
 
-from agents.ppt_planner.prompts import (
+from agents.planning.prompts import (
     MAIN_CONTENT_EXTRACTION,
     SLIDES_PLANNING,
     INITIAL_GENERATION_INSTRUCTION,
