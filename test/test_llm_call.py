@@ -13,7 +13,7 @@ from openai import OpenAI
 
 load_dotenv()
 
-DEFAULT_MODEL = "claude-sonnet-4-6"
+DEFAULT_MODEL = "gemini-3.1-pro-preview"
 DEFAULT_PROMPT = "Reply with exactly: pong"
 
 

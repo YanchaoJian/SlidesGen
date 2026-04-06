@@ -224,11 +224,13 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
         return {"svg_code": None, "error_log": "SVG generation returned empty result"}
 
     logger.info(f"   -> SVG generated for slide {slide_page} ({len(svg_code)} chars)")
-    # 重置 svg_review，避免上一轮的 retry_count 污染下一轮验证
+    # 注意：不要在这里重置 svg_review.retry_count。
+    # 验证重试路径需要 retry_count 累计，否则 route_svg_crap_check 永远到不了
+    # 上限阈值，会造成死循环（直到撞 recursion_limit）。
+    # design 重试路径下 svg_review 已经是 verified=True / retry_count=0，无需重置。
     return {
         "svg_code": svg_code,
         "error_log": None,
-        "svg_review": {"verified": False, "retry_count": 0, "critique": None},
     }
 
 def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
@@ -340,8 +342,41 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
     """[Node] 合并所有成功生成的单页 PPTX 文件"""
     config = config["configurable"]
     logger.info("--- NODE: MergeSlidesToDeck ---")
-    
-    svg_paths = sorted(state.get("generated_slide_paths", []))
+
+    raw_paths = state.get("generated_slide_paths", [])
+
+    # 去重：generated_slide_paths 是 operator.add 累加器，HITL 2 局部重生成
+    # 时旧条目会残留。按 slide 目录名（slide_03 等）作为 key，后写入的路径覆盖
+    # 先前的，从而只保留每张 slide 的最新版本。
+    by_page: Dict[str, str] = {}
+    for p in raw_paths:
+        key = os.path.basename(os.path.dirname(p))  # e.g. "slide_03"
+        by_page[key] = p
+    svg_paths = sorted(by_page.values())
+
+    if len(raw_paths) != len(svg_paths):
+        logger.info(
+            f"   -> Deduplicated generated_slide_paths: "
+            f"{len(raw_paths)} entries -> {len(svg_paths)} unique slides."
+        )
+
+    # 缺页检测：对比计划页数与实际产出数，让静默失败的 slide 显形。
+    plan = state.get("presentation_plan") or []
+    if plan:
+        expected_pages = {int(s.get("slide_page")) for s in plan if s.get("slide_page") is not None}
+        produced_pages = set()
+        for key in by_page.keys():
+            # key like "slide_03" -> 3
+            try:
+                produced_pages.add(int(key.split("_")[-1]))
+            except ValueError:
+                continue
+        missing = sorted(expected_pages - produced_pages)
+        if missing:
+            logger.error(
+                f"   -> ❌ Missing slides in final deck (SVG validation or generation failed): {missing}. "
+                f"These pages were silently dropped by the subgraph."
+            )
 
     if not svg_paths:
         logger.warning("   -> No SVG slides were generated to merge.")

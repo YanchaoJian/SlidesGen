@@ -1,13 +1,18 @@
 IMAGE_ORIENTATION_PROMPT = """\
-This image shows four versions (A, B, C, D) of the same figure, each rotated differently.
-Only ONE version has the correct orientation where:
-- All text and labels read normally (left-to-right, top-to-bottom)
-- Charts, axes, and diagrams are upright
-- The figure looks natural as it would appear in an academic paper
+This composite image shows TWO versions of the same figure extracted from an academic paper PDF:
+- **A**: the original figure as extracted.
+- **B**: the same figure rotated 90° clockwise (used to recover figures that were stored rotated counter-clockwise in the PDF).
 
-Look carefully at the text direction in each version. Which single version (A, B, C, or D) has the correct upright orientation?
+In academic papers, figures are either already upright OR were rotated counter-clockwise to fit the page. Exactly one of A or B is the correct upright orientation.
 
-Reply with EXACTLY one letter: A, B, C, or D."""
+Decide which version is correct by checking:
+- Text labels, axis titles, legends read normally left-to-right.
+- Numbers on axes are upright (not sideways).
+- Arrows, flowcharts, and diagrams point in natural reading direction.
+
+Special case: if the figure contains no text, no axis, and no directional arrows (e.g., a symmetric schematic that looks equally valid both ways), default to A.
+
+Reply with EXACTLY one letter: A or B. No explanation, no punctuation."""
 
 
 EXTRACT_TABLES_AND_EQUATIONS_PROMPT = """

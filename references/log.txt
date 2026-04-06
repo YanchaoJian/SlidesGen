@@ -1,0 +1,105 @@
+(slides-gen) S:\project\SlidesGen> cmd /C "s:\dev\miniconda3\envs\slides-gen\python.exe c:\Users\Administrator\.vscode\extensions\ms-python.debugpy-2025.18.0-win32-x64\bundled\libs\debugpy\launcher 5329 -- main.py --pdf_path assets/paper.pdf --style_image_path assets/ref-style-img.png --output_dir output/ --model_name claude-sonnet-4-6 --marker_path models/marker --skip_plan_review --skip_pptx_review "
+04-07 00:37 - INFO   : 🚀 Starting new session: 0407_0037
+04-07 00:37 - INFO   : --- NODE: AnalyzeImageStyle ---
+04-07 00:37 - INFO   : 🎨 Analyzing style from image: ref-style-img.png
+04-07 00:37 - INFO   : --- NODE: ExtractContentFromPDF ---
+04-07 00:37 - INFO   : Marker will use device: 'cuda'
+04-07 00:37 - INFO   : Starting content extraction for: assets/paper.pdf
+Loaded layout model S:\project\SlidesGen\models\marker\layout/2025_02_18 on device cuda with dtype torch.float16
+Loaded texify model S:\project\SlidesGen\models\marker\texify/2025_02_18 on device cuda with dtype torch.float16
+Loaded recognition model S:\project\SlidesGen\models\marker\text_recognition/2025_02_18 on device cuda with dtype torch.float16
+Loaded table recognition model S:\project\SlidesGen\models\marker\table_recognition/2025_02_18 on device cuda with dtype torch.float16
+Loaded detection model S:\project\SlidesGen\models\marker\text_detection/2025_02_28 on device cuda with dtype torch.float16
+Loaded detection model S:\project\SlidesGen\models\marker\inline_math_detection/2025_02_24 on device cuda with dtype torch.float16
+Recognizing layout: 100%|████████████████████████████████████████████████| 3/3 [00:05<00:00,  1.99s/it]
+Running OCR Error Detection: 100%|███████████████████████████████████████| 4/4 [00:00<00:00, 11.83it/s]
+Detecting bboxes: 0it [00:00, ?it/s]
+Texify inference: 100%|██████████████████████████████████████████████████| 1/1 [00:04<00:00,  4.68s/it]
+Detecting bboxes: 0it [00:00, ?it/s]
+Recognizing tables: 100%|████████████████████████████████████████████████| 1/1 [00:03<00:00,  3.52s/it]
+04-07 00:37 - INFO   : PDF conversion finished in 24.03 seconds.
+04-07 00:38 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 00:38 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 00:38 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 00:38 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 00:38 - INFO   : ✅ Style analysis successful.
+04-07 00:38 - INFO   : Style description saved to output/0407_0037\style\style_protocol_v0.md
+04-07 00:38 - INFO   : ✅ Node 'analyze_image_style' completed.
+04-07 00:38 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 00:38 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 00:38 - INFO   : Extracted 4 tables and 5 equations from Marker output.
+04-07 00:38 - INFO   : Raw content saved for debugging at: output/0407_0037\raw\pdf-content.json
+04-07 00:38 - INFO   : ✅ Node 'extract_content_from_pdf' completed.
+04-07 00:38 - INFO   : --- NODE: CheckStyleProtocol ---
+04-07 00:38 - INFO   : --- NODE: GeneratePresentationPlan ---
+04-07 00:38 - INFO   : 🧐 Style Critic is reviewing the style description against the reference image...
+04-07 00:38 - INFO   : Extracting main content from enhanced content.
+04-07 00:38 - INFO   :    Planner Step 1/2: Extracting main content...
+04-07 00:38 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 00:39 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 00:39 - ERROR  : ❌ Style critic LLM call failed: 1 validation error for StyleCritique
+  Invalid JSON: expected value at line 1 column 1 [type=json_invalid, input_value='# Audit Report: Dalian U...t would fail visual QA.', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/json_invalid
+04-07 00:39 - WARNING:    -> ❌ Style protocol REJECTED. Critique: A critical error occ...
+04-07 00:39 - INFO   : 🔀 Style protocol not verified. Routing to style analysis.
+04-07 00:39 - INFO   : ✅ Node 'check_style_protocol' completed.
+04-07 00:39 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 504 Gateway Time-out"
+04-07 00:39 - INFO   : Retrying request to /chat/completions in 0.431610 seconds
+04-07 00:40 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 504 Gateway Time-out"
+04-07 00:40 - INFO   : Retrying request to /chat/completions in 0.949597 seconds
+04-07 00:41 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 504 Gateway Time-out"
+04-07 00:41 - WARNING: Could not extract key content: <html>
+<head><title>504 Gateway Time-out</title></head>
+<body>
+<center><h1>504 Gateway Time-out</h1></center>
+<hr><center>openresty</center>
+</body>
+</html>
+04-07 00:41 - INFO   :    Paper main content saved to output/0407_0037\plan\paper_main_content.json
+04-07 00:41 - INFO   :    Planner Step 2/2: Planning slides...
+04-07 00:41 - INFO   : ✨ Creation Mode: Generating initial plan.
+04-07 00:41 - ERROR  : Could not plan slides: 'NoneType' object has no attribute 'get'
+Traceback (most recent call last):
+  File "S:\project\SlidesGen\agents\planning\ppt_planner.py", line 86, in _plan_slides
+    "title": paper_info.get("title", ""),
+             ^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+04-07 00:41 - ERROR  : Failed to generate presentation plan.
+04-07 00:41 - ERROR  : ❌ Fatal: Presentation plan generation failed.
+04-07 00:41 - ERROR  : ❌ Workflow execution failed: Fatal: Presentation plan generation failed.
+Traceback (most recent call last):
+  File "S:\project\SlidesGen\main.py", line 60, in run_workflow
+    async for event in graph.astream(graph_input, config=config, stream_mode="updates"):
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\main.py", line 3111, in astream
+    async for _ in runner.atick(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_runner.py", line 410, in atick
+    _panic_or_proceed(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_runner.py", line 520, in _panic_or_proceed
+    raise exc
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_executor.py", line 217, in gated
+    return await coro
+           ^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_retry.py", line 211, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\_internal\_runnable.py", line 473, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\runnables\config.py", line 636, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\runnables\config.py", line 627, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "S:\project\SlidesGen\workflow\nodes.py", line 144, in generate_presentation_plan_node
+    raise ValueError("Fatal: Presentation plan generation failed.")
+ValueError: Fatal: Presentation plan generation failed.
+During task with name 'generate_presentation_plan' and id 'e47242f5-b014-c69b-fdd9-45fec902ac1d'
+
+(slides-gen) S:\project\SlidesGen>

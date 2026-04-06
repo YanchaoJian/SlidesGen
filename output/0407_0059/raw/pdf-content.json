@@ -3,23 +3,23 @@
   "images": [
     {
       "caption": "The Transformer - model architecture.",
-      "path": "S:/project/SlidesGen/output/0407_0037/images/_page_2_Figure_0.jpeg"
+      "path": "S:/project/SlidesGen/output/0407_0059/images/_page_2_Figure_0.jpeg"
     },
     {
       "caption": "(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several attention layers running in parallel.",
-      "path": "S:/project/SlidesGen/output/0407_0037/images/_page_3_Figure_0.jpeg"
+      "path": "S:/project/SlidesGen/output/0407_0059/images/_page_3_Figure_0.jpeg"
     },
     {
       "caption": "An example of the attention mechanism following long-distance dependencies in the encoder self-attention in layer 5 of 6. Many of the attention heads attend to a distant dependency of the verb 'making', completing the phrase 'making...more difficult'. Attentions here shown only for the word 'making'. Different colors represent different heads. Best viewed in color.",
-      "path": "S:/project/SlidesGen/output/0407_0037/images/_page_12_Figure_1.jpeg"
+      "path": "S:/project/SlidesGen/output/0407_0059/images/_page_12_Figure_1.jpeg"
     },
     {
       "caption": "Two attention heads, also in layer 5 of 6, apparently involved in anaphora resolution. Top: Full attentions for head 5. Bottom: Isolated attentions from just the word 'its' for attention heads 5 and 6. Note that the attentions are very sharp for this word.",
-      "path": "S:/project/SlidesGen/output/0407_0037/images/_page_13_Figure_0.jpeg"
+      "path": "S:/project/SlidesGen/output/0407_0059/images/_page_13_Figure_0.jpeg"
     },
     {
       "caption": "Many of the attention heads exhibit behaviour that seems related to the structure of the sentence. We give two such examples above, from two different heads from the encoder self-attention at layer 5 of 6. The heads clearly learned to perform different tasks.",
-      "path": "S:/project/SlidesGen/output/0407_0037/images/_page_14_Figure_0.jpeg"
+      "path": "S:/project/SlidesGen/output/0407_0059/images/_page_14_Figure_0.jpeg"
     }
   ],
   "tables": [
