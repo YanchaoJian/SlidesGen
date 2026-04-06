@@ -15,7 +15,8 @@ from pipeline.svg_finalize.svg_rect_to_path import process_svg
 from pipeline.svg_finalize.flatten_tspan import flatten_text_with_tspans
 from pipeline.svg_finalize.embed_images import embed_images_in_svg
 from pipeline.svg_finalize.fix_image_aspect import fix_image_aspect_in_svg
-from pipeline.svg_finalize.add_image_card import add_image_cards
+from pipeline.svg_finalize.crop_images import process_svg_images as crop_images_in_svg
+from pipeline.svg_finalize.embed_icons import process_svg_file as embed_icons_in_file
 
 logger = logging.getLogger(__name__)
 
@@ -274,12 +275,13 @@ def finalize_single_svg(svg_path: str) -> Tuple[bool, str]:
     """
     对单个 SVG 文件执行后处理管线（原地修改文件）。
 
-    处理步骤（按顺序）：
-    1. 修复图片宽高比（防止 PPT 转换时拉伸）
-    2. 为图片添加白色底卡（消除论文白底图与彩色幻灯片背景的割裂感）
-    3. 嵌入外部图片为 base64
-    4. 展平 tspan 为独立 text 元素
-    5. 圆角矩形转为 path（防止转换时丢失圆角）
+    处理步骤（按顺序，与 pipeline/finalize_svg.py 一致）：
+    1. 嵌入 icon (<use> 引用的本地 svg 图标, 若 templates/icons 存在)
+    2. 根据 preserveAspectRatio="slice" 裁剪图片
+    3. 修复图片宽高比（防止 PPT 转换时拉伸）
+    4. 嵌入外部图片为 base64
+    5. 展平 tspan 为独立 text 元素
+    6. 圆角矩形转为 path（防止转换时丢失圆角）
 
     Args:
         svg_path: SVG 文件路径。
@@ -292,7 +294,25 @@ def finalize_single_svg(svg_path: str) -> Tuple[bool, str]:
         return False, f"SVG file not found: {svg_path}"
 
     try:
-        # Step 1: 修复图片宽高比
+        # Step 1: 嵌入 icons（仅当 templates/icons 目录存在时）
+        icons_dir = Path(__file__).resolve().parent.parent / "templates" / "icons"
+        if icons_dir.exists():
+            try:
+                icon_count = embed_icons_in_file(path, icons_dir, dry_run=False, verbose=False)
+                if icon_count > 0:
+                    logger.debug(f"   -> Embedded {icon_count} icon(s)")
+            except Exception as e:
+                logger.warning(f"   -> embed_icons skipped: {e}")
+
+        # Step 2: 根据 preserveAspectRatio="slice" 裁剪图片
+        try:
+            crop_count, _ = crop_images_in_svg(str(path), dry_run=False, verbose=False)
+            if crop_count > 0:
+                logger.debug(f"   -> Cropped {crop_count} image(s)")
+        except Exception as e:
+            logger.warning(f"   -> crop_images skipped: {e}")
+
+        # Step 3: 修复图片宽高比
         try:
             fix_count = fix_image_aspect_in_svg(str(path), dry_run=False, verbose=False)
             if fix_count > 0:
@@ -300,17 +320,7 @@ def finalize_single_svg(svg_path: str) -> Tuple[bool, str]:
         except Exception as e:
             logger.warning(f"   -> fix_image_aspect skipped: {e}")
 
-        # Step 2: 为图片添加白色底卡
-        try:
-            tree = ET.parse(str(path))
-            card_count = add_image_cards(tree)
-            if card_count > 0:
-                tree.write(str(path), encoding="unicode", xml_declaration=False)
-                logger.debug(f"   -> Added white card backing for {card_count} image(s)")
-        except Exception as e:
-            logger.warning(f"   -> add_image_card skipped: {e}")
-
-        # Step 3: 嵌入外部图片为 base64
+        # Step 4: 嵌入外部图片为 base64
         try:
             embed_count, _ = embed_images_in_svg(str(path), dry_run=False)
             if embed_count > 0:
@@ -318,7 +328,7 @@ def finalize_single_svg(svg_path: str) -> Tuple[bool, str]:
         except Exception as e:
             logger.warning(f"   -> embed_images skipped: {e}")
 
-        # Step 4: 展平 tspan
+        # Step 5: 展平 tspan
         try:
             tree = ET.parse(str(path))
             changed = flatten_text_with_tspans(tree)
@@ -328,7 +338,7 @@ def finalize_single_svg(svg_path: str) -> Tuple[bool, str]:
         except Exception as e:
             logger.warning(f"   -> flatten_tspan skipped: {e}")
 
-        # Step 5: 圆角矩形转 path
+        # Step 6: 圆角矩形转 path
         try:
             with open(path, "r", encoding="utf-8") as f:
                 content = f.read()

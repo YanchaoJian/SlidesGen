@@ -375,7 +375,7 @@ Please create a detailed, page-by-page slide plan for the paper based on all the
     "includes_figure": true,
     "figure_reference": {{
       "caption": "Workflow evolution over iterations with diagnostic feedback loops",
-      "path": "output/1230_1234/images/_page_2_Figure_0.jpeg"
+      "path": "/absolute/path/to/output/1230_1234/images/_page_2_Figure_0.jpeg"
     }},
     "includes_table": false,
     "table_reference": null,
@@ -544,6 +544,131 @@ NOT SVG code) that the SVG generator can follow mechanically.
 
 ---
 
+## Narrative Stance (READ BEFORE LAYING OUT)
+
+You are not just arranging boxes — you are staging an **argument**. Every page plays a role \
+in the deck's narrative, and layout decisions must serve that role.
+
+### Page Role Taxonomy
+
+Decide the page's narrative role first; it governs title style, component choices, and density:
+
+| Role | Purpose | Title style | Typical components |
+|------|---------|-------------|--------------------|
+| `cover` | Open the deck, set tone | Brand title + subtitle | Full-width image / hero shape, centered text |
+| `situation` | Establish shared context | Assertion headline | Single chart / hero stat + one-sentence frame |
+| `complication` | Expose the tension / problem | Assertion headline naming the tension | Contrast cards, red/negative highlights, gap visual |
+| `question` | Pose the strategic question | The question itself as title | Minimal — one line + decorative whitespace |
+| `answer_overview` | State the core solution / thesis | One-sentence solution | 3-branch pyramid / roadmap / MECE tree |
+| `data` | Prove a claim with numbers | Assertion headline = the claim | KPI dashboard / chart + insight panel |
+| `comparison` | Benchmark us vs others / before vs after | Assertion headline naming the winner | Side-by-side cards, benchmarking matrix |
+| `method` | Explain how it works | Process-focused assertion | Flow diagram, numbered badges, step cards |
+| `case` | Illustrate with an example | "Example shows ..." assertion | Left figure + right insight, quote box |
+| `closing` | Land the takeaway + next step | Thank you / CTA | Centered message + decorative shapes |
+
+> **Assertion headline rule** (content pages only): upgrade any descriptive slide title to a \
+> one-sentence conclusion. Example: "Market Overview" → "Domestic market grows 23% YoY, \
+> outpacing global average". Cover / question / closing pages are exempt.
+
+### Pyramid — Conclusion First
+
+Every content page has exactly one core conclusion. Make it impossible to miss:
+- Put it in the title (assertion headline).
+- Restate it in a **Takeaway Box** directly below the title (x=40, y=80, w=1200, h≈45, \
+  light theme-color fill, 15px bold theme-color text).
+- Arrange 2-4 supporting arguments as cards / badges / chart insights below.
+- Never bury the conclusion inside the body; the title and takeaway box are the hero.
+
+### Data Contextualization — Never Show a Number Alone
+
+Any number on the slide must be paired with:
+1. The hero value (large bold).
+2. A comparison reference (industry avg / prior period / competitor / target).
+3. A meaning annotation ("Leading industry by 15.3 pts").
+
+If the slide plan only gives you a raw metric, explicitly plan the comparison and interpretation \
+in the layout spec so the SVG generator knows to include them.
+
+---
+
+## Style Tier Adaptation (Read the Design Specification)
+
+Infer the style tier from the Design Specification (visual theme / tone keywords / color restraint) \
+and adapt your layout vocabulary:
+
+| Tier | Signals in design spec | Layout vocabulary |
+|------|-----------------------|-------------------|
+| **A. Versatile / General** | "creative", "approachable", bold colors, imagery-heavy | Full-width images + gradient overlay, varied freeform layouts, emoji / illustration accents, numbered circles, storytelling flow |
+| **B. General Consulting** | "data-driven", "report", muted blues/grays, structured | KPI dashboards (4-card row), bar/line/donut charts, left-chart right-insight, tables with zebra rows, direct data labels |
+| **C. Top Consulting (MBB)** | "strategic", "executive", monochrome + accent, extreme restraint | Gradient top bar + dark Takeaway Box, MECE decomposition / driver tree / waterfall chart, benchmarking matrix, confidential footer, whitespace-rich pages |
+
+If the design spec is ambiguous, default to **Tier B** for data-rich slides (tables, metrics, \
+charts in the plan) and **Tier A** for narrative slides (figures, case studies, covers).
+
+---
+
+## Content Density → Font Baseline
+
+Pick the body font size from the content point count, not from aesthetic preference:
+
+| Density | Points on page | Body baseline | Title | Annotation |
+|---------|---------------|--------------|-------|------------|
+| Relaxed | 3-5 items | 24px | 36-48px | 18px |
+| Dense | 6+ items | 18px | 27-36px | 14px |
+
+> Override only if the design spec specifies different sizes explicitly.
+
+---
+
+## Chart Selection (When the Plan Mentions Data)
+
+Map the analytical goal to the right chart family — don't default to "just a bar chart":
+
+| Analytical goal | Chart family |
+|-----------------|-------------|
+| Ranking / 2-7 category comparison | Bar chart (horizontal if labels are long) |
+| Trend over time | Line chart / area chart |
+| Proportion / composition | Donut chart (prefer over pie) |
+| KPI / headline metrics | 4-card KPI dashboard row (280×180 cards, gap 30) |
+| Conversion / funnel | Funnel chart |
+| Change attribution | Waterfall chart |
+| Two-dimensional positioning | 2×2 matrix |
+| Flow between stages | Sankey chart |
+| Decomposition summing to 100% | MECE tree |
+| Target gap | Bullet chart / progress bar with baseline |
+
+State the selected chart type explicitly in the layout spec along with axis labels, data series \
+count, and highlight strategy (which single series / data point to accent, others in neutral gray).
+
+---
+
+## Image–Layout Aspect Alignment (Hard Rule)
+
+The container aspect ratio **must** match the image's native ratio. Never force a wide image \
+into a square box or a portrait image into a narrow horizontal strip.
+
+| Image ratio | Recommended layout | Container hint |
+|-------------|-------------------|----------------|
+| > 2.0 (ultra-wide) | Top-bottom split, top full-width | ~1200×300 top band |
+| 1.5–2.0 (wide) | Top-bottom split | ~1200×400 top band |
+| 1.2–1.5 (standard landscape) | Left-right split | Left ~600×480 |
+| 0.8–1.2 (square) | Left-right split | Left ~480×480 |
+| < 0.8 (portrait) | Left-right split, image on left | Left ~360×560 |
+
+If the slide plan gives image dimensions, compute the ratio and declare the chosen layout + \
+container box up front.
+
+---
+
+## Color Restraint (60-30-10)
+
+- No more than **3 primary colors** per page (primary 60%, secondary 30%, accent 10%).
+- Data series use same-hue depth (`fill-opacity` 1.0 / 0.6 / 0.3), not rainbow palettes.
+- Reserve the accent color for the single target data point / the key takeaway word.
+- Semantic colors: green = positive / red = negative / gray = baseline. Do not mix these up.
+
+---
+
 ## Canvas & Safe Zone
 
 - Canvas: **1280 × 720 px** (16:9 landscape)
@@ -651,13 +776,51 @@ Produce a detailed layout specification for this slide following ALL sections be
 
 ### 1. Page Meta
 
-- Page type: [Cover / Content / Method / Data / Comparison / Summary / Closing]
-- Layout mode: [cover_centered / card_grid_2col / card_grid_3col / left_right_split / flow_horizontal / single_card_full / closing_centered]
-- Rationale: <why this layout fits the content — e.g. "3 key features → 3-column cards">
+- Page role: [cover / situation / complication / question / answer_overview / data / comparison / method / case / closing]
+- Style tier inferred: [A. Versatile / B. General Consulting / C. Top Consulting] — cite the design-spec signal you used
+- Content density: [Relaxed 3-5 items → 24px body | Dense 6+ items → 18px body]
+- Layout mode: [cover_centered / card_grid_2col / card_grid_3col / left_right_split / flow_horizontal / single_card_full / closing_centered / kpi_dashboard / chart_insight_split / mece_tree / benchmark_matrix]
+- Rationale: <why this role + layout + tier combination fits the content>
 
 ---
 
-### 2. Background & Decorations
+### 2. Narrative & Argument Plan (skip for cover / question / closing)
+
+- **Core conclusion (one sentence)**: "<the single thing the audience must remember>"
+- **Assertion headline (new title)**: "<rewrite the slide plan's title as a one-sentence conclusion; keep the original meaning>"
+- **Takeaway Box text**: "<≤20-word restatement of the core conclusion for the box under the title>"
+- **Supporting arguments** (2-4 items): enumerate the logic ladders that prove the conclusion. Each argument maps to one card / chart insight below.
+
+---
+
+### 3. Data Contextualization Plan (only if the slide has numbers / charts / KPIs)
+
+For each metric appearing on the page, declare:
+
+| Metric label | Hero value | Comparison reference | Meaning annotation |
+|--------------|-----------|---------------------|-------------------|
+| e.g. Recognition accuracy | 97.3% | Industry avg 82% \\| Competitor A 89% | Leading industry by 15.3 pts |
+
+If the slide plan provides a raw number without comparison, **invent a reasonable comparison \
+from the source context** (prior period / target / baseline) — never leave a metric bare.
+
+Also declare the chart type (from the Chart Selection table) and the highlight strategy: \
+which single series/data point receives the accent color; everything else is neutral gray.
+
+---
+
+### 4. Image Plan (only if the slide includes a figure)
+
+- Image href: "[path]"
+- Native dimensions (if known): width × height → aspect ratio = ??
+- Layout class per Image–Layout Aspect Alignment table: [ultra-wide / wide / landscape / square / portrait]
+- Container box chosen: x=??, y=??, w=??, h=?? (must match the image's aspect within ±5%)
+- Role of the image on this page: [hero / evidence / illustration / decorative background]
+- Caption text (1 sentence, ≤ 18 words): "<text>"
+
+---
+
+### 5. Background & Decorations
 
 Specify all background and decorative elements:
 - Background: color #HEX (from Design Specification)
@@ -667,7 +830,11 @@ Specify all background and decorative elements:
 
 ---
 
-### 3. Title Area
+### 6. Title Area & Takeaway Box
+
+(For content pages, title text MUST be the assertion headline from section 2. Place the \
+Takeaway Box at x=40, y=80, w=1200, h≈45, rx=6, fill=primary-color with fill-opacity="0.08", \
+text = section 2 Takeaway text, font 15px bold primary color.)
 
 - Title text: "<exact text>"
 - Position and alignment: left-aligned at x=??, y=?? / centered at x=640, y=??
@@ -677,7 +844,7 @@ Specify all background and decorative elements:
 
 ---
 
-### 4. Content Elements
+### 7. Content Elements
 
 For EACH content element, specify everything below. This is the most important section — \
 be precise and complete.
@@ -751,7 +918,7 @@ be precise and complete.
 
 ---
 
-### 5. Visual Emphasis
+### 8. Visual Emphasis
 
 - Which element deserves the most visual weight? (key data, core conclusion, important term)
 - How to emphasize: accent color card header / enlarged font / bold / Data Emphasis Badge / colored badge
@@ -759,20 +926,28 @@ be precise and complete.
 
 ---
 
-### 6. Footer
+### 9. Footer
 
-- Page number: text="[page]/[total]", position (x, y), font size=12–14px, color=#HEX
+- Page number: text="[page]/[total]", position (x≈1240, y≈700, right-aligned), font size=10–12px, color=#94A3B8
+- **Data source** (mandatory on any page with numbers, charts, tables, or KPIs): "Source: <origin>" at x=40, y=700, font 10px, color=#94A3B8
 
 ---
 
-### 7. Final Spacing Check
+### 10. Final Spacing & Narrative Check
 
 Review your layout and confirm:
-- [ ] All elements are within safe zone (x: 40–1240, y: 40–680)
+- [ ] Title is an assertion headline (content pages only)
+- [ ] Takeaway Box is present directly under the title (content pages only)
+- [ ] Every metric has a comparison reference and an interpretation
+- [ ] Chart highlight strategy declared (one target series in accent, rest in gray)
+- [ ] Image container aspect ratio matches the native image ratio (±5%)
+- [ ] ≤ 3 primary colors across the page; data series use same-hue opacity variations
+- [ ] Body font size matches the content-density rule (24px relaxed / 18px dense)
+- [ ] All elements within safe zone (x: 40–1240, y: 40–680)
 - [ ] No bounding boxes overlap (min 20px gap between elements)
 - [ ] All text has been pre-split into lines that fit their container
 - [ ] Image zones and text zones are separated (if applicable)
-- [ ] Total content fits within available height (y: 110–670)
+- [ ] Data source footer present on data pages
 
 If any check fails, adjust the positions/sizes above before outputting.
 
@@ -780,7 +955,7 @@ If any check fails, adjust the positions/sizes above before outputting.
 
 ## Output
 
-Write the complete specification following sections 1–7. \
+Write the complete specification following sections 1–10. \
 Use concrete pixel values and #HEX colors from the Design Specification. \
 Do NOT output SVG code.
 """

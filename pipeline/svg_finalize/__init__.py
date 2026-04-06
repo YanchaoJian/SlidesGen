@@ -1,1 +1,1 @@
-"""SVG 后处理工具集（嵌入图片、展平 tspan、圆角矩形转 path 等）。"""
+"""Internal SVG finalize helpers used by finalize_svg.py and compatibility wrappers."""

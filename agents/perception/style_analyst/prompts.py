@@ -26,6 +26,37 @@ consistent presentation slides.
 
 - ✅ Extract: colors, fonts, sizes, spacing, shadows, gradients, decorative shapes, layout zones
 - ❌ Ignore: specific text content ("Q3 Report"), brand logos, data values
+
+### Design-Tone Axis (always locate the image on this axis)
+
+A faithful spec must name the tone because downstream agents pick component vocabulary from it:
+
+| Tone family | Signals you would see | Downstream vocabulary |
+|-------------|----------------------|----------------------|
+| **Top-consulting (MBB)** | Monochrome + one accent, dark takeaway bar, confidential footer, restrained whitespace | MECE tree, waterfall, benchmarking matrix, assertion headlines |
+| **General consulting** | Muted blue/gray, bar/line charts, KPI cards, structured tables | KPI dashboards, left-chart right-insight, zebra tables |
+| **Tech / modern** | Dark cover + light content (mixed mode), gradient glows, neural lines, sans-serif stack | Gradient top bar, glow effects, neon accents, grid decorations |
+| **Versatile / creative** | Bold colors, full-bleed imagery, playful shapes, emoji/illustrations | Hero images + overlays, storytelling layouts, illustrated badges |
+| **Corporate traditional** | Navy/burgundy, serif or SimSun, minimal decoration, rigid grid | Classic header-footer, numbered lists, formal tables |
+
+### Theme Mode (light / dark / mixed)
+
+Reference images frequently use a **mixed** scheme (dark cover + chapter pages, light content \
+pages). When you detect different page types in the image, explicitly say "mixed" and give \
+separate background rules per page type.
+
+### Page-Type Awareness
+
+Your spec will feed a template-based generator that renders 4-5 canonical page types. For each \
+page type you can discern in the reference (cover / TOC / chapter / content / ending), capture \
+the **distinct** visual treatment, not just a global rule. Even if the reference shows only one \
+page, infer how the other page types would look under the same design language.
+
+### Semantic Color Convention
+
+Any secondary/accent hues you extract must be tagged with their **semantic role** so the \
+downstream planner can use them correctly: e.g. orange = brand emphasis, green = recommended / \
+success, blue = process / informational, red = risk / warning, gray = baseline / neutral.
 """
 
 ANALYZE_STYLE_USER_PROMPT = """\
@@ -40,10 +71,12 @@ the downstream SVG generator has no access to the original image and relies enti
 
 | Item | Value |
 | ---- | ----- |
-| **Theme Name** | <Short descriptive name, e.g. "McKinsey Consulting Blue", "Modern Gradient Dark"> |
+| **Theme Name** | <Short descriptive name, e.g. "McKinsey Consulting Blue", "Anthropic Tech Orange"> |
+| **Design Tone Family** | <Pick ONE: top-consulting / general-consulting / tech-modern / versatile-creative / corporate-traditional> |
 | **Atmosphere** | <1-2 sentences: visual mood, suitable scenarios> |
-| **Tone** | <Keywords: e.g. professional / tech / academic / creative / minimalist> |
-| **Theme Mode** | <Light / Dark> |
+| **Tone Keywords** | <3-5 keywords: e.g. "tech-forward, professional, modern, conclusion-first"> |
+| **Theme Mode** | <Light / Dark / **Mixed** (e.g. dark cover+chapter + light content)> |
+| **Suitable Scenarios** | <Which presentation types this theme fits: e.g. "AI tech talks, developer conferences, technical training"> |
 
 ---
 
@@ -64,6 +97,22 @@ the downstream SVG generator has no access to the original image and relies enti
 | **Border / divider** | `#......` | Card borders, divider lines |
 | **Success** | `#......` | Positive indicators (green family) |
 | **Warning** | `#......` | Issue markers (red family) |
+
+### Semantic Color Convention
+
+Declare how each non-neutral color should be used by downstream agents. Follow the convention: \
+**brand emphasis** = primary/accent, **recommended / success** = green family, **process / \
+informational** = blue family, **risk / warning** = red family, **baseline / neutral** = gray family. \
+If the reference uses the accent in an unusual way (e.g. orange only for callouts, not titles), \
+state that exception explicitly.
+
+| Semantic role | Assigned color | Where it appears |
+| ------------- | ------------- | ---------------- |
+| Brand emphasis | `#......` | <e.g. title, top bar, key data> |
+| Recommended / success | `#......` | <e.g. positive bars, "best option" badges> |
+| Process / informational | `#......` | <e.g. flow lines, links, neutral cards> |
+| Risk / warning | `#......` | <e.g. negative bars, "avoid" callouts> |
+| Baseline / neutral | `#......` | <e.g. gridlines, non-target data series> |
 
 ### Gradient Definitions (if applicable)
 
@@ -113,10 +162,13 @@ the downstream SVG generator has no access to the original image and relies enti
 | ------- | ---------- |
 | Left / right margin | __px |
 | Top / bottom margin | __px |
+| **Grid base unit** | __px (the underlying rhythm, typically 8/12/20/40) |
 | Card gap | __px |
 | Content block gap | __px |
 | Card padding | __px |
-| Card border radius | __px |
+| Card border radius | __px (typically 6-12) |
+
+> All other spacing values should be whole multiples of the grid base unit.
 
 ### Common Layout Modes
 
@@ -129,7 +181,51 @@ the downstream SVG generator has no access to the original image and relies enti
 
 ---
 
-## V. Visual Features
+## V. Page-Type Treatments
+
+Downstream generates 4-5 canonical page types. Describe the distinct visual treatment for \
+each. If the reference image only shows one page type, **infer** how the others would look \
+under the same design language (consistent with the tone family chosen in Section I).
+
+### 1. Cover Page
+
+- Background: <e.g. "Dark gradient #1A1A2E → #16213E → #0F0F1A">
+- Decorative elements: <e.g. "3% opacity grid lines, orange + blue glow, neural network nodes">
+- Title treatment: <font size, weight, color, alignment>
+- Subtitle / date / source info: <position, font, color>
+- Accent decorative line: <position, color, thickness>
+
+### 2. Chapter / Section Page
+
+- Background: <gradient / solid>
+- Chapter number style: <large numeric, color, font>
+- Chapter title style: <font size, weight, centered / left-aligned>
+- Decorative line or divider: <describe>
+
+### 3. Content Page (the workhorse)
+
+- Background: <typically white or very light>
+- Top decorative bar: <height, color — e.g. "6px Anthropic Orange top bar">
+- Page-type label (if any): <e.g. "uppercase orange label above the title, 14px tracking">
+- Title position: y=__, font size, weight, color, alignment
+- Key-message / takeaway strip (if consulting-style): <y position, fill, text style>
+- Default card layout for the content zone: <e.g. "three-column cards with colored top borders">
+- Footer: <page number position and style>
+
+### 4. Ending / Closing Page
+
+- Background: <often mirrors the cover for bookend effect>
+- Thank-you message style: <font size, color, centered>
+- Contact / CTA info: <position, font>
+- Decorative carryover from cover: <describe>
+
+### 5. TOC / Agenda Page (optional — only if visible or strongly implied)
+
+- Background, numbering style, item layout
+
+---
+
+## VI. Visual Features
 
 ### Decorative Elements
 - <Describe any persistent decorative shapes: header bars, side stripes, corner accents, background patterns — with approximate position, size, color>
@@ -146,7 +242,7 @@ the downstream SVG generator has no access to the original image and relies enti
 
 ---
 
-## VI. Component Patterns
+## VII. Component Patterns
 
 ### Content Cards
 - Background: <fill color, typically #FFFFFF>
@@ -178,11 +274,14 @@ the downstream SVG generator has no access to the original image and relies enti
 
 ---
 
-## VII. Design Quality Rules
+## VIII. Design Quality Rules
 
 - Content fill ratio: <roughly what % of the canvas is content vs. whitespace, e.g. "~60%, generous whitespace">
 - Alignment: <grid-aligned / free-form, alignment base unit if discernible>
 - Color contrast: <any notable high/low contrast areas>
+- Data visualization rule: <e.g. "monochromatic depth gradients, not rainbow"; "highlight target series in accent, others in gray">
+- Whitespace rhythm: <e.g. "dense data pages alternate with breathing hero pages">
+- Color restraint: <max primary colors per page, e.g. "≤3 colors, accent used ≤3 times globally">
 
 ---
 
@@ -192,6 +291,10 @@ the downstream SVG generator has no access to the original image and relies enti
 3. Do NOT extract specific text content — only style rules.
 4. If the background is a complex image, describe it as "Full-screen background image with [color] overlay at [opacity]".
 5. Pay close attention to shadows, transparency, borders, gradients — these define the premium feel.
+6. **Locate the design on the Tone Family axis** and use that to decide component vocabulary in sections VII & VIII.
+7. **Fill in every page type in section V**, even if the reference image only shows one — the downstream pipeline generates cover, chapter, content, and ending pages together and they must feel like one family.
+8. **Tag every non-neutral color with its semantic role** in the Semantic Color Convention table, so the planner knows when to use green vs red vs blue.
+9. **Whole-number grid discipline**: all spacing values should be integer multiples of the grid base unit you declare in section IV.
 """
 
 STYLE_CRITIC_SYSTEM_PROMPT = """\
@@ -224,8 +327,19 @@ reference image's visual identity and is **complete enough for SVG code generati
 - Are shadow/gradient parameters specific enough (not just "has shadow")?
 - Are component patterns (cards, title treatments) described with actionable detail?
 
-### 5. Structural Completeness
-- Are all seven sections (I-VII) present and filled with specific values?
+### 5. Tone Family & Semantic Colors
+- Is the Design Tone Family correctly named (top-consulting / general-consulting / tech-modern / versatile-creative / corporate-traditional)?
+- Does the chosen tone family match the visual evidence (restraint level, chart style, decoration density)?
+- Is every non-neutral color tagged with a semantic role (brand / success / process / warning / neutral)?
+- If the reference is a mixed-mode deck (dark cover + light content), is that explicitly declared?
+
+### 6. Per-Page-Type Coverage
+- Are all applicable page types in Section V (Cover / Chapter / Content / Ending / TOC) described with distinct treatments?
+- Do the inferred page types feel like one family (consistent accent, decoration, typography)?
+
+### 7. Structural Completeness
+- Are all eight sections (I-VIII) present and filled with specific values?
+- Is the grid base unit declared and are spacing values consistent with it?
 - Are there any placeholder values (`__px`, `#......`) that were not filled in?
 
 ## Output Rules
@@ -274,13 +388,16 @@ Apply targeted corrections to the existing spec based on audit feedback.
 
 ### Refinement Guidelines:
 
-1. **Maintain Structure**: Keep all seven sections (I–VII) in the same format.
+1. **Maintain Structure**: Keep all eight sections (I–VIII) in the same format.
 
 2. **Targeted Fixes**:
-   - Color feedback → update the Color Scheme table (Section II), ensure gradient definitions match.
-   - Layout feedback → update Layout Principles (Section IV), check zone Y-ranges and spacing values.
+   - Tone / mode feedback → update Theme Overview (Section I), re-pick the tone family if needed.
+   - Color feedback → update the Color Scheme table and Semantic Color Convention (Section II), ensure gradient definitions match.
    - Typography feedback → update Typography System (Section III), verify ratio consistency.
-   - Missing elements → add to Visual Features (V) or Component Patterns (VI).
+   - Layout feedback → update Layout Principles (Section IV), check zone Y-ranges, grid base, and spacing values.
+   - Page-type coverage feedback → update Page-Type Treatments (Section V) with distinct rules per page type.
+   - Missing decorative / component details → add to Visual Features (VI) or Component Patterns (VII).
+   - Quality rule feedback → update Design Quality Rules (Section VIII).
 
 3. **Visual Calibration**: Audit feedback may include specific corrected values (e.g., "#005587 not #003366"). \
 Prioritize these exact values, then cross-check against the image.

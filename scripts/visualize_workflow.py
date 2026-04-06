@@ -1,5 +1,9 @@
 """工作流图可视化脚本"""
 import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 from workflow.graph import build_graph
 from langgraph.checkpoint.memory import MemorySaver
 
@@ -11,7 +15,7 @@ def visualize_workflow():
     # 方法1: 生成 PNG 图片（需要安装 pygraphviz 或 graphviz）
     try:
         png_data = graph.get_graph().draw_mermaid_png()
-        output_path = "output/workflow_graph.png"
+        output_path = "assets/workflow_graph.png"
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         
         with open(output_path, "wb") as f:
@@ -24,7 +28,7 @@ def visualize_workflow():
     # 方法2: 生成 Mermaid 语法（可在线渲染）
     try:
         mermaid_code = graph.get_graph().draw_mermaid()
-        mermaid_path = "output/workflow_graph.mmd"
+        mermaid_path = "assets/workflow_graph.mmd"
         
         with open(mermaid_path, "w", encoding="utf-8") as f:
             f.write(mermaid_code)

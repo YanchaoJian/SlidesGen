@@ -3,6 +3,7 @@ import json
 import time
 import logging
 import re
+from pathlib import Path
 from typing import List, Optional
 
 import torch
@@ -130,9 +131,11 @@ class ContentExtractor:
 
                 caption = self._extract_image_caption(markdown_text, filename)
 
+                # 使用绝对 + POSIX 风格路径（正斜杠），避免下游 SVG href
+                # 因相对 CWD 路径或 Windows 反斜杠而解析失败。
                 image_info = {
                     "caption": caption,
-                    "path": image_filepath
+                    "path": Path(image_filepath).resolve().as_posix(),
                 }
                 image_list.append(image_info)
 

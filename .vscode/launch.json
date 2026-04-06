@@ -17,10 +17,10 @@
                 // [Optional] Root output directory (default: output/)
                 "--output_dir", "output/",
                 // [Optional] Default LLM model, fallback for all stages (default: gpt-4o)
-                "--model_name", "gpt-4o",
+                "--model_name", "claude-sonnet-4-6",
                 // [Optional] Per-stage model overrides (default: use --model_name)
                 // "--vision_model", "gemini-3.1-pro-preview",
-                // "--svg_model", "gpt-5.3-codex-2026-02-24",
+                // "--svg_model", "claude-sonnet-4-6",
                 // "--text_model", "gpt-4o",
                 // [Optional] Path to local Marker model for PDF parsing (default: models/marker)
                 "--marker_path", "models/marker",
@@ -30,7 +30,7 @@
                 // [Optional] Enable debug-level logging
                 // "--verbose",
                 // [Optional] Resume an interrupted session by specifying its thread ID
-                // "--thread_id", "0324_1530",
+                // "--thread_id", "0406_2043",
             ]
         }
     ]

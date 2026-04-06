@@ -51,12 +51,12 @@ def evaluate_and_critique_slide(
 
             # 2. PPTX → 截图
             logger.info("   -> Converting slide to image for review...")
-            image_count = pptx_to_images(temp_pptx, temp_dir, dpi=300)
-            if image_count == 0:
+            image_files = pptx_to_images(temp_pptx, temp_dir, dpi=300)
+            if not image_files:
                 logger.warning("   -> ⚠️ PPTX to image conversion resulted in 0 images.")
                 return "Failed to render slide image for evaluation."
 
-            image_path = os.path.join(temp_dir, "slide_001.jpg")
+            image_path = image_files[0]
             base64_image = encode_image_to_base64(image_path)
 
         except Exception as e:

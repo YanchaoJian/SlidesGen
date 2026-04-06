@@ -1,0 +1,36 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	extract_content_from_pdf(extract_content_from_pdf)
+	analyze_image_style(analyze_image_style)
+	check_style_protocol(check_style_protocol)
+	generate_presentation_plan(generate_presentation_plan)
+	review_plan(review_plan)
+	dispatch_slide_tasks(dispatch_slide_tasks)
+	generate_single_slide(generate_single_slide)
+	merge_slides_to_deck(merge_slides_to_deck)
+	review_pptx_design(review_pptx_design)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> analyze_image_style;
+	__start__ --> extract_content_from_pdf;
+	analyze_image_style --> check_style_protocol;
+	check_style_protocol -.-> analyze_image_style;
+	check_style_protocol -.-> dispatch_slide_tasks;
+	dispatch_slide_tasks -.-> generate_single_slide;
+	extract_content_from_pdf --> generate_presentation_plan;
+	generate_presentation_plan --> review_plan;
+	generate_single_slide --> merge_slides_to_deck;
+	merge_slides_to_deck --> review_pptx_design;
+	review_plan -.-> dispatch_slide_tasks;
+	review_plan -.-> generate_presentation_plan;
+	review_pptx_design -. &nbsp;END&nbsp; .-> __end__;
+	review_pptx_design -.-> analyze_image_style;
+	review_pptx_design -.-> dispatch_slide_tasks;
+	review_pptx_design -.-> generate_presentation_plan;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

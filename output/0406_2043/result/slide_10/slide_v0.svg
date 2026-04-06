@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+      <feOffset dx="0" dy="10" result="offsetBlur" />
+      <feFlood flood-color="#003D7C" flood-opacity="0.15" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#003D7C" />
+  
+  <text x="640" y="110" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="72" font-weight="bold" fill="#FFFFFF">
+    感谢您的聆听
+  </text>
+  
+  <text x="640" y="165" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="32" fill="#FFFFFF" fill-opacity="0.85">
+    Thank You for Your Attention
+  </text>
+  
+  <path fill="#0056A4" filter="url(#shadow)" d="M198,230 H1082 A8,8 0 0 1 1090,238 V562 A8,8 0 0 1 1082,570 H198 A8,8 0 0 1 190,562 V238 A8,8 0 0 1 198,230 Z" />
+  
+  <text x="640" y="285" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="40" font-weight="bold" fill="#FFFFFF">
+    Conclusion and Future Work
+  </text>
+  
+  <text font-family="Microsoft YaHei, SimHei, Arial, sans-serif" fill="#FFFFFF" font-size="22" x="230" y="345">• The Transformer sets a new benchmark in sequence transduction tasks,</text><text font-family="Microsoft YaHei, SimHei, Arial, sans-serif" fill="#FFFFFF" font-size="22" x="230" y="346.6">  offering a more efficient and scalable solution.</text><text font-family="Microsoft YaHei, SimHei, Arial, sans-serif" fill="#FFFFFF" font-size="22" x="230" y="349">• Future work includes extending the model to other modalities,</text><text font-family="Microsoft YaHei, SimHei, Arial, sans-serif" fill="#FFFFFF" font-size="22" x="230" y="350.6">  such as images and audio.</text><text font-family="Microsoft YaHei, SimHei, Arial, sans-serif" fill="#FFFFFF" font-size="22" x="230" y="353">• Exploration of restricted attention mechanisms for handling large inputs</text><text font-family="Microsoft YaHei, SimHei, Arial, sans-serif" fill="#FFFFFF" font-size="22" x="230" y="354.6">  is also a promising direction.</text><text x="60" y="690" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="16" fill="#FFFFFF" fill-opacity="0.8">
+    团结、进取、求实、创新
+  </text>
+  
+  <text x="1240" y="700" text-anchor="end" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="14" fill="#999999">
+    10 / 10
+  </text>
+</svg>

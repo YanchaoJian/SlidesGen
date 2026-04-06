@@ -180,6 +180,105 @@ is defined yet, add one (see the shadow pattern above).
 
 ---
 
+## Narrative & Information Architecture (READ BEFORE DRAWING)
+
+Great slides are not layout exercises — they are **arguments**. Before writing any SVG, \
+decide what the page is *claiming* and arrange every visual element to serve that claim.
+
+### Pyramid Principle — Conclusion First
+
+Executives and readers don't care about *process*; they care about *results*. Every page \
+follows: **Core conclusion → Supporting arguments → Supporting data**.
+
+```
+         ┌─────────────────┐
+         │ Core Conclusion │   ← Page title / Takeaway Box
+         └────────┬────────┘
+      ┌───────────┼───────────┐
+  ┌───┴───┐  ┌───┴───┐  ┌───┴───┐
+  │ Arg 1 │  │ Arg 2 │  │ Arg 3 │   ← Card headers / section labels
+  └───────┘  └───────┘  └───────┘
+```
+
+| Level | Position | Font size |
+|-------|----------|-----------|
+| Core conclusion | Page title / Takeaway Box | 24-32px bold |
+| Arguments | Card headers, section labels | 16-20px bold |
+| Supporting data | Chart values, body copy | 12-16px |
+
+### Assertion Headlines (NOT Descriptive Titles)
+
+Page titles must be **one-sentence assertions** that state the conclusion. Descriptive \
+topic labels like "Market Overview" are FORBIDDEN for content pages.
+
+| Weak (descriptive) | Strong (assertion headline) |
+|-------------------|----------------------------|
+| "Market Overview" | "Domestic market grows 23% YoY, significantly outpacing global average" |
+| "Competitive Analysis" | "Three competitors show clear weaknesses in channel coverage" |
+| "Our Solution" | "Three-phase path: Focus → Expand → Scale" |
+| "Key Findings" | "Growth driver is shifting from acquisition to retention" |
+
+Cover and closing pages may use short brand/thank-you titles. Every other content page \
+must carry an assertion headline.
+
+### Takeaway Box (Mandatory on Content Pages)
+
+Directly below the title, place a **Takeaway Box** — a single-sentence restatement of \
+the page's core insight. This is the one thing the audience must remember.
+
+```xml
+<!-- Takeaway Box (x=40, y=80, w=1200, h=45) -->
+<rect x="40" y="80" width="1200" height="45" rx="6"
+      fill="#1A5F9E" fill-opacity="0.08"/>
+<text x="60" y="108" font-size="15" font-weight="bold" fill="#1A5F9E">
+    ▸ In one sentence: the single core insight of this page.
+</text>
+```
+
+### Data Contextualization — Never Show a Number in Isolation
+
+> **Golden Rule**: a bare number is noise. Every data point must answer "compared to what?" and "so what?".
+
+Any time you display a metric, include all three layers:
+
+1. **The value itself** — large bold font, the hero number.
+2. **A comparison reference** — industry average / prior period / competitor / target.
+3. **Meaning interpretation** — one short phrase telling the audience why it matters.
+
+```xml
+<text x="160" y="280" text-anchor="middle" font-size="42" font-weight="bold" fill="#1E293B">97.3%</text>
+<text x="160" y="310" text-anchor="middle" font-size="13" fill="#64748B">Industry avg 82% | Competitor A 89%</text>
+<text x="160" y="335" text-anchor="middle" font-size="12" fill="#059669">Leading industry by 15.3 pts</text>
+```
+
+Acceptable contextualization patterns:
+
+| Pattern | Template |
+|---------|----------|
+| Time comparison | "From X to Y" (line chart + magnitude annotation) |
+| Benchmark | "X vs industry avg Y" (bar chart with gray dashed baseline) |
+| Competitive | "Us X vs Competitor Y" (side-by-side bars, highlight own) |
+| Target gap | "Actual X / Target Y" (progress bar + gap annotation) |
+| Ranking | "#N of M" (horizontal bar + highlight marker) |
+
+### Restrained, Intentional Color
+
+Professional slides are **not colorful** — color is reserved for meaning, not decoration.
+
+- **Maximum 3 primary colors** across the whole slide (primary + 1 accent + neutral gray).
+- Data series use **same-hue depth variations** (`fill-opacity` 1.0 / 0.6 / 0.3), NEVER rainbow palettes.
+- **Semantic colors**: green = positive, red = negative, gray = baseline.
+- **Focus rule**: highlight the single target data point in accent color, everything else in neutral gray. Don't paint every element.
+- Brand color appears in: top accent bar, title, card headers, key data points only.
+
+### Visual Rhythm Across Pages
+
+- **Whitespace is a feature, not a bug.** Target content fill ~40-70% of canvas. Bare backgrounds with < 30% fill look unfinished; crowding > 80% fails readability.
+- Alternate a data-dense page with a "breathing" page (large quote / single chart / hero image) so the audience can absorb.
+- Repeat the same visual grammar (card style, header strip height, footer, page number) across all pages. Consistency IS the design.
+
+---
+
 ## Design Component Library (USE THESE to build professional slides)
 
 You MUST compose slides using these component patterns rather than flat text lists. \
@@ -283,6 +382,77 @@ Use these on EVERY page for visual polish:
 <line x1="85" y1="350" x2="335" y2="350" stroke="#E2E8F0" stroke-width="1"/>
 ```
 
+### Component 8: KPI Card (for dashboards / metric rows)
+
+A 4-card KPI row is the canonical way to present multiple headline numbers. Each card \
+is 280x180, gap 30px, top-aligned at y=160.
+
+```xml
+<rect x="45" y="160" width="280" height="180" rx="10" fill="#FFFFFF"
+      stroke="#E2E8F0" stroke-width="1" filter="url(#shadow)"/>
+<!-- Icon slot (theme color) -->
+<use data-icon="chart-bar" x="65" y="180" width="28" height="28" fill="#1A5F9E"/>
+<!-- Metric name (small, gray) -->
+<text x="65" y="230" font-size="13" fill="#64748B">Monthly Active Users</text>
+<!-- Core number (hero) -->
+<text x="65" y="275" font-size="38" font-weight="bold" fill="#1E293B">1.24M</text>
+<!-- Trend annotation (green=up, red=down) -->
+<text x="65" y="305" font-size="12" fill="#059669">▲ +12.3% vs last month</text>
+<text x="65" y="325" font-size="11" fill="#94A3B8">Industry avg 0.9M</text>
+```
+
+### Component 9: Takeaway Box (mandatory on content pages)
+
+Single-sentence conclusion, placed directly below the title.
+
+```xml
+<rect x="40" y="80" width="1200" height="45" rx="6"
+      fill="#1A5F9E" fill-opacity="0.08"/>
+<text x="60" y="108" font-size="15" font-weight="bold" fill="#1A5F9E">
+    ▸ One-sentence conclusion goes here.
+</text>
+```
+
+### Component 10: Data Source Footer (mandatory on data pages)
+
+Every page containing data, charts, or tables must carry a source line at the bottom.
+
+```xml
+<text x="40" y="700" font-size="10" fill="#94A3B8">
+    Source: [paper / dataset / internal analysis]
+</text>
+<text x="1240" y="700" text-anchor="end" font-size="10" fill="#94A3B8">
+    03 / 10
+</text>
+```
+
+### Component 11: Left-Chart Right-Insight (core analytical layout)
+
+The most common content layout for data pages: chart on the left, 3-5 bullet insights on the right.
+
+```
+Chart zone:    x=60,  y=140, w=700, h=520
+Insight zone:  x=780, y=140, w=460, h=520
+  - Core conclusion (bold, 16px, theme color)
+  - 3-5 bullet insights (14px, dark gray)
+  - Data source (12px, gray)
+```
+
+### Component 12: MECE Decomposition
+
+A main metric on the left branches to mutually-exclusive child categories summing to 100%.
+
+```xml
+<!-- Trunk -->
+<rect x="60" y="300" width="200" height="80" rx="8" fill="#1A5F9E"/>
+<text x="160" y="345" text-anchor="middle" font-size="16" font-weight="bold" fill="#FFFFFF">Revenue</text>
+<!-- Branches: connector lines + child rects + percentages -->
+<line x1="260" y1="340" x2="340" y2="200" stroke="#CBD5E0" stroke-width="2"/>
+<rect x="340" y="180" width="260" height="50" rx="6" fill="#FFFFFF" stroke="#E2E8F0"/>
+<text x="360" y="212" font-size="14" fill="#2D3748">Product A · 45%</text>
+<!-- Repeat for B, C, D; the percentages MUST sum to 100% -->
+```
+
 ---
 
 ## Layout Patterns (1280×720 canvas)
@@ -297,6 +467,11 @@ Choose layouts **based on content type**, not randomly. Use the Design Specifica
 | **Page title + flow diagram** | Processes, sequences | Title area, horizontal cards connected by arrows |
 | **Left-right split** | Image + text, figure analysis | Left card x=60..600, right card x=640..1220 |
 | **Checklist / table layout** | Requirements, specs | Two-column cards with list items using check marks |
+| **KPI dashboard** | Headline metrics, results summary | Title + Takeaway + 4-card KPI row (280×180 each, gap 30) |
+| **Left-chart right-insight** | Any data analysis page | Chart x=60..760 / insight bullets x=780..1240 |
+| **MECE decomposition tree** | Attribution, breakdown analysis | Trunk left (x=60..260) + branches right, percentages sum to 100% |
+| **Benchmark matrix** | Competitive comparison | Horizontal table, own row highlighted, others gray |
+| **Strategic roadmap** | Phased plans, timelines | 3 horizontal cards connected by polygon arrows |
 | **Closing** | Last slide | Clean centered "Thank you" + takeaway + decorative shapes |
 
 > If the user prompt includes a "Design Specification" with Layout Principles (zone heights, margins, \
@@ -343,6 +518,10 @@ Before outputting SVG, verify:
 4. All `<defs>` (gradients, filters) must come before elements that reference them.
 5. Z-order: background → decorations → content cards → text → foreground accents.
 6. Include a page number in the bottom-right corner (e.g., `01 / 10`).
+7. **Content pages must carry an assertion headline title AND a Takeaway Box** (Components 9) directly beneath the title. Cover / closing pages are exempt.
+8. **Every data / chart / table / KPI page must include a data source footer** (Component 10) at the bottom-left.
+9. **Every displayed metric must be contextualized** — a bare number without comparison reference and interpretation is a quality failure.
+10. **Color restraint**: do not exceed 3 primary colors; data series must use same-hue opacity variations, not rainbow palettes.
 """
 
 # ==============================================================================
@@ -408,6 +587,16 @@ Before applying CRAP principles, first fix any geometry violations. These are ha
 - Unify font size and color for same-level headings
 - Maintain consistent spacing system (e.g., all gaps between cards = 20px)
 - Same-type elements should have identical styling attributes
+
+### 5. Narrative & Information Hierarchy (extends CRAP)
+
+Beyond the four visual CRAP principles, also verify the page's *argument* is visible:
+
+- **Assertion headline**: the title states a one-sentence conclusion, not a topic label. If the original title is descriptive ("Market Overview"), upgrade it to an assertion headline without changing the underlying meaning.
+- **Takeaway Box present**: content pages must have a one-sentence takeaway directly under the title (x=40, y=80, w=1200, h≈45, light theme-color fill).
+- **Data contextualization**: every headline number must have a comparison reference (industry avg / prior period / competitor / target) and a meaning annotation. If a number stands alone, add context using smaller text below.
+- **Color restraint**: no more than 3 primary colors on the page; data series should use same-hue opacity variations rather than rainbow palettes. Highlight only the target data point in accent color.
+- **Visual hierarchy**: title > card headers > body text must differ by font-size AND weight, not only color.
 
 ### 4. Proximity
 - Check whether logically related content is spatially close enough
@@ -501,6 +690,13 @@ You must scan in the following priority order. If you find a P0 error, directly 
 > **P2 Severity**: P2 issues alone should result in `pass: false` if the slide looks significantly \
 > worse than a professional template (no cards, no hierarchy, no decoration). Include specific \
 > suggestions like "Wrap the 3 bullet points in a 3-column card layout with colored headers."
+
+**[P2+] Narrative & Argument Quality**
+*   **Assertion headline**: Is the page title a one-sentence conclusion ("Domestic market grows 23% YoY..."), or a weak topic label ("Market Overview")? Descriptive titles on content pages = FAIL.
+*   **Takeaway Box**: On content pages, is there a one-sentence takeaway directly under the title? Missing takeaway = FAIL.
+*   **Data contextualization**: Does every headline number carry (a) a comparison reference and (b) an interpretation? Bare isolated numbers = FAIL.
+*   **Color restraint**: Does the page use ≤3 primary colors with semantic intent, or is it a rainbow? Accidental color variety = FAIL.
+*   **Data source footer**: Does every data/chart/table page include a bottom-left source attribution? Missing source on a data page = FAIL.
 
 ---
 

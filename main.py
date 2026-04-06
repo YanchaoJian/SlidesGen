@@ -73,8 +73,8 @@ async def run_workflow(graph, initial_state, config):
 
                 # 保存最终状态快照
                 snapshot_file = os.path.join(config["configurable"]["output_dir"], "final_snapshot.json")
-                with open(snapshot_file, "w", encoding="utf-8") as f:
-                    json.dump(snapshot.values, f, indent=2, ensure_ascii=False, default=str)
+                with open(snapshot_file, "w", encoding="utf-8") as sf:
+                    json.dump(snapshot.values, sf, indent=2, ensure_ascii=False, default=str)
                 logging.info(f"📄 Snapshot saved to: {snapshot_file}")
                 break
 
@@ -84,12 +84,12 @@ async def run_workflow(graph, initial_state, config):
                 for task in snapshot.tasks:
                     if task.interrupts:
                         interrupt_value = task.interrupts[0].value
-                        hitl_type = interrupt_value.get("type", "unknown")
-                        prompt_text = interrupt_value.get("prompt", ">> ")
+                        hitl_type = interrupt_value.get("type")
+                        prompt_text = interrupt_value.get("prompt")
 
                         # HITL 2 额外提示 PPTX 路径
                         if hitl_type == "pptx_review":
-                            pptx_path = interrupt_value.get("pptx_path", "")
+                            pptx_path = interrupt_value.get("pptx_path")
                             logging.info(f"\n✨ Preview Ready: Your presentation has been generated at '{pptx_path}'")
 
                         logging.info(f"🛑 HITL: {hitl_type} - Waiting for user input.")
@@ -121,9 +121,9 @@ async def main():
     
     default_model = args.model_name
     config = {
+        "max_concurrency": 6,  # LangGraph 顶层字段：限制 Send 扇出的并发子任务数
         "configurable": {
             "thread_id": thread_id,
-            "max_concurrency": 4,
             "pdf_path": args.pdf_path,
             "style_image_path": args.style_image_path,
             "output_dir": session_dir,
@@ -167,6 +167,6 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, EOFError):
-        logging.info("\n\n👋 Program interrupted by user. Rerun with the same --thread-id to resume.")
+        logging.info("\n\n👋 Program interrupted by user. Rerun with the same --thread_id to resume.")
     except Exception as e:
         logging.error(f"❌ A fatal error occurred: {e}", exc_info=True)

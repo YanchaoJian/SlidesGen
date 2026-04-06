@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+      <feOffset dx="0" dy="10" result="offsetBlur" />
+      <feFlood flood-color="#003D7C" flood-opacity="0.15" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" />
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#003D7C" />
+  
+  <polygon points="60,35 95,35 85,65 50,65" fill="#003D7C" />
+  
+  <text x="110" y="62" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="44" font-weight="bold" fill="#003D7C">Existing RNN and CNN models are inefficient for long-range dependencies.</text>
+  
+  <path fill="#003D7C" fill-opacity="0.08" d="M66,95 H1214 A6,6 0 0 1 1220,101 V139 A6,6 0 0 1 1214,145 H66 A6,6 0 0 1 60,139 V101 A6,6 0 0 1 66,95 Z" />
+  <text x="80" y="126" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="16" font-weight="bold" fill="#003D7C">▸ Current models struggle with long sequences, needing more efficient solutions.</text>
+  
+  <polygon points="80,175 1220,175 1200,605 60,605" fill="#0056A4" filter="url(#shadow)" />
+  
+  <text x="640" y="230" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF">State-of-the-art models based on RNNs and CNNs face limitations</text>
+  <text x="640" y="270" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="36" font-weight="bold" fill="#FFFFFF">in parallelization due to their sequential nature.</text>
+  
+  <text x="640" y="350" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="24" fill="#FFFFFF">These models require longer training times and higher computational costs,</text>
+  <text x="640" y="385" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="24" fill="#FFFFFF">especially for long sequences.</text>
+  
+  <text x="640" y="465" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="24" fill="#FFFFFF">There is a critical need for more efficient models that can handle</text>
+  <text x="640" y="500" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="24" fill="#FFFFFF">long-range dependencies without these drawbacks.</text>
+  
+  <line x1="0" y1="640" x2="1280" y2="640" stroke="#003D7C" stroke-width="1" />
+  
+  <text x="60" y="680" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="14" fill="#999999">团结、进取、求实、创新</text>
+  
+  <text x="1240" y="680" text-anchor="end" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="14" fill="#999999">2 / 10</text>
+</svg>

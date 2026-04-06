@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
+      <feOffset dx="0" dy="10" result="offsetBlur" />
+      <feFlood flood-color="#003D7C" flood-opacity="0.15" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#FFFFFF" />
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#003D7C" />
+  
+  <polygon points="60,35 90,35 100,65 70,65" fill="#003D7C" />
+  
+  <text x="120" y="60" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="44" font-weight="bold" fill="#003D7C">Experimental setup utilizes advanced datasets and metrics</text>
+  
+  <path fill="#003D7C" fill-opacity="0.08" d="M46,90 H1234 A6,6 0 0 1 1240,96 V129 A6,6 0 0 1 1234,135 H46 A6,6 0 0 1 40,129 V96 A6,6 0 0 1 46,90 Z" />
+  <text x="60" y="118" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="15" font-weight="bold" fill="#003D7C">▸ State-of-the-art datasets and metrics ensure robust evaluation.</text>
+  
+  <polygon points="60,165 640,165 620,385 40,385" fill="#0056A4" filter="url(#shadow)" />
+  <polygon points="60,165 640,165 620,210 40,210" fill="#003D7C" />
+  <text x="340" y="195" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF">Datasets</text>
+  
+  <text x="80" y="260" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="22" fill="#FFFFFF">Experiments conducted on WMT 2014</text>
+  <text x="80" y="295" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="22" fill="#FFFFFF">English-to-German and English-to-French</text>
+  <text x="80" y="330" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="22" fill="#FFFFFF">translation tasks.</text>
+  
+  <polygon points="680,165 1260,165 1240,385 660,385" fill="#0056A4" filter="url(#shadow)" />
+  <polygon points="680,165 1260,165 1240,210 660,210" fill="#003D7C" />
+  <text x="970" y="195" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF">Evaluation Metrics</text>
+  
+  <text x="700" y="260" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="22" fill="#FFFFFF">Evaluation metrics include BLEU scores,</text>
+  <text x="700" y="295" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="22" fill="#FFFFFF">which measure translation quality.</text>
+  
+  <polygon points="60,425 640,425 620,625 40,625" fill="#0056A4" filter="url(#shadow)" />
+  <polygon points="60,425 640,425 620,470 40,470" fill="#003D7C" />
+  <text x="340" y="455" text-anchor="middle" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFFFFF">Baseline Methods</text>
+  
+  <text x="80" y="520" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="22" fill="#FFFFFF">Baseline methods include state-of-the-art</text>
+  <text x="80" y="555" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="22" fill="#FFFFFF">RNN and CNN-based models.</text>
+  
+  <line x1="60" y1="660" x2="1220" y2="660" stroke="#003D7C" stroke-width="1" />
+  
+  <text x="60" y="690" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="14" fill="#999999">团结、进取、求实、创新</text>
+  
+  <text x="1240" y="700" text-anchor="end" font-family="Microsoft YaHei, SimHei, Arial, sans-serif" font-size="14" fill="#999999">7/10</text>
+</svg>
