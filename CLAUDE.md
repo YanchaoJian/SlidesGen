@@ -34,21 +34,25 @@ OPENAI_API_KEY=your-api-key
 # Generate slides from a PDF
 python main.py --pdf_path path/to/paper.pdf --style_image_path path/to/style.png
 
-# With custom options
+# With custom options (stage-specific models override --model_name fallback)
 python main.py --pdf_path paper.pdf --style_image_path style.png \
     --model_name gpt-4o \
+    --vision_model gpt-4o --svg_model gpt-4o --text_model gpt-4o \
     --output_dir output \
     --verbose
 
-# Resume interrupted session
-python main.py --pdf_path paper.pdf --style_image_path style.png --thread_id 0324_1557
+# Resume interrupted session (must pass the FULL session dir name including model suffix)
+python main.py --pdf_path paper.pdf --style_image_path style.png --thread_id 0324_1557_gpt-4o
 ```
 
 ### Testing
 
 ```bash
 python -m pytest test/
-python test/test_planner.py
+# Run a single test file directly
+python test/test_llm_call.py
+python test/test_pdf_parser.py
+python test/test_soffice.py
 ```
 
 ### Utility Scripts
@@ -191,7 +195,7 @@ output/{session_id}/        # e.g., "0324_1557"
 
 ### Session Resumption
 
-Use `--thread_id` to resume. Session ID format: `MMDD_HHMM`. When resuming, `initial_state` is `None` — graph resumes from SQLite checkpoint.
+Use `--thread_id` to resume. Session ID format: `MMDD_HHMM_{model_name}` (slashes/backslashes in model name are sanitized to `_`, e.g. `ZhipuAI/GLM-5` → `ZhipuAI_GLM-5`). When resuming, pass the full directory name and `initial_state` is `None` — graph resumes from SQLite checkpoint.
 
 ## Dependencies
 
