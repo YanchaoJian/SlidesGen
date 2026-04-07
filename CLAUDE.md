@@ -97,7 +97,7 @@ Each slide runs as an independent `SlideState` subgraph compiled by `build_slide
 
 Two TypedDict state classes (`workflow/state.py`):
 
-- **OverallState**: Main graph state. `generated_slide_paths` uses `Annotated[List, operator.add]` for parallel accumulation.
+- **OverallState**: Main graph state. `generated_slide_paths` uses `Annotated[List, operator.add]` for parallel accumulation. Includes a dedicated `pptx_feedback_scope: Optional[str]` field that holds the classified feedback scope from the final review (kept separate from `pptx_review.critique`, which always stores the raw user text).
 - **SlideState**: Per-slide subgraph state.
 
 `retry_slide_pages`: `None` = regenerate all; non-empty list = specific pages only; empty list = skip all.
@@ -166,7 +166,13 @@ Two `interrupt()` checkpoints:
 
 Feedback analysis (`analyze_feedback()` in `agents/delivery/feedback_analyzer.py`) returns a `FeedbackAnalysis` Pydantic model:
 - `scope`: `"local"` | `"global_style"` | `"global_plan"` | `"ambiguous"`
-- Routing: `global_style` → re-analyze style, `global_plan` → regenerate plan, `local` → regenerate specific slides, `ambiguous` → end
+- The node writes the raw user text into `pptx_review.critique` and the classified scope into a dedicated top-level state field `pptx_feedback_scope` (the two are intentionally decoupled so `critique` always carries human text, not enum values).
+- Routing (`route_pptx_design_review` reads `pptx_feedback_scope`):
+  - `global_style` → re-analyze style
+  - `global_plan` → regenerate plan
+  - `local` → dispatch local slide regeneration (target pages written into `retry_slide_pages`)
+  - `ambiguous` → loop back into `review_pptx_design` to re-prompt the user (does **not** silently approve, and does **not** consume a retry slot)
+  - empty/None → end the review cycle
 
 ## Key Conventions
 
