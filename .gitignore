@@ -12,6 +12,8 @@ build/
 
 # Project-specific
 models/
+output/*/checkpoints/
+*.sqlite
 
 # IDE
 .vscode/
