@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎨 SlidesGen
+# 🎨 SlidesGen: Automatic PPT Generation Based on Multi-Agent Collaboration
 
 **AI-Powered Academic Presentation Generator**
 
