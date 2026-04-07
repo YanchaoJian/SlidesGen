@@ -82,16 +82,16 @@ The workflow is **async** — `asyncio.run()` entry point, `AsyncSqliteSaver` ch
 
 ```
 expand_slide_plan → generate_slide_svg → optimize_svg_crap ─┐
-                           ^                   | (retry ≤3)  ├→ check_slide_design → END
+                           ^                   | (retry)     ├→ check_slide_design → END
                            └───────────────────┘             │        |
-                           └─────────────────────────────────┘  (retry ≤5)
+                           └─────────────────────────────────┘  (retry)
 ```
 
 Each slide runs as an independent `SlideState` subgraph compiled by `build_slide_subgraph()` in `workflow/graph.py`.
 
 - `optimize_svg_crap` handles both SVG validation and CRAP design optimization in one node
-- On validation failure, routes back to `generate_slide_svg` (max 3 retries)
-- On design critique failure, routes back to `generate_slide_svg` (max 5 retries)
+- On validation failure, routes back to `generate_slide_svg` (max retries = `--llm_max_retries`)
+- On design critique failure, routes back to `generate_slide_svg` (max retries = `--llm_max_retries`)
 
 ### State Management
 
@@ -123,16 +123,19 @@ SVG processing pipeline under `pipeline/`:
 | Module | Purpose |
 |--------|---------|
 | `pipeline/svg_validator.py` | XML validation + banned feature checks + geometry detection + `finalize_single_svg` entry |
-| `pipeline/svg_finalize/` | 5-step SVG post-processing (fix aspect → add image cards → embed images → flatten tspan → rect to path) |
-| `pipeline/svg_to_pptx/` | SVG → DrawingML conversion engine (11 files) |
-| `pipeline/pptx_merger.py` | Merge multiple SVG slides into one PPTX |
+| `pipeline/svg_finalize/` | SVG post-processing steps: `fix_image_aspect`, `crop_images`, `embed_images`, `embed_icons`, `flatten_tspan`, `svg_rect_to_path` |
+| `pipeline/finalize_svg.py` | Standalone CLI entry point that runs the `svg_finalize/` pipeline over a folder of SVGs (used for offline batch post-processing) |
+| `pipeline/svg_to_pptx/` | SVG → DrawingML conversion engine (drawingml_* converters + pptx_* builders) |
+| `pipeline/svg_to_pptx_runner.py` | Thin CLI wrapper that delegates to `svg_to_pptx/` for backward-compatible command-line use |
+| `pipeline/pptx_merger.py` | Merge multiple post-processed SVG slides into one editable PPTX |
+| `pipeline/clean_svg.py` | Ad-hoc utility script for one-off SVG cleanup experiments (not part of the main workflow) |
 
 ### SVG Pipeline
 
 1. **Generation** (`agents/execution/svg_generator.py`): LLM generates SVG from expanded plan + style protocol
 2. **Validation** (`pipeline/svg_validator.py:validate_svg`): Checks XML well-formedness + 15 banned features (clipPath, mask, `<style>`, class, foreignObject, etc.)
 3. **CRAP Optimization** (`agents/execution/svg_optimizer.py`): Runs geometry checks → feeds issues + SVG to LLM for design improvement
-4. **Finalize** (`pipeline/svg_validator.py:finalize_single_svg`): 5-step post-processing — `fix_image_aspect` → `add_image_cards` → `embed_images` → `flatten_tspan` → `svg_rect_to_path`
+4. **Finalize** (`pipeline/svg_validator.py:finalize_single_svg`): post-processing chain from `pipeline/svg_finalize/` — `fix_image_aspect` → `crop_images` → `embed_images` → `embed_icons` → `flatten_tspan` → `svg_rect_to_path`
 5. **SVG→PPTX** (`pipeline/svg_to_pptx/`): Converts SVG elements to native DrawingML XML
 
 ### Node Configuration
@@ -153,7 +156,7 @@ class ReviewCycle(TypedDict):
     critique: Optional[str]
 ```
 
-Retry limits: Style protocol ≤2, SVG validation ≤3, Design check ≤5.
+Retry limits: all LLM-related review loops (style protocol, SVG validation, design check) share a single unified limit controlled by the CLI flag `--llm_max_retries` (default: 3). Adjust this single knob to tune retry aggressiveness across the whole pipeline.
 
 ### Human-in-the-Loop
 

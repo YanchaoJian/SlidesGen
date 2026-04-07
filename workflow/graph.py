@@ -44,14 +44,14 @@ def route_presentation_plan_review(state: OverallState) -> Literal["generate_pre
     logger.info("🔀 Routing: Presentation plan requires revisions. Returning to planning...")
     return "generate_presentation_plan"
 
-def route_pptx_design_review(state: OverallState) -> Literal["analyze_image_style", "generate_presentation_plan", "dispatch_slide_tasks", "END"]:
+def route_pptx_design_review(state: OverallState) -> Literal["analyze_image_style", "generate_presentation_plan", "dispatch_slide_tasks", "review_pptx_design", "END"]:
     """路由：根据用户反馈的范围决定下一步。"""
     pptx_review = state.get("pptx_review", {})
     if pptx_review.get("verified"):
         logger.info("🔀 PPTX design approved. Workflow will complete.")
         return "END"
 
-    scope = pptx_review.get("critique")
+    scope = state.get("pptx_feedback_scope")
 
     if scope == "global_style":
         logger.info("🎨 Rerouting to Style Analysis for global style changes.")
@@ -62,8 +62,11 @@ def route_pptx_design_review(state: OverallState) -> Literal["analyze_image_styl
     elif scope == "local":
         logger.info("🔧 Rerouting to Dispatcher for local slide regeneration.")
         return "dispatch_slide_tasks"
-    else: # This now handles "ambiguous" or None
-        logger.info("🤔 User feedback was ambiguous or empty. Ending review cycle.")
+    elif scope == "ambiguous":
+        logger.info("🤔 User feedback was ambiguous. Re-prompting for clearer instructions.")
+        return "review_pptx_design"
+    else:
+        logger.info("🤔 No actionable feedback scope. Ending review cycle.")
         return "END"
 
 def route_svg_crap_check(state: SlideState, config: RunnableConfig):
@@ -218,6 +221,7 @@ def build_graph(checkpointer: BaseCheckpointSaver):
         "analyze_image_style": "analyze_image_style",
         "generate_presentation_plan": "generate_presentation_plan",
         "dispatch_slide_tasks": "dispatch_slide_tasks",
+        "review_pptx_design": "review_pptx_design",
         "END": END
     })
 

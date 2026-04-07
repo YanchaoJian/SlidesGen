@@ -44,7 +44,8 @@ class OverallState(TypedDict):
 
     # --- 交付层产物 ---
     final_pptx_path: Optional[str]
-    pptx_review: ReviewCycle                       # 最终 PPTX 审查
+    pptx_review: ReviewCycle                       # 最终 PPTX 审查（critique 字段保存原始用户反馈文本）
+    pptx_feedback_scope: Optional[str]             # 反馈分类: local/global_style/global_plan/ambiguous
     retry_slide_pages: Optional[List[int]]
 
 
@@ -96,6 +97,7 @@ def initialize_overall_state() -> OverallState:
         "generated_slide_paths": [],
         "final_pptx_path": None,
         "pptx_review": _default_review_cycle(),
+        "pptx_feedback_scope": None,
         "retry_slide_pages": None,
     }
 

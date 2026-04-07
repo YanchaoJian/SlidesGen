@@ -442,12 +442,18 @@ def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict
 
     if not pptx_path or not os.path.exists(pptx_path):
         logger.warning("   -> Final PPTX file not found. Skipping user review.")
-        return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": None}}
+        return {
+            "pptx_review": {"verified": True, "retry_count": retry_count, "critique": None},
+            "pptx_feedback_scope": None,
+        }
 
     # 如果设置了跳过标志，自动批准
     if configurable.get("skip_pptx_review"):
         logger.info(f"   -> Auto-approved (--skip_pptx_review). PPTX at: {pptx_path}")
-        return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": None}}
+        return {
+            "pptx_review": {"verified": True, "retry_count": retry_count, "critique": None},
+            "pptx_feedback_scope": None,
+        }
 
     # interrupt() 暂停整个图，控制权交还给外层 run_workflow
     user_input = interrupt({
@@ -460,7 +466,10 @@ def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict
 
     if not user_input:
         logger.info("   -> ✅ User accepted the final presentation. Workflow will now complete.")
-        return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": None}}
+        return {
+            "pptx_review": {"verified": True, "retry_count": retry_count, "critique": None},
+            "pptx_feedback_scope": None,
+        }
 
     logger.info("   -> User provided feedback for final revision. Analyzing feedback...")
     analysis_result = analyze_feedback(
@@ -472,10 +481,17 @@ def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict
     logger.info(f"   -> Feedback analysis result: Scope='{analysis_result.scope}', Target Pages={analysis_result.target_pages}")
 
     if analysis_result.scope == "ambiguous":
-        logger.warning("   -> Feedback is ambiguous. Prompting user to provide more specific instructions.")
-        return {"pptx_review": {"verified": True, "retry_count": retry_count, "critique": "ambiguous"}}
+        # 反馈无法解析：保持 verified=False 让路由把控制权交回本节点重新询问，
+        # 不再伪装成审批通过而静默吞掉用户输入。
+        logger.warning("   -> Feedback is ambiguous. Will re-prompt user for more specific instructions.")
+        return {
+            "pptx_review": {"verified": False, "retry_count": retry_count, "critique": user_input},
+            "pptx_feedback_scope": "ambiguous",
+            "retry_slide_pages": None,
+        }
 
     return {
-        "pptx_review": {"verified": False, "retry_count": retry_count + 1, "critique": analysis_result.scope},
+        "pptx_review": {"verified": False, "retry_count": retry_count + 1, "critique": user_input},
+        "pptx_feedback_scope": analysis_result.scope,
         "retry_slide_pages": analysis_result.target_pages,
     }
