@@ -12,7 +12,7 @@ from typing import Optional
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from agents.execution.prompts import SVG_GENERATION_SYSTEM_PROMPT
-from utils.llm import LLMConfig, create_llm
+from utils.llm import LLMConfig, create_llm, raise_if_fatal_llm_error
 
 logger = logging.getLogger(__name__)
 
@@ -124,10 +124,23 @@ def build_svg_slide_prompt(
         fig = slide_plan["figure_reference"]
         fig_path = fig.get("path", "")
         fig_caption = fig.get("caption", "")
+        fig_dims = fig.get("dimensions") or {}
         sections.append("**Figure**:")
         sections.append(f"  - Path: `{fig_path}`")
         sections.append(f"  - Caption: {fig_caption}")
-        sections.append(f'  - Use: `<image href="{fig_path}" preserveAspectRatio="xMidYMid slice"/>`')
+        if fig_dims:
+            w = fig_dims.get("width")
+            h = fig_dims.get("height")
+            ar = fig_dims.get("aspect_ratio")
+            orient = fig_dims.get("orientation", "")
+            sections.append(
+                f"  - Intrinsic size: {w}x{h}px ({orient}, aspect ratio W/H={ar}). "
+                f"Allocate the image card with this aspect ratio to avoid distortion or cropping."
+            )
+            preserve = "xMidYMid meet"
+        else:
+            preserve = "xMidYMid slice"
+        sections.append(f'  - Use: `<image href="{fig_path}" preserveAspectRatio="{preserve}"/>`')
         sections.append("")
 
     # 表格引用
@@ -263,5 +276,6 @@ def generate_slide_svg(
         return svg
 
     except Exception as e:
+        raise_if_fatal_llm_error(e)
         logger.error(f"   -> [Slide {slide_page}] LLM call failed: {e}")
         return None

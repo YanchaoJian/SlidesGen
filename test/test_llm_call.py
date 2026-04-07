@@ -13,7 +13,7 @@ from openai import OpenAI
 
 load_dotenv()
 
-DEFAULT_MODEL = "gemini-3.1-pro-preview"
+DEFAULT_MODEL = "Qwen/Qwen3.5-35B-A3B"
 DEFAULT_PROMPT = "Reply with exactly: pong"
 
 
@@ -21,10 +21,10 @@ def main() -> int:
     model = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_MODEL
     prompt = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_PROMPT
 
-    base_url = os.environ.get("OPENAI_BASE_URL")
-    api_key = os.environ.get("OPENAI_API_KEY")
+    base_url = os.environ.get("MS_BASE_URL")
+    api_key = os.environ.get("MS_API_KEY")
     if not base_url or not api_key:
-        print("[ERROR] OPENAI_BASE_URL / OPENAI_API_KEY 未在 .env 中设置")
+        print("[ERROR] MS_BASE_URL / MS_API_KEY 未在 .env 中设置")
         return 1
 
     print(f"[INFO] base_url = {base_url}")

@@ -5,7 +5,7 @@ from typing import Optional
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from agents.perception.style_analyst.prompts import ANALYZE_STYLE_SYSTEM_PROMPT, ANALYZE_STYLE_USER_PROMPT, ANALYZE_STYLE_REFINEMENT_USER_PROMPT
-from utils.llm import LLMConfig, create_llm, encode_image_to_base64
+from utils.llm import LLMConfig, create_llm, encode_image_to_base64, raise_if_fatal_llm_error
 
 logger = logging.getLogger(__name__)
 
@@ -85,5 +85,6 @@ def analyze_style(
         return style_description
 
     except Exception as e:
+        raise_if_fatal_llm_error(e)
         logger.error(f"❌ LLM call for style analysis failed: {e}")
         return None

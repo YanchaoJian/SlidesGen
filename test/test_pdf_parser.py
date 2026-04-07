@@ -135,8 +135,8 @@ def main():
     print("All tests passed!")
     print(f"\nOutput directory: {output_dir}")
     print("\nGenerated files:")
-    print(f"  - Content JSON: raw/pdf-content.json")
-    print(f"  - Extracted images: images/_page_*.jpeg")
+    print(f"  - Content JSON: raw/pdf_content.json")
+    print(f"  - Extracted images: raw/images/_page_*.jpeg")
     print(f"  - Orientation test: orientation_test/")
     print("=" * 60)
     return 0

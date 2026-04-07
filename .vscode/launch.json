@@ -17,20 +17,23 @@
                 // [Optional] Root output directory (default: output/)
                 "--output_dir", "output/",
                 // [Optional] Default LLM model, fallback for all stages (default: gpt-4o)
-                "--model_name", "gpt-4o",
+                "--model_name", "Qwen/Qwen3.5-35B-A3B",
                 // [Optional] Per-stage model overrides (default: use --model_name)
-                "--vision_model", "gemini-3.1-pro-preview",
-                "--svg_model", "claude-sonnet-4-6",
-                "--text_model", "gpt-5.4",
+                // "--vision_model", "gemini-3.1-pro-preview",
+                // "--svg_model", "claude-sonnet-4-6",
+                // "--text_model", "claude-sonnet-4-6",
                 // [Optional] Path to local Marker model for PDF parsing (default: models/marker)
                 "--marker_path", "models/marker",
+                // [Optional] Unified retry limit for ALL LLM-related loops
+                // (style check / SVG gen+validate / design critique / ChatOpenAI SDK). Default: 3
+                "--llm_max_retries", "3",
                 // [Optional] Skip human-in-the-loop review steps
                 "--skip_plan_review",
                 "--skip_pptx_review",
                 // [Optional] Enable debug-level logging
                 // "--verbose",
                 // [Optional] Resume an interrupted session by specifying its thread ID
-                "--thread_id", "0407_0059",
+                // "--thread_id", "0407_0059",
             ]
         }
     ]

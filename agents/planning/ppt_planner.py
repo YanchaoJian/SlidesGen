@@ -11,10 +11,34 @@ from agents.planning.prompts import (
     INITIAL_GENERATION_INSTRUCTION,
     REFINEMENT_BLOCK_TEMPLATE
 )
-from utils.llm import LLMConfig, create_llm, parse_json_response
+from utils.llm import LLMConfig, create_llm, parse_json_response, raise_if_fatal_llm_error
 
 
 logger = logging.getLogger(__name__)
+
+
+def _build_dimensions_index(images: Optional[list]) -> Dict[str, Dict[str, Any]]:
+    """构建 path -> dimensions 索引，便于 LLM 输出后按路径回填。"""
+    index: Dict[str, Dict[str, Any]] = {}
+    if not images:
+        return index
+    for img in images:
+        path = img.get("path")
+        dims = img.get("dimensions")
+        if path and dims:
+            index[path] = dims
+    return index
+
+
+def _backfill_figure_dimensions(figures: Optional[list], dims_index: Dict[str, Dict[str, Any]]) -> None:
+    """根据 path 把 dimensions 回填到 figure 列表（in-place）。
+    LLM 不负责复制 dimensions，避免被改写或丢失。"""
+    if not figures or not dims_index:
+        return
+    for fig in figures:
+        path = fig.get("path")
+        if path and path in dims_index and "dimensions" not in fig:
+            fig["dimensions"] = dims_index[path]
 
 
 def _extract_paper_content(llm, enhanced_content: Dict[str, Any]) -> Dict[str, Any]:
@@ -31,8 +55,13 @@ def _extract_paper_content(llm, enhanced_content: Dict[str, Any]) -> Dict[str, A
             "equations_info": json.dumps(enhanced_content.get("equations"), ensure_ascii=False),
         })
         response_text = response.content
-        return parse_json_response(response_text) or {}
+        main_content = parse_json_response(response_text) or {}
+        # 按 path 回填 dimensions（LLM 不需要也不应改写该字段）
+        dims_index = _build_dimensions_index(enhanced_content.get("images"))
+        _backfill_figure_dimensions(main_content.get("figures"), dims_index)
+        return main_content
     except Exception as e:
+        raise_if_fatal_llm_error(e)
         logger.warning(f"Could not extract key content: {e}")
         return {}
 
@@ -85,6 +114,8 @@ def _plan_slides(
             # --- 论文核心内容 ---
             "title": paper_info.get("title", ""),
             "authors": ", ".join(paper_info.get("authors", [])),
+            "affiliations": "; ".join(paper_info.get("affiliations", [])) if isinstance(paper_info.get("affiliations"), list) else (paper_info.get("affiliations") or ""),
+            "venue": paper_info.get("venue", ""),
             "abstract": paper_info.get("abstract", ""),
             "background_context": presentation_flow.get("background_context", ""),
             "problem_motivation": presentation_flow.get("problem_motivation", ""),
@@ -103,9 +134,22 @@ def _plan_slides(
         })
 
         response_text = response.content
-        return parse_json_response(response_text)
+        slides_plan = parse_json_response(response_text)
+
+        # 按 path 回填每个 slide 的 figure_reference.dimensions
+        if slides_plan and isinstance(slides_plan, list):
+            dims_index = _build_dimensions_index(enhanced_figures)
+            for slide in slides_plan:
+                fig_ref = slide.get("figure_reference") if isinstance(slide, dict) else None
+                if isinstance(fig_ref, dict):
+                    path = fig_ref.get("path")
+                    if path and path in dims_index and "dimensions" not in fig_ref:
+                        fig_ref["dimensions"] = dims_index[path]
+
+        return slides_plan
 
     except Exception as e:
+        raise_if_fatal_llm_error(e)
         logger.error(f"Could not plan slides: {e}", exc_info=True)
         return None
 

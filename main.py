@@ -13,21 +13,26 @@ load_dotenv()
 from workflow.state import initialize_overall_state
 from workflow.graph import build_graph
 
-def setup_logging(verbose=False):
+def setup_logging(verbose=False, session_dir=None):
     level = logging.DEBUG if verbose else logging.INFO
+    formatter = logging.Formatter('%(asctime)s - %(levelname)-7s: %(message)s', datefmt='%m-%d %H:%M')
 
     for handler in logging.root.handlers[:]:
         logging.root.removeHandler(handler)
 
-    # 控制台 handler
+    handlers = []
     console_handler = logging.StreamHandler()
-    console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)-7s: %(message)s', datefmt='%m-%d %H:%M'))
+    console_handler.setFormatter(formatter)
+    handlers.append(console_handler)
 
-    # 只保留控制台输出，不保存到文件
-    logging.basicConfig(
-        level=level,
-        handlers=[console_handler]
-    )
+    # 按会话写入 log.txt
+    if session_dir:
+        os.makedirs(session_dir, exist_ok=True)
+        file_handler = logging.FileHandler(os.path.join(session_dir, "log.txt"), encoding="utf-8")
+        file_handler.setFormatter(formatter)
+        handlers.append(file_handler)
+
+    logging.basicConfig(level=level, handlers=handlers, force=True)
 
 def parse_args():
     """解析命令行参数"""
@@ -44,6 +49,11 @@ def parse_args():
 
     parser.add_argument('--skip_plan_review', action='store_true', help='Auto-approve the plan without HITL review.')
     parser.add_argument('--skip_pptx_review', action='store_true', help='Auto-approve the final PPTX without HITL review.')
+
+    parser.add_argument('--llm_max_retries', type=int, default=3,
+                        help='Unified retry limit for ALL LLM-related loops: style protocol check, '
+                             'SVG generation/validation, design critique, and the underlying ChatOpenAI '
+                             'SDK transient-error retries (default: 3).')
 
     parser.add_argument('--thread_id', default=None, help='A specific session ID to resume a previously interrupted workflow.')
     parser.add_argument('--verbose', action='store_true', help='Enable detailed debug logging.')
@@ -112,12 +122,13 @@ async def run_workflow(graph, initial_state, config):
 
 async def main():
     args = parse_args()
-    setup_logging(args.verbose)
-    
+
     # 1. 配置会话
     is_resuming = bool(args.thread_id)
     thread_id = args.thread_id if is_resuming else datetime.now().strftime("%m%d_%H%M")
     session_dir = os.path.join(args.output_dir, thread_id)
+
+    setup_logging(args.verbose, session_dir=session_dir)
     
     default_model = args.model_name
     config = {
@@ -137,6 +148,7 @@ async def main():
             # HITL 跳过标志
             "skip_plan_review": args.skip_plan_review,
             "skip_pptx_review": args.skip_pptx_review,
+            "llm_max_retries": args.llm_max_retries,
             "base_url": os.getenv("OPENAI_BASE_URL"),
             "api_key": os.getenv("OPENAI_API_KEY"),
         },

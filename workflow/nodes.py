@@ -43,6 +43,7 @@ def _get_llm_config(configurable: Dict[str, Any], stage: str = "text") -> LLMCon
         model_name=model_name,
         api_key=configurable["api_key"],
         base_url=configurable["base_url"],
+        max_retries=int(configurable.get("llm_max_retries", 3)),
     )
 
 
@@ -100,9 +101,10 @@ def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Di
     config = config["configurable"]
     review = state.get("style_review", {})
     retry_count = review.get("retry_count", 0)
+    max_retries = int(config.get("llm_max_retries", 3))
 
-    if retry_count >= 2:
-        logger.warning(f"   -> ⚠️ Style check retry limit ({retry_count}) reached. Forcing approval to avoid infinite loop.")
+    if retry_count >= max_retries:
+        logger.warning(f"   -> ⚠️ Style check retry limit ({retry_count}/{max_retries}) reached. Forcing approval to avoid infinite loop.")
         return {"style_review": {"verified": True, "retry_count": retry_count, "critique": "Exceeded retry limit, auto-approved."}}
 
     verified, critique = critique_style_protocol(
@@ -194,6 +196,16 @@ def expand_slide_plan_node(state: SlideState, config: RunnableConfig) -> Dict[st
 
     if not slide_detail:
         logger.warning(f"⚠️ [Slide {slide_page}] Slide plan expansion failed. SVG generator will use the original plan.")
+    else:
+        slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
+        os.makedirs(slide_dir, exist_ok=True)
+        detail_path = os.path.join(slide_dir, "slide_detail.md")
+        try:
+            with open(detail_path, "w", encoding="utf-8") as f:
+                f.write(slide_detail)
+            logger.info(f"   -> [Slide {slide_page}] Slide detail saved to {detail_path}")
+        except Exception as e:
+            logger.warning(f"   -> [Slide {slide_page}] Failed to save slide detail: {e}")
 
     return {"slide_detail": slide_detail}
 
@@ -220,8 +232,21 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
     )
 
     if not svg_code:
-        logger.error(f"❌ [Slide {slide_page}] SVG generation failed.")
-        return {"svg_code": None, "error_log": "SVG generation returned empty result"}
+        # SVG 生成失败（LLM 调用异常 / 返回空 / 提取失败）。
+        # 必须累加 svg_review.retry_count，否则下游 optimize_svg_crap_node 的
+        # "No SVG code" 分支会一直返回 retry_count=0，导致 route_svg_crap_check
+        # 永远走重试分支，形成死循环。
+        prev_retry = svg_review.get("retry_count", 0)
+        logger.error(f"❌ [Slide {slide_page}] SVG generation failed (Attempt {prev_retry + 1}).")
+        return {
+            "svg_code": None,
+            "error_log": "SVG generation returned empty result",
+            "svg_review": {
+                "verified": False,
+                "retry_count": prev_retry + 1,
+                "critique": "SVG generation returned empty result",
+            },
+        }
 
     logger.info(f"   -> SVG generated for slide {slide_page} ({len(svg_code)} chars)")
     # 注意：不要在这里重置 svg_review.retry_count。
@@ -241,9 +266,16 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
 
     svg_code = state.get("svg_code")
     if not svg_code:
-        logger.error(f"❌ [Slide {slide_page}] No SVG code available.")
+        # 上游 generate_slide_svg_node 已累加过 retry_count；这里只需透传，
+        # 绝不能重置为 0（否则与上游配合形成死循环）。
+        prev_retry = state.get("svg_review", {}).get("retry_count", 0)
+        logger.error(f"❌ [Slide {slide_page}] No SVG code available (retry_count={prev_retry}).")
         return {
-            "svg_review": {"verified": False, "retry_count": 0, "critique": "No SVG code available"},
+            "svg_review": {
+                "verified": False,
+                "retry_count": prev_retry,
+                "critique": "No SVG code available",
+            },
             "error_log": "No SVG code available",
         }
 

@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#E9ECEF" />
+    </pattern>
+  </defs>
+
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  <rect x="0" y="0" width="1280" height="720" fill="url(#grid)" />
+
+  
+  <path d="M40 30 L70 30 L60 70 L30 70 Z" fill="#003D7C" />
+  <line x1="45" y1="40" x2="65" y2="40" stroke="#FFFFFF" stroke-width="2" />
+  <line x1="45" y1="50" x2="65" y2="50" stroke="#FFFFFF" stroke-width="2" />
+  <line x1="45" y1="60" x2="65" y2="60" stroke="#FFFFFF" stroke-width="2" />
+  
+  <text x="90" y="60" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#003D7C">Ablation Study: What Makes the Transformer Work?</text>
+  
+  
+  <path fill="#003D7C" fill-opacity="0.08" d="M44,85 H1236 A4,4 0 0 1 1240,89 V126 A4,4 0 0 1 1236,130 H44 A4,4 0 0 1 40,126 V89 A4,4 0 0 1 44,85 Z" />
+  <text x="640" y="113" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#003D7C">Multi-head attention and model scaling (d_model, d_ff) are the primary drivers of Transformer performance.</text>
+
+  
+  <g transform="translate(40, 160)">
+    
+    <path fill="#003D7C" d="M4,0 H736 A4,4 0 0 1 740,4 V41 A4,4 0 0 1 736,45 H4 A4,4 0 0 1 0,41 V4 A4,4 0 0 1 4,0 Z" />
+    <text x="20" y="28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Config</text>
+    <text x="140" y="28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">h</text>
+    <text x="220" y="28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">dk</text>
+    <text x="300" y="28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">dff</text>
+    <text x="400" y="28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Pdrop</text>
+    <text x="520" y="28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">BLEU</text>
+    <text x="640" y="28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FFFFFF">Params</text>
+
+    
+    
+    <rect x="0" y="45" width="740" height="45" fill="#FFFFFF" />
+    <text x="20" y="73" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">Base</text>
+    <text x="140" y="73" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">8</text>
+    <text x="220" y="73" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">64</text>
+    <text x="300" y="73" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">2048</text>
+    <text x="400" y="73" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">0.1</text>
+    <text x="520" y="73" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1A1A1A">25.8</text>
+    <text x="640" y="73" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">65M</text>
+
+    
+    <rect x="0" y="90" width="740" height="45" fill="#F1F3F5" />
+    <text x="20" y="118" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">(A) h=1</text>
+    <text x="140" y="118" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">1</text>
+    <text x="220" y="118" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">512</text>
+    <text x="300" y="118" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">2048</text>
+    <text x="400" y="118" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">0.1</text>
+    <text x="520" y="118" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#DC3545">24.9 ↓</text>
+    <text x="640" y="118" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">65M</text>
+
+    
+    <rect x="0" y="135" width="740" height="45" fill="#FFFFFF" />
+    <text x="20" y="163" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">(B) dk=16</text>
+    <text x="140" y="163" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">8</text>
+    <text x="220" y="163" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">16</text>
+    <text x="300" y="163" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">2048</text>
+    <text x="400" y="163" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">0.1</text>
+    <text x="520" y="163" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">25.1</text>
+    <text x="640" y="163" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">58M</text>
+
+    
+    <rect x="0" y="180" width="740" height="45" fill="#F1F3F5" />
+    <text x="20" y="208" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">(C) dff=4096</text>
+    <text x="140" y="208" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">8</text>
+    <text x="220" y="208" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">64</text>
+    <text x="300" y="208" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">4096</text>
+    <text x="400" y="208" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">0.1</text>
+    <text x="520" y="208" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">26.2</text>
+    <text x="640" y="208" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">90M</text>
+
+    
+    <rect x="0" y="225" width="740" height="45" fill="#E7F1FF" />
+    <text x="20" y="253" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#003D7C">Big</text>
+    <text x="140" y="253" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">16</text>
+    <text x="220" y="253" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">64</text>
+    <text x="300" y="253" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">4096</text>
+    <text x="400" y="253" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">0.3</text>
+    <text x="520" y="253" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0056A6">26.4 ↑</text>
+    <text x="640" y="253" font-family="Arial, sans-serif" font-size="14" fill="#1A1A1A">213M</text>
+    
+    <path fill="none" stroke="#003D7C" stroke-width="1" d="M4,0 H736 A4,4 0 0 1 740,4 V266 A4,4 0 0 1 736,270 H4 A4,4 0 0 1 0,266 V4 A4,4 0 0 1 4,0 Z" />
+  </g>
+
+  
+  <g transform="translate(820, 160)">
+    
+    <path fill="#003D7C" d="M6,0 H414 A6,6 0 0 1 420,6 V94 A6,6 0 0 1 414,100 H6 A6,6 0 0 1 0,94 V6 A6,6 0 0 1 6,0 Z" />
+    <path fill="#4D94FF" d="M2,0 H6 A2,2 0 0 1 8,2 V98 A2,2 0 0 1 6,100 H2 A2,2 0 0 1 0,98 V2 A2,2 0 0 1 2,0 Z" />
+    <text x="25" y="35" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">Attention Heads</text>
+    <text x="25" y="60" font-family="Arial, sans-serif" font-size="14" fill="#E9ECEF">Multi-head attention outperforms single large</text>
+    <text x="25" y="82" font-family="Arial, sans-serif" font-size="14" fill="#E9ECEF">heads; performance drops as 'h' decreases.</text>
+
+    
+    <path fill="#003D7C" d="M6,120 H414 A6,6 0 0 1 420,126 V214 A6,6 0 0 1 414,220 H6 A6,6 0 0 1 0,214 V126 A6,6 0 0 1 6,120 Z" />
+    <path fill="#4D94FF" d="M2,120 H6 A2,2 0 0 1 8,122 V218 A2,2 0 0 1 6,220 H2 A2,2 0 0 1 0,218 V122 A2,2 0 0 1 2,120 Z" />
+    <text x="25" y="155" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">Key Size (dk)</text>
+    <text x="25" y="180" font-family="Arial, sans-serif" font-size="14" fill="#E9ECEF">Reducing key size dk hurts quality, indicating</text>
+    <text x="25" y="202" font-family="Arial, sans-serif" font-size="14" fill="#E9ECEF">that head compatibility is a complex dynamic.</text>
+
+    
+    <path fill="#003D7C" d="M6,240 H414 A6,6 0 0 1 420,246 V334 A6,6 0 0 1 414,340 H6 A6,6 0 0 1 0,334 V246 A6,6 0 0 1 6,240 Z" />
+    <path fill="#4D94FF" d="M2,240 H6 A2,2 0 0 1 8,242 V338 A2,2 0 0 1 6,340 H2 A2,2 0 0 1 0,338 V242 A2,2 0 0 1 2,240 Z" />
+    <text x="25" y="275" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">Model Scaling</text>
+    <text x="25" y="300" font-family="Arial, sans-serif" font-size="14" fill="#E9ECEF">Larger models and stronger dropout are</text>
+    <text x="25" y="322" font-family="Arial, sans-serif" font-size="14" fill="#E9ECEF">essential for reaching peak performance.</text>
+
+    
+    <path fill="#003D7C" d="M6,360 H414 A6,6 0 0 1 420,366 V454 A6,6 0 0 1 414,460 H6 A6,6 0 0 1 0,454 V366 A6,6 0 0 1 6,360 Z" />
+    <path fill="#4D94FF" d="M2,360 H6 A2,2 0 0 1 8,362 V458 A2,2 0 0 1 6,460 H2 A2,2 0 0 1 0,458 V362 A2,2 0 0 1 2,360 Z" />
+    <text x="25" y="395" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">Positional Encodings</text>
+    <text x="25" y="420" font-family="Arial, sans-serif" font-size="14" fill="#E9ECEF">Sinusoidal encodings perform identically to</text>
+    <text x="25" y="442" font-family="Arial, sans-serif" font-size="14" fill="#E9ECEF">learned embeddings (25.8 vs 25.7 BLEU).</text>
+  </g>
+
+  
+  <line x1="40" y1="670" x2="1240" y2="670" stroke="#DEE2E6" stroke-width="1" />
+  <text x="40" y="695" font-family="Arial, sans-serif" font-size="12" fill="#6C757D">Dalian University of Technology</text>
+  <text x="250" y="695" font-family="Arial, sans-serif" font-size="11" fill="#ADB5BD">Source: Vaswani et al. (2017) 'Attention Is All You Need', Table 3</text>
+  <text x="1240" y="695" text-anchor="end" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#6C757D">11 / 15</text>
+</svg>

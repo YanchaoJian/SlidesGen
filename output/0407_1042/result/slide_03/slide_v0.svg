@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#E9ECEF" stroke-width="1" />
+    </pattern>
+  </defs>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#grid)" />
+
+  
+  <rect x="40" y="35" width="10" height="50" fill="#003D7C" />
+  <text x="65" y="72" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#003D7C">Sequential Computation Bottlenecks</text>
+  
+  
+  <path fill="#003D7C" fill-opacity="0.08" d="M44,100 H1236 A4,4 0 0 1 1240,104 V141 A4,4 0 0 1 1236,145 H44 A4,4 0 0 1 40,141 V104 A4,4 0 0 1 44,100 Z" />
+  <text x="60" y="128" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#003D7C">
+    Recurrent models face O(n) sequential constraints; Self-Attention enables parallelization and constant-time global dependency linking.
+  </text>
+
+  
+  <g font-family="Arial, sans-serif">
+    
+    <path fill="#FFFFFF" stroke="#DEE2E6" stroke-width="1" d="M44,170 H596 A4,4 0 0 1 600,174 V271 A4,4 0 0 1 596,275 H44 A4,4 0 0 1 40,271 V174 A4,4 0 0 1 44,170 Z" />
+    <path fill="#003D7C" d="M43,170 H43 A3,4 0 0 1 46,174 V271 A3,4 0 0 1 43,275 H43 A3,4 0 0 1 40,271 V174 A3,4 0 0 1 43,170 Z" />
+    <text x="65" y="200" font-size="18" font-weight="bold" fill="#003D7C">Sequential Bottleneck</text>
+    <text x="65" y="228" font-size="15" fill="#495057">Processing prevents parallelization within training</text>
+    <text x="65" y="250" font-size="15" fill="#495057">examples, leading to massive training times.</text>
+
+    
+    <path fill="#FFFFFF" stroke="#DEE2E6" stroke-width="1" d="M44,290 H596 A4,4 0 0 1 600,294 V391 A4,4 0 0 1 596,395 H44 A4,4 0 0 1 40,391 V294 A4,4 0 0 1 44,290 Z" />
+    <path fill="#003D7C" d="M43,290 H43 A3,4 0 0 1 46,294 V391 A3,4 0 0 1 43,395 H43 A3,4 0 0 1 40,391 V294 A3,4 0 0 1 43,290 Z" />
+    <text x="65" y="320" font-size="18" font-weight="bold" fill="#003D7C">Memory Constraints</text>
+    <text x="65" y="348" font-size="15" fill="#495057">Long sequences require maintaining a chain of</text>
+    <text x="65" y="370" font-size="15" fill="#495057">hidden states, limiting scalability.</text>
+
+    
+    <path fill="#FFFFFF" stroke="#DEE2E6" stroke-width="1" d="M44,410 H596 A4,4 0 0 1 600,414 V511 A4,4 0 0 1 596,515 H44 A4,4 0 0 1 40,511 V414 A4,4 0 0 1 44,410 Z" />
+    <path fill="#003D7C" d="M43,410 H43 A3,4 0 0 1 46,414 V511 A3,4 0 0 1 43,515 H43 A3,4 0 0 1 40,511 V414 A3,4 0 0 1 43,410 Z" />
+    <text x="65" y="440" font-size="18" font-weight="bold" fill="#003D7C">Convolutional Limitations</text>
+    <text x="65" y="468" font-size="15" fill="#495057">Attempts at parallelization struggle to capture</text>
+    <text x="65" y="490" font-size="15" fill="#495057">long-range dependencies effectively.</text>
+
+    
+    <path fill="#FFFFFF" stroke="#DEE2E6" stroke-width="1" d="M44,530 H596 A4,4 0 0 1 600,534 V631 A4,4 0 0 1 596,635 H44 A4,4 0 0 1 40,631 V534 A4,4 0 0 1 44,530 Z" />
+    <path fill="#003D7C" d="M43,530 H43 A3,4 0 0 1 46,534 V631 A3,4 0 0 1 43,635 H43 A3,4 0 0 1 40,631 V534 A3,4 0 0 1 43,530 Z" />
+    <text x="65" y="560" font-size="18" font-weight="bold" fill="#003D7C">Global Context Cost</text>
+    <text x="65" y="588" font-size="15" fill="#495057">Computational cost to link distant positions</text>
+    <text x="65" y="610" font-size="15" fill="#495057">grows, hindering global context learning.</text>
+  </g>
+
+  
+  <g font-family="Arial, sans-serif">
+    <path fill="#FFFFFF" stroke="#DEE2E6" stroke-width="1" d="M644,170 H1236 A4,4 0 0 1 1240,174 V406 A4,4 0 0 1 1236,410 H644 A4,4 0 0 1 640,406 V174 A4,4 0 0 1 644,170 Z" />
+    
+    
+    <path fill="#003D7C" d="M644,170 H1236 A4,4 0 0 1 1240,174 V216 A4,4 0 0 1 1236,220 H644 A4,4 0 0 1 640,216 V174 A4,4 0 0 1 644,170 Z" />
+    <text x="660" y="202" font-size="14" font-weight="bold" fill="#FFFFFF">LAYER TYPE</text>
+    <text x="820" y="202" font-size="14" font-weight="bold" fill="#FFFFFF">COMPLEXITY</text>
+    <text x="980" y="202" font-size="14" font-weight="bold" fill="#FFFFFF">SEQ. OPS</text>
+    <text x="1110" y="202" font-size="14" font-weight="bold" fill="#FFFFFF">MAX PATH</text>
+
+    
+    <rect x="641" y="220" width="598" height="60" fill="#E6EEF7" />
+    <text x="660" y="257" font-size="16" font-weight="bold" fill="#003D7C">Self-Attention</text>
+    <text x="820" y="257" font-size="16" fill="#1A1A1A">O(n² · d)</text>
+    <text x="980" y="257" font-size="16" font-weight="bold" fill="#28A745">O(1)</text>
+    <text x="1110" y="257" font-size="16" font-weight="bold" fill="#28A745">O(1)</text>
+
+    
+    <line x1="640" y1="280" x2="1240" y2="280" stroke="#DEE2E6" stroke-width="1" />
+    <text x="660" y="317" font-size="16" fill="#495057">Recurrent</text>
+    <text x="820" y="317" font-size="16" fill="#495057">O(n · d²)</text>
+    <text x="980" y="317" font-size="16" fill="#495057">O(n)</text>
+    <text x="1110" y="317" font-size="16" fill="#495057">O(n)</text>
+
+    
+    <line x1="640" y1="340" x2="1240" y2="340" stroke="#DEE2E6" stroke-width="1" />
+    <text x="660" y="377" font-size="16" fill="#495057">Convolutional</text>
+    <text x="820" y="377" font-size="16" fill="#495057">O(k · n · d²)</text>
+    <text x="980" y="377" font-size="16" fill="#495057">O(1)</text>
+    <text x="1110" y="377" font-size="16" fill="#495057">O(logk(n))</text>
+
+    
+    <text x="640" y="435" font-size="13" fill="#6C757D" font-style="italic">Table 1: Comparison of layer types in terms of complexity and sequential operations.</text>
+  </g>
+
+  
+  <line x1="40" y1="670" x2="1240" y2="670" stroke="#DEE2E6" stroke-width="1" />
+  <text x="40" y="695" font-family="Arial, sans-serif" font-size="12" fill="#ADB5BD">Source: Vaswani et al. (2017) 'Attention Is All You Need'</text>
+  <text x="1240" y="695" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#ADB5BD">3 / 12</text>
+</svg>

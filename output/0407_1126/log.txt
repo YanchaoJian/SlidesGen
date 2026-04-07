@@ -1,0 +1,20 @@
+04-07 11:26 - INFO   : 🚀 Starting new session: 0407_1126
+04-07 11:26 - INFO   : --- NODE: AnalyzeImageStyle ---
+04-07 11:26 - INFO   : 🎨 Analyzing style from image: ref-style-img.png
+04-07 11:26 - INFO   : --- NODE: ExtractContentFromPDF ---
+04-07 11:26 - INFO   : Marker will use device: 'cuda'
+04-07 11:26 - INFO   : Starting content extraction for: assets/paper.pdf
+04-07 11:26 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+04-07 11:27 - INFO   : PDF conversion finished in 17.26 seconds.
+04-07 11:27 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+04-07 11:27 - WARNING: Orientation detection failed, keeping original: Error code: 401 - {'error': {'code': '', 'message': '[sk-OEG***Do8] 该令牌额度已用尽 !token.UnlimitedQuota && token.RemainQuota = -1135510 (request id: 20260407032707210556003285in9EJ)', 'type': 'new_api_error'}}
+04-07 11:27 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+04-07 11:27 - WARNING: Orientation detection failed, keeping original: Error code: 401 - {'error': {'code': '', 'message': '[sk-OEG***Do8] 该令牌额度已用尽 !token.UnlimitedQuota && token.RemainQuota = -1135510 (request id: 20260407032707644769842dG15oS36)', 'type': 'new_api_error'}}
+04-07 11:27 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+04-07 11:27 - WARNING: Orientation detection failed, keeping original: Error code: 401 - {'error': {'code': '', 'message': '[sk-OEG***Do8] 该令牌额度已用尽 !token.UnlimitedQuota && token.RemainQuota = -1135510 (request id: 20260407032708869043503SZWqWjue)', 'type': 'new_api_error'}}
+04-07 11:27 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+04-07 11:27 - WARNING: Orientation detection failed, keeping original: Error code: 401 - {'error': {'code': '', 'message': '[sk-OEG***Do8] 该令牌额度已用尽 !token.UnlimitedQuota && token.RemainQuota = -1135510 (request id: 20260407032709522112533TmyTYVOd)', 'type': 'new_api_error'}}
+04-07 11:27 - INFO   : HTTP Request: POST https://api.key77qiqi.cn/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+04-07 11:27 - WARNING: Orientation detection failed, keeping original: Error code: 401 - {'error': {'code': '', 'message': '[sk-OEG***Do8] 该令牌额度已用尽 !token.UnlimitedQuota && token.RemainQuota = -1135510 (request id: 20260407032710107174159Rgh809dT)', 'type': 'new_api_error'}}
+04-07 11:27 - INFO   : Extracted 4 tables and 5 equations from Marker output.
+04-07 11:27 - INFO   : Raw content saved for debugging at: output/0407_1126\raw\pdf_content.json

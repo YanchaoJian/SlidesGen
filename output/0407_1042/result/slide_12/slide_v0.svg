@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  
+  
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#E9ECEF" stroke-width="1" />
+    </pattern>
+  </defs>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#grid)" />
+
+  
+  <rect x="40" y="40" width="8" height="40" fill="#003D7C" />
+  <text x="60" y="72" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#003D7C">Generalization: English Constituency Parsing</text>
+  
+  
+  <path fill="#E6EEF7" d="M44,95 H1236 A4,4 0 0 1 1240,99 V136 A4,4 0 0 1 1236,140 H44 A4,4 0 0 1 40,136 V99 A4,4 0 0 1 44,95 Z" />
+  <text x="60" y="124" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#003D7C">▸ Transformer achieves state-of-the-art 92.7 F1, proving its ability to learn structural grammar.</text>
+
+  
+  <g transform="translate(40, 180)">
+    
+    <path fill="#003D7C" d="M4,0 H616 A4,4 0 0 1 620,4 V46 A4,4 0 0 1 616,50 H4 A4,4 0 0 1 0,46 V4 A4,4 0 0 1 4,0 Z" />
+    <text x="20" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Parser Model</text>
+    <text x="320" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Training Data</text>
+    <text x="520" y="32" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">F1 Score</text>
+    
+    
+    <path fill="#FFFFFF" d="M4,60 H616 A4,4 0 0 1 620,64 V101 A4,4 0 0 1 616,105 H4 A4,4 0 0 1 0,101 V64 A4,4 0 0 1 4,60 Z" />
+    <text x="20" y="88" font-family="Arial, sans-serif" font-size="15" fill="#495057">Vinyals &amp; Kaiser (2014)</text>
+    <text x="320" y="88" font-family="Arial, sans-serif" font-size="15" fill="#495057">WSJ only</text>
+    <text x="520" y="88" font-family="Arial, sans-serif" font-size="15" fill="#495057">88.3</text>
+
+    <path fill="#FFFFFF" d="M4,115 H616 A4,4 0 0 1 620,119 V156 A4,4 0 0 1 616,160 H4 A4,4 0 0 1 0,156 V119 A4,4 0 0 1 4,115 Z" />
+    <text x="20" y="143" font-family="Arial, sans-serif" font-size="15" fill="#495057">Petrov et al. (2006)</text>
+    <text x="320" y="143" font-family="Arial, sans-serif" font-size="15" fill="#495057">WSJ only</text>
+    <text x="520" y="143" font-family="Arial, sans-serif" font-size="15" fill="#495057">90.4</text>
+
+    <path fill="#FFFFFF" d="M4,170 H616 A4,4 0 0 1 620,174 V211 A4,4 0 0 1 616,215 H4 A4,4 0 0 1 0,211 V174 A4,4 0 0 1 4,170 Z" />
+    <text x="20" y="198" font-family="Arial, sans-serif" font-size="15" fill="#495057">Transformer (4 layers)</text>
+    <text x="320" y="198" font-family="Arial, sans-serif" font-size="15" fill="#495057">WSJ only</text>
+    <text x="520" y="198" font-family="Arial, sans-serif" font-size="15" fill="#495057">91.3</text>
+
+    
+    <path fill="#0056A6" d="M4,225 H616 A4,4 0 0 1 620,229 V276 A4,4 0 0 1 616,280 H4 A4,4 0 0 1 0,276 V229 A4,4 0 0 1 4,225 Z" />
+    <text x="20" y="258" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Transformer (4 layers)</text>
+    <text x="320" y="258" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#FFFFFF">Semi-supervised</text>
+    <text x="520" y="258" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">92.7</text>
+    
+    
+    <text x="20" y="310" font-family="Arial, sans-serif" font-size="13" fill="#6C757D">* Semi-supervised training includes additional unlabeled data parsed by existing models.</text>
+  </g>
+
+  
+  <g transform="translate(700, 180)">
+    
+    <path fill="#FFFFFF" stroke="#DEE2E6" stroke-width="1" d="M8,0 H532 A8,8 0 0 1 540,8 V122 A8,8 0 0 1 532,130 H8 A8,8 0 0 1 0,122 V8 A8,8 0 0 1 8,0 Z" />
+    <path fill="#003D7C" d="M4,0 H6 A4,4 0 0 1 10,4 V126 A4,4 0 0 1 6,130 H4 A4,4 0 0 1 0,126 V4 A4,4 0 0 1 4,0 Z" />
+    <text x="30" y="45" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#003D7C">Structural Competence</text>
+    <text x="30" y="75" font-family="Arial, sans-serif" font-size="16" fill="#495057">Strong structural constraints met with</text>
+    <text x="30" y="98" font-family="Arial, sans-serif" font-size="16" fill="#495057">highly competitive parsing results.</text>
+
+    
+    <path fill="#FFFFFF" stroke="#DEE2E6" stroke-width="1" d="M8,150 H532 A8,8 0 0 1 540,158 V272 A8,8 0 0 1 532,280 H8 A8,8 0 0 1 0,272 V158 A8,8 0 0 1 8,150 Z" />
+    <path fill="#003D7C" d="M4,150 H6 A4,4 0 0 1 10,154 V276 A4,4 0 0 1 6,280 H4 A4,4 0 0 1 0,276 V154 A4,4 0 0 1 4,150 Z" />
+    <text x="30" y="195" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#003D7C">SOTA Performance</text>
+    <text x="30" y="225" font-family="Arial, sans-serif" font-size="16" fill="#495057">Achieved 92.7 F1, outperforming previous</text>
+    <text x="30" y="248" font-family="Arial, sans-serif" font-size="16" fill="#495057">recurrent and convolutional baselines.</text>
+
+    
+    <path fill="#FFFFFF" stroke="#DEE2E6" stroke-width="1" d="M8,300 H532 A8,8 0 0 1 540,308 V422 A8,8 0 0 1 532,430 H8 A8,8 0 0 1 0,422 V308 A8,8 0 0 1 8,300 Z" />
+    <path fill="#003D7C" d="M4,300 H6 A4,4 0 0 1 10,304 V426 A4,4 0 0 1 6,430 H4 A4,4 0 0 1 0,426 V304 A4,4 0 0 1 4,300 Z" />
+    <text x="30" y="345" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#003D7C">Inductive Bias</text>
+    <text x="30" y="375" font-family="Arial, sans-serif" font-size="16" fill="#495057">Learns task-specific hierarchical structures</text>
+    <text x="30" y="398" font-family="Arial, sans-serif" font-size="16" fill="#495057">without explicit tree-structured bias.</text>
+  </g>
+
+  
+  <line x1="40" y1="670" x2="1240" y2="670" stroke="#DEE2E6" stroke-width="1" />
+  <text x="40" y="695" font-family="Arial, sans-serif" font-size="14" fill="#ADB5BD">Source: Table 4, Section 23 of WSJ (Wall Street Journal corpus)</text>
+  <text x="1240" y="695" text-anchor="end" font-family="Arial, sans-serif" font-size="14" fill="#ADB5BD">Slide 12 / 12</text>
+</svg>

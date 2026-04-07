@@ -10,23 +10,94 @@ logger = logging.getLogger(__name__)
 
 
 # ==============================================================================
+# 致命 LLM 错误（401 / 配额耗尽等不可恢复错误）
+# ==============================================================================
+
+class FatalLLMError(BaseException):
+    """
+    不可恢复的 LLM 调用错误（如 401 鉴权失败、API key 配额耗尽）。
+
+    继承自 BaseException 而非 Exception，使其能穿透 agent 层广泛使用的
+    `except Exception` 捕获，直接向上冒泡，避免在子图内无限重试。
+    """
+    pass
+
+
+# 匹配 401 / 配额耗尽 / 余额不足 等不可恢复错误的特征
+_FATAL_PATTERNS = re.compile(
+    r"(?:"
+    r"401"
+    r"|invalid[_\s-]*api[_\s-]*key"
+    r"|incorrect\s+api\s+key"
+    r"|authentication"
+    r"|unauthorized"
+    r"|insufficient[_\s-]*quota"
+    r"|quota.*(?:exceeded|exhausted|used\s*up)"
+    r"|额度.*(?:用尽|不足|耗尽)"
+    r"|余额.*(?:不足|耗尽)"
+    r"|RemainQuota\s*=\s*-"
+    r"|billing"
+    r"|payment\s+required"
+    r"|402"
+    r")",
+    re.IGNORECASE,
+)
+
+
+def is_fatal_llm_error(exc: BaseException) -> bool:
+    """判断异常是否属于不可恢复的 LLM 错误。"""
+    if isinstance(exc, FatalLLMError):
+        return True
+    # 优先检查 openai SDK 的 status_code 属性
+    status = getattr(exc, "status_code", None) or getattr(
+        getattr(exc, "response", None), "status_code", None
+    )
+    if status in (401, 402, 403):
+        return True
+    return bool(_FATAL_PATTERNS.search(str(exc)))
+
+
+def raise_if_fatal_llm_error(exc: BaseException) -> None:
+    """
+    若异常为不可恢复的 LLM 错误，则包装为 FatalLLMError 抛出。
+    在 agent 层 `except Exception` 块开头调用，确保致命错误立即冒泡，
+    不被子图的 retry 循环吞掉。
+    """
+    if is_fatal_llm_error(exc):
+        raise FatalLLMError(f"Fatal LLM error (non-retryable): {exc}") from exc
+
+
+# ==============================================================================
 # LLM 配置类型与工厂函数
 # ==============================================================================
 
-class LLMConfig(TypedDict):
+class LLMConfig(TypedDict, total=False):
     """LLM 连接配置，替代散装的 api_key / base_url / model_name 参数。"""
     model_name: str
     api_key: str
     base_url: Optional[str]
+    max_retries: int  # 可选；create_llm 会优先使用该字段
 
 
-def create_llm(llm_config: LLMConfig, temperature: float = 0.1) -> ChatOpenAI:
-    """根据统一配置创建 ChatOpenAI 实例。"""
+def create_llm(
+    llm_config: LLMConfig,
+    temperature: float = 0.1,
+    timeout: float = 600.0,
+    max_retries: int = 3,
+) -> ChatOpenAI:
+    """根据统一配置创建 ChatOpenAI 实例。
+
+    若 ``llm_config`` 中包含 ``max_retries``，则覆盖入参默认值，
+    实现"全局重试次数从 CLI 一处控制"。
+    """
+    effective_retries = llm_config.get("max_retries", max_retries)
     return ChatOpenAI(
         model=llm_config["model_name"],
         api_key=llm_config["api_key"],
         base_url=llm_config["base_url"],
         temperature=temperature,
+        timeout=timeout,
+        max_retries=effective_retries,
     )
 
 

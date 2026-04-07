@@ -7,7 +7,7 @@ from typing import Tuple
 from pydantic import BaseModel, Field
 
 from agents.perception.style_analyst.prompts import STYLE_CRITIC_SYSTEM_PROMPT, STYLE_CRITIC_USER_PROMPT
-from utils.llm import LLMConfig, create_llm, encode_image_to_base64
+from utils.llm import LLMConfig, create_llm, encode_image_to_base64, raise_if_fatal_llm_error
 
 # 初始化日志记录器
 logger = logging.getLogger(__name__)
@@ -82,6 +82,7 @@ def critique_style_protocol(
         return critique_result.is_approved, critique_result.critique
         
     except Exception as e:
+        raise_if_fatal_llm_error(e)
         logger.error(f"❌ Style critic LLM call failed: {e}")
         return False, f"A critical error occurred while invoking the critic model: {e}"
     

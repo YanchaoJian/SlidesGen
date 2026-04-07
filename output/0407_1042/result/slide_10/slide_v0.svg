@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  <defs>
+    <pattern id="dotGrid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#E9ECEF" />
+    </pattern>
+  </defs>
+  <rect x="0" y="0" width="1280" height="720" fill="url(#dotGrid)" />
+
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#003D7C" />
+  <text x="60" y="65" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#003D7C">Key Results: SOTA Translation Quality</text>
+  <text x="1100" y="65" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#003D7C" text-anchor="end">DUT BRAND</text>
+  <line x1="60" y1="90" x2="1220" y2="90" stroke="#003D7C" stroke-width="2" />
+
+  
+  <rect x="60" y="110" width="1160" height="50" fill="#003D7C" fill-opacity="0.05" />
+  <text x="80" y="142" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#003D7C">▸ Transformer (big) achieves SOTA BLEU scores with significantly lower training costs than previous architectures.</text>
+
+  
+  <g font-family="Arial, sans-serif" font-size="14">
+    <rect x="60" y="180" width="780" height="40" fill="#003D7C" />
+    <text x="150" y="206" fill="#FFFFFF" font-weight="bold" text-anchor="middle">Model</text>
+    <text x="330" y="206" fill="#FFFFFF" font-weight="bold" text-anchor="middle">BLEU (EN-DE)</text>
+    <text x="480" y="206" fill="#FFFFFF" font-weight="bold" text-anchor="middle">BLEU (EN-FR)</text>
+    <text x="680" y="206" fill="#FFFFFF" font-weight="bold" text-anchor="middle">Training Cost (FLOPs)</text>
+
+    <g fill="#1A1A1A">
+      <rect x="60" y="220" width="780" height="40" fill="#FFFFFF" />
+      <text x="80" y="246">ByteNet [18]</text><text x="330" y="246" text-anchor="middle">23.75</text><text x="480" y="246" text-anchor="middle">—</text><text x="680" y="246" text-anchor="middle">—</text>
+      
+      <rect x="60" y="260" width="780" height="40" fill="#F4F7FA" />
+      <text x="80" y="286">Deep-Att + PosUnk [39]</text><text x="330" y="286" text-anchor="middle">—</text><text x="480" y="286" text-anchor="middle">39.2</text><text x="680" y="286" text-anchor="middle">1.0 · 10²⁰</text>
+      
+      <rect x="60" y="300" width="780" height="40" fill="#FFFFFF" />
+      <text x="80" y="326">GNMT + RL [38]</text><text x="330" y="326" text-anchor="middle">24.6</text><text x="480" y="326" text-anchor="middle">39.92</text><text x="680" y="326" text-anchor="middle">2.3 · 10¹⁹</text>
+      
+      <rect x="60" y="340" width="780" height="40" fill="#F4F7FA" />
+      <text x="80" y="366">ConvS2S [9]</text><text x="330" y="366" text-anchor="middle">25.16</text><text x="480" y="366" text-anchor="middle">40.46</text><text x="680" y="366" text-anchor="middle">9.6 · 10¹⁸</text>
+      
+      <rect x="60" y="380" width="780" height="40" fill="#FFFFFF" />
+      <text x="80" y="406">MoE [32]</text><text x="330" y="406" text-anchor="middle">26.03</text><text x="480" y="406" text-anchor="middle">40.56</text><text x="680" y="406" text-anchor="middle">2.0 · 10¹⁹</text>
+      
+      <rect x="60" y="420" width="780" height="40" fill="#F4F7FA" />
+      <text x="80" y="446">GNMT + RL Ensemble [38]</text><text x="330" y="446" text-anchor="middle">26.30</text><text x="480" y="446" text-anchor="middle">41.16</text><text x="680" y="446" text-anchor="middle">1.8 · 10²⁰</text>
+      
+      <rect x="60" y="460" width="780" height="40" fill="#FFFFFF" />
+      <text x="80" y="486">ConvS2S Ensemble [9]</text><text x="330" y="486" text-anchor="middle">26.36</text><text x="480" y="486" text-anchor="middle">41.29</text><text x="680" y="486" text-anchor="middle">7.7 · 10¹⁹</text>
+      
+      <rect x="60" y="500" width="780" height="40" fill="#E6EEF7" stroke="#003D7C" stroke-width="2" />
+      <text x="80" y="526" font-weight="bold" fill="#003D7C">Transformer (big)</text>
+      <text x="330" y="526" font-weight="bold" fill="#28A745" text-anchor="middle">28.4</text>
+      <text x="480" y="526" font-weight="bold" fill="#28A745" text-anchor="middle">41.8</text>
+      <text x="680" y="526" font-weight="bold" fill="#003D7C" text-anchor="middle">2.3 · 10¹⁹</text>
+    </g>
+  </g>
+
+  
+  <path fill="#003D7C" d="M888,180 H1212 A8,8 0 0 1 1220,188 V332 A8,8 0 0 1 1212,340 H888 A8,8 0 0 1 880,332 V188 A8,8 0 0 1 888,180 Z" />
+  <text x="1050" y="215" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold" fill="#FFFFFF">QUALITY</text>
+  <text x="1050" y="250" text-anchor="middle" font-family="Arial" font-size="16" fill="#FFFFFF">Surpasses all previous ensemble</text>
+  <text x="1050" y="275" text-anchor="middle" font-family="Arial" font-size="16" fill="#FFFFFF">models by a significant margin.</text>
+
+  <path fill="#003D7C" d="M888,360 H1212 A8,8 0 0 1 1220,368 V512 A8,8 0 0 1 1212,520 H888 A8,8 0 0 1 880,512 V368 A8,8 0 0 1 888,360 Z" />
+  <text x="1050" y="395" text-anchor="middle" font-family="Arial" font-size="20" font-weight="bold" fill="#FFFFFF">EFFICIENCY</text>
+  <text x="1050" y="430" text-anchor="middle" font-family="Arial" font-size="16" fill="#FFFFFF">Training cost is a fraction of</text>
+  <text x="1050" y="455" text-anchor="middle" font-family="Arial" font-size="16" fill="#FFFFFF">GNMT or ConvS2S models.</text>
+
+  
+  <line x1="60" y1="660" x2="1220" y2="660" stroke="#CCCCCC" stroke-width="1" />
+  <text x="60" y="690" font-family="Arial" font-size="12" fill="#808080">Source: Vaswani et al. (2017), 'Attention Is All You Need'</text>
+  <text x="1220" y="690" text-anchor="end" font-family="Arial" font-size="12" fill="#808080">10 / 15</text>
+</svg>

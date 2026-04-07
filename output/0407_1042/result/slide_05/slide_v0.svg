@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#F8F9FA" />
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#E9ECEF" stroke-width="1" />
+    </pattern>
+  </defs>
+  <rect width="1280" height="720" fill="url(#grid)" />
+
+  
+  <rect x="40" y="65" width="1200" height="2" fill="#003D7C" />
+  
+  
+  <g transform="translate(40, 22)">
+    <polygon points="10,0 40,0 30,35 0,35" fill="#003D7C" />
+    <line x1="8" y1="10" x2="24" y2="10" stroke="#FFFFFF" stroke-width="2" />
+    <line x1="6" y1="17" x2="22" y2="17" stroke="#FFFFFF" stroke-width="2" />
+    <line x1="4" y1="24" x2="20" y2="24" stroke="#FFFFFF" stroke-width="2" />
+  </g>
+
+  
+  <text x="95" y="50" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" font-size="32" font-weight="bold" fill="#003D7C">Technical Detail: Scaled Dot-Product Attention</text>
+
+  
+  <text x="1240" y="50" text-anchor="end" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#003D7C">DUT</text>
+
+  
+  <path fill="#E6EEF7" d="M44,80 H1236 A4,4 0 0 1 1240,84 V121 A4,4 0 0 1 1236,125 H44 A4,4 0 0 1 40,121 V84 A4,4 0 0 1 44,80 Z" />
+  <text x="640" y="108" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" font-size="18" font-weight="bold" fill="#003D7C">Scaling the dot product by 1/sqrt(d_k) prevents vanishing gradients, ensuring stable training in high dimensions.</text>
+
+  
+  <path fill="none" stroke="#003D7C" stroke-width="1" d="M49,155 H1231 A4,4 0 0 1 1235,159 V291 A4,4 0 0 1 1231,295 H49 A4,4 0 0 1 45,291 V159 A4,4 0 0 1 49,155 Z" />
+  <path fill="#FFFFFF" stroke="#003D7C" stroke-width="2" d="M44,150 H1226 A4,4 0 0 1 1230,154 V286 A4,4 0 0 1 1226,290 H44 A4,4 0 0 1 40,286 V154 A4,4 0 0 1 44,150 Z" />
+  <text x="640" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="38" font-weight="bold" fill="#003D7C">Attention(Q, K, V) = softmax( (Q Kᵀ) / √dₖ ) V</text>
+  <text x="640" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#003D7C" font-style="italic">Standard Transformer Implementation (Vaswani et al.)</text>
+
+  
+  
+  
+  <g transform="translate(40, 330)">
+    <path fill="none" stroke="#003D7C" stroke-width="1" d="M9,5 H374 A4,4 0 0 1 378,9 V281 A4,4 0 0 1 374,285 H9 A4,4 0 0 1 5,281 V9 A4,4 0 0 1 9,5 Z" />
+    <path fill="#003D7C" d="M4,0 H369 A4,4 0 0 1 373,4 V276 A4,4 0 0 1 369,280 H4 A4,4 0 0 1 0,276 V4 A4,4 0 0 1 4,0 Z" />
+    <text x="186" y="50" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">1. Compatibility</text>
+    <line x1="40" y1="70" x2="333" y2="70" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" />
+    <text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="120">Queries (Q) and Keys (K)</text><text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="155">compute the initial</text><text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="190">compatibility scores.</text></g>
+
+  
+  <g transform="translate(453, 330)">
+    <path fill="none" stroke="#003D7C" stroke-width="1" d="M9,5 H374 A4,4 0 0 1 378,9 V281 A4,4 0 0 1 374,285 H9 A4,4 0 0 1 5,281 V9 A4,4 0 0 1 9,5 Z" />
+    <path fill="#003D7C" d="M4,0 H369 A4,4 0 0 1 373,4 V276 A4,4 0 0 1 369,280 H4 A4,4 0 0 1 0,276 V4 A4,4 0 0 1 4,0 Z" />
+    <text x="186" y="50" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">2. Scaling Factor</text>
+    <line x1="40" y1="70" x2="333" y2="70" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" />
+    <text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="120">Dividing by √dₖ</text><text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="155">prevents large dot</text><text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="190">products &amp; vanishing</text><text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="225">gradients in softmax.</text></g>
+
+  
+  <g transform="translate(866, 330)">
+    <path fill="none" stroke="#003D7C" stroke-width="1" d="M9,5 H374 A4,4 0 0 1 378,9 V281 A4,4 0 0 1 374,285 H9 A4,4 0 0 1 5,281 V9 A4,4 0 0 1 9,5 Z" />
+    <path fill="#003D7C" d="M4,0 H369 A4,4 0 0 1 373,4 V276 A4,4 0 0 1 369,280 H4 A4,4 0 0 1 0,276 V4 A4,4 0 0 1 4,0 Z" />
+    <text x="186" y="50" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF">3. Final Output</text>
+    <line x1="40" y1="70" x2="333" y2="70" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" />
+    <text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="120">The resulting weights</text><text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="155">are multiplied by</text><text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="190">Values (V) to form</text><text font-size="18" fill="#FFFFFF" text-anchor="middle" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" x="186" y="225">the final output.</text></g>
+
+  
+  <line x1="40" y1="660" x2="1240" y2="660" stroke="#003D7C" stroke-width="1" />
+  <text x="40" y="690" font-family="&quot;Microsoft YaHei&quot;, &quot;SimHei&quot;, Arial, sans-serif" font-size="14" fill="#808080">Dalian University · School of Computer Science</text>
+  <text x="1240" y="690" text-anchor="end" font-family="Arial, sans-serif" font-size="14" fill="#808080">05 / 17</text>
+
+  
+  <polygon points="1280,640 1280,720 1200,720" fill="#003D7C" fill-opacity="0.1" />
+</svg>

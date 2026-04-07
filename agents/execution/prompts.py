@@ -206,20 +206,24 @@ follows: **Core conclusion → Supporting arguments → Supporting data**.
 | Arguments | Card headers, section labels | 16-20px bold |
 | Supporting data | Chart values, body copy | 12-16px |
 
-### Assertion Headlines (NOT Descriptive Titles)
+### Title vs. Takeaway Box (split, do NOT merge)
 
-Page titles must be **one-sentence assertions** that state the conclusion. Descriptive \
-topic labels like "Market Overview" are FORBIDDEN for content pages.
+The page **title** must be copied verbatim from the layout spec's Title field (which itself \
+mirrors the original slide plan). Hard limit: **≤ 8 words / ≤ 50 characters**, single line, \
+no overflow of the title bar. Do NOT rewrite, paraphrase, expand, or replace it with the \
+assertion sentence.
 
-| Weak (descriptive) | Strong (assertion headline) |
-|-------------------|----------------------------|
-| "Market Overview" | "Domestic market grows 23% YoY, significantly outpacing global average" |
+The **one-sentence assertion / conclusion** lives in the **Takeaway Box** directly below \
+the title — not in the title itself.
+
+| Title (short, descriptive) | Takeaway Box (one-sentence assertion) |
+|---------------------------|----------------------------------------|
+| "Market Overview" | "Domestic market grows 23% YoY, outpacing global average" |
 | "Competitive Analysis" | "Three competitors show clear weaknesses in channel coverage" |
 | "Our Solution" | "Three-phase path: Focus → Expand → Scale" |
 | "Key Findings" | "Growth driver is shifting from acquisition to retention" |
 
-Cover and closing pages may use short brand/thank-you titles. Every other content page \
-must carry an assertion headline.
+Cover / question / closing pages have no Takeaway Box and use the plan title as-is.
 
 ### Takeaway Box (Mandatory on Content Pages)
 
@@ -518,7 +522,7 @@ Before outputting SVG, verify:
 4. All `<defs>` (gradients, filters) must come before elements that reference them.
 5. Z-order: background → decorations → content cards → text → foreground accents.
 6. Include a page number in the bottom-right corner (e.g., `01 / 10`).
-7. **Content pages must carry an assertion headline title AND a Takeaway Box** (Components 9) directly beneath the title. Cover / closing pages are exempt.
+7. **Title must be copied verbatim from the layout spec's Title field** (which mirrors the original slide plan): ≤ 8 words / ≤ 50 characters, single line, never overflow the title bar. The one-sentence conclusion goes in the **Takeaway Box** directly beneath the title — not in the title. Cover / closing pages have no Takeaway Box.
 8. **Every data / chart / table / KPI page must include a data source footer** (Component 10) at the bottom-left.
 9. **Every displayed metric must be contextualized** — a bare number without comparison reference and interpretation is a quality failure.
 10. **Color restraint**: do not exceed 3 primary colors; data series must use same-hue opacity variations, not rainbow palettes.
@@ -592,7 +596,7 @@ Before applying CRAP principles, first fix any geometry violations. These are ha
 
 Beyond the four visual CRAP principles, also verify the page's *argument* is visible:
 
-- **Assertion headline**: the title states a one-sentence conclusion, not a topic label. If the original title is descriptive ("Market Overview"), upgrade it to an assertion headline without changing the underlying meaning.
+- **Title is short and verbatim**: the title is copied from the original slide plan, ≤ 8 words / ≤ 50 characters, single line, no overflow. Do NOT rewrite a descriptive title into a long assertion sentence — the one-sentence conclusion belongs in the Takeaway Box, not the title.
 - **Takeaway Box present**: content pages must have a one-sentence takeaway directly under the title (x=40, y=80, w=1200, h≈45, light theme-color fill).
 - **Data contextualization**: every headline number must have a comparison reference (industry avg / prior period / competitor / target) and a meaning annotation. If a number stands alone, add context using smaller text below.
 - **Color restraint**: no more than 3 primary colors on the page; data series should use same-hue opacity variations rather than rainbow palettes. Highlight only the target data point in accent color.

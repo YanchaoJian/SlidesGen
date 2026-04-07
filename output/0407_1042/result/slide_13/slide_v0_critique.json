@@ -1,0 +1,10 @@
+[
+  {
+    "pass": false,
+    "critique": "FAIL: The gray caption background at the bottom of the left card (`<rect x=\"40\" y=\"610\" width=\"620\" height=\"40\" rx=\"0\" fill=\"#F1F3F5\"/>`) overlaps the main card's stroke and rounded corners (`<rect x=\"40\" y=\"180\" ... rx=\"8\" stroke=\"#DEE2E6\"/>`), resulting in sharp bottom corners and obscuring the bottom border. Fix: Remove the gray caption background `<rect>` entirely so the text sits cleanly on the white card, or apply a `<clipPath>` with `rx=\"8\"` to the left card group to preserve the rounded corners."
+  },
+  {
+    "pass": true,
+    "critique": "No critique text provided by the model."
+  }
+]

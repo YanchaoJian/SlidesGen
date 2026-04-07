@@ -15,7 +15,7 @@ from agents.planning.prompts import (
     EXPAND_SLIDE_PLAN_SYSTEM_PROMPT,
     EXPAND_SLIDE_PLAN_USER_PROMPT,
 )
-from utils.llm import LLMConfig, create_llm
+from utils.llm import LLMConfig, create_llm, raise_if_fatal_llm_error
 
 logger = logging.getLogger(__name__)
 
@@ -61,5 +61,6 @@ def expand_slide_plan(
         return detail
 
     except Exception as e:
+        raise_if_fatal_llm_error(e)
         logger.error(f"   -> [Slide {slide_page}] Slide plan expansion failed: {e}")
         return None

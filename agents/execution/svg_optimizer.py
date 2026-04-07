@@ -14,7 +14,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from agents.execution.prompts import CRAP_OPTIMIZER_SYSTEM_PROMPT, CRAP_OPTIMIZER_USER_PROMPT
 from agents.execution.svg_generator import extract_svg_content
 from pipeline.svg_validator import check_geometry
-from utils.llm import LLMConfig, create_llm
+from utils.llm import LLMConfig, create_llm, raise_if_fatal_llm_error
 
 logger = logging.getLogger(__name__)
 
@@ -112,5 +112,6 @@ def optimize_svg_crap(
         return optimized_svg
 
     except Exception as e:
+        raise_if_fatal_llm_error(e)
         logger.error(f"   -> CRAP optimizer LLM call failed: {e}")
         return None

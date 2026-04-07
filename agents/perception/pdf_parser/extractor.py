@@ -33,10 +33,10 @@ class ContentExtractor:
         self.output_dir = output_dir
 
         # 准备会话特定的输出目录
-        self.img_dir = os.path.join(self.output_dir, "images")
         self.raw_dir = os.path.join(self.output_dir, "raw")
-        os.makedirs(self.img_dir, exist_ok=True)
+        self.img_dir = os.path.join(self.raw_dir, "images")
         os.makedirs(self.raw_dir, exist_ok=True)
+        os.makedirs(self.img_dir, exist_ok=True)
 
         self.logger = logging.getLogger(__name__)
 
@@ -131,11 +131,27 @@ class ContentExtractor:
 
                 caption = self._extract_image_caption(markdown_text, filename)
 
+                # 记录图片像素尺寸，供下游 LLM 排版与 SVG finalize 纠偏使用。
+                w, h = image_obj.size
+                aspect_ratio = round(w / h, 3) if h else 1.0
+                if w > h:
+                    orientation = "landscape"
+                elif h > w:
+                    orientation = "portrait"
+                else:
+                    orientation = "square"
+
                 # 使用绝对 + POSIX 风格路径（正斜杠），避免下游 SVG href
                 # 因相对 CWD 路径或 Windows 反斜杠而解析失败。
                 image_info = {
                     "caption": caption,
                     "path": Path(image_filepath).resolve().as_posix(),
+                    "dimensions": {
+                        "width": w,
+                        "height": h,
+                        "aspect_ratio": aspect_ratio,
+                        "orientation": orientation,
+                    },
                 }
                 image_list.append(image_info)
 
@@ -331,7 +347,7 @@ class ContentExtractor:
     def save_content(self, content: dict, output_file: Optional[str] = None) -> str:
         """将提取的内容保存为 JSON 文件。"""
         if output_file is None:
-            output_file = os.path.join(self.raw_dir, "pdf-content.json")
+            output_file = os.path.join(self.raw_dir, "pdf_content.json")
 
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(content, f, ensure_ascii=False, indent=2)

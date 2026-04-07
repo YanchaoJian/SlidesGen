@@ -1,6 +1,7 @@
 import logging
 from typing import Literal
 
+from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, START, END
 from langgraph.constants import Send
 from langgraph.checkpoint.base import BaseCheckpointSaver
@@ -65,7 +66,7 @@ def route_pptx_design_review(state: OverallState) -> Literal["analyze_image_styl
         logger.info("🤔 User feedback was ambiguous or empty. Ending review cycle.")
         return "END"
 
-def route_svg_crap_check(state: SlideState):
+def route_svg_crap_check(state: SlideState, config: RunnableConfig):
     """路由：SVG 验证 + CRAP 优化检查"""
     slide_page = state.get('slide_page')
     svg_review = state.get("svg_review", {})
@@ -73,15 +74,16 @@ def route_svg_crap_check(state: SlideState):
         logger.info(f"🔀 [Slide {slide_page}] SVG optimized successfully. Proceeding to design check.")
         return "check_slide_design"
 
+    max_retries = int((config.get("configurable") or {}).get("llm_max_retries", 3))
     retry_count = svg_review.get("retry_count", 0)
-    if retry_count >= 3:
-        logger.warning(f"⚠️ [Slide {slide_page}] SVG failed after {retry_count} retries. Aborting this slide.")
+    if retry_count >= max_retries:
+        logger.warning(f"⚠️ [Slide {slide_page}] SVG failed after {retry_count}/{max_retries} retries. Aborting this slide.")
         return END
 
-    logger.info(f"🔀 [Slide {slide_page}] SVG validation failed. Routing back to SVG generation (Attempt {retry_count + 1}).")
+    logger.info(f"🔀 [Slide {slide_page}] SVG validation failed. Routing back to SVG generation (Attempt {retry_count + 1}/{max_retries}).")
     return "generate_slide_svg"
 
-def route_slide_design_check(state: SlideState):
+def route_slide_design_check(state: SlideState, config: RunnableConfig):
     """路由：设计质量检查"""
     slide_page = state.get('slide_page')
     design_review = state.get("design_review", {})
@@ -89,12 +91,13 @@ def route_slide_design_check(state: SlideState):
         logger.info(f"🔀 [Slide {slide_page}] Design verified. Completing slide subgraph.")
         return END
 
+    max_retries = int((config.get("configurable") or {}).get("llm_max_retries", 3))
     retry_count = design_review.get("retry_count", 0)
-    if retry_count >= 5:
-        logger.warning(f"⚠️ [Slide {slide_page}] Design check failed after {retry_count} retries. Accepting the last generated version to ensure output.")
+    if retry_count >= max_retries:
+        logger.warning(f"⚠️ [Slide {slide_page}] Design check failed after {retry_count} retries (limit={max_retries}). Accepting the last generated version to ensure output.")
         return END
 
-    logger.info(f"🔀 [Slide {slide_page}] Design not verified. Routing to SVG generation for refinements (Attempt {retry_count + 1}).")
+    logger.info(f"🔀 [Slide {slide_page}] Design not verified. Routing to SVG generation for refinements (Attempt {retry_count + 1}/{max_retries}).")
     return "generate_slide_svg"
 # ==============================================================================
 # 2. Map-Reduce 逻辑
