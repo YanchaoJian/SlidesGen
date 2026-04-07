@@ -1,0 +1,933 @@
+04-07 12:43 - INFO   : 🚀 Starting new session: 0407_1243
+04-07 12:43 - INFO   : --- NODE: AnalyzeImageStyle ---
+04-07 12:43 - INFO   : 🎨 Analyzing style from image: ref-style-img.png
+04-07 12:43 - INFO   : --- NODE: ExtractContentFromPDF ---
+04-07 12:43 - INFO   : Marker will use device: 'cuda'
+04-07 12:43 - INFO   : Starting content extraction for: assets/paper.pdf
+Loaded layout model S:\project\SlidesGen\models\marker\layout/2025_02_18 on device cuda with dtype torch.float16
+Loaded texify model S:\project\SlidesGen\models\marker\texify/2025_02_18 on device cuda with dtype torch.float16
+Loaded recognition model S:\project\SlidesGen\models\marker\text_recognition/2025_02_18 on device cuda with dtype torch.float16
+Loaded table recognition model S:\project\SlidesGen\models\marker\table_recognition/2025_02_18 on device cuda with dtype torch.float16
+Loaded detection model S:\project\SlidesGen\models\marker\text_detection/2025_02_28 on device cuda with dtype torch.float16
+Loaded detection model S:\project\SlidesGen\models\marker\inline_math_detection/2025_02_24 on device cuda with dtype torch.float16
+Recognizing layout: 100%|██████████████████████████████████████████████| 3/3 [00:03<00:00,  1.10s/it]
+Running OCR Error Detection: 100%|█████████████████████████████████████| 4/4 [00:00<00:00, 49.05it/s]
+Detecting bboxes: 0it [00:00, ?it/s]
+Texify inference: 100%|████████████████████████████████████████████████| 1/1 [00:02<00:00,  2.31s/it]
+Detecting bboxes: 0it [00:00, ?it/s]
+Recognizing tables: 100%|██████████████████████████████████████████████| 1/1 [00:01<00:00,  1.88s/it]
+04-07 12:44 - INFO   : PDF conversion finished in 15.27 seconds.
+04-07 12:44 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:44 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:44 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:44 - INFO   : Retrying request to /chat/completions in 0.384953 seconds
+04-07 12:44 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:44 - INFO   : Retrying request to /chat/completions in 0.811504 seconds
+04-07 12:44 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:44 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:44 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:44 - INFO   : Retrying request to /chat/completions in 0.423974 seconds
+04-07 12:44 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:44 - INFO   : Extracted 4 tables and 5 equations from Marker output.
+04-07 12:44 - INFO   : Raw content saved for debugging at: output/0407_1243\raw\pdf_content.json
+04-07 12:44 - INFO   : ✅ Node 'extract_content_from_pdf' completed.
+04-07 12:45 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:45 - INFO   : ✅ Style analysis successful.
+04-07 12:45 - INFO   : Style description saved to output/0407_1243\style\style_protocol_v0.md
+04-07 12:45 - INFO   : ✅ Node 'analyze_image_style' completed.
+04-07 12:45 - INFO   : --- NODE: CheckStyleProtocol ---
+04-07 12:45 - INFO   : --- NODE: GeneratePresentationPlan ---
+04-07 12:45 - INFO   : 🧐 Style Critic is reviewing the style description against the reference image...
+04-07 12:45 - INFO   : Extracting main content from enhanced content.
+04-07 12:45 - INFO   :    Planner Step 1/2: Extracting main content...
+04-07 12:45 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:45 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:45 - INFO   :    -> Critic LLM call successful. Result: REJECTED
+04-07 12:45 - INFO   :    -> Critique history saved to: output/0407_1243\style\critique_history.json
+04-07 12:45 - WARNING:    -> ❌ Style protocol REJECTED. Critique: The design specifica...
+04-07 12:45 - INFO   : 🔀 Style protocol not verified. Routing to style analysis.
+04-07 12:45 - INFO   : ✅ Node 'check_style_protocol' completed.
+04-07 12:46 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:46 - INFO   :    Paper main content saved to output/0407_1243\plan\paper_main_content.json
+04-07 12:46 - INFO   :    Planner Step 2/2: Planning slides...
+04-07 12:46 - INFO   : ✨ Creation Mode: Generating initial plan.
+04-07 12:47 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:47 - INFO   : Successfully generated a 2-step plan with 21 slides.
+04-07 12:47 - INFO   : Presentation plan saved to output/0407_1243\plan\presentation_plan_v0.json
+04-07 12:47 - INFO   : ✅ Node 'generate_presentation_plan' completed.
+04-07 12:47 - INFO   : --- NODE: AnalyzeImageStyle ---
+04-07 12:47 - INFO   : --- NODE: ReviewPlan (HITL) ---
+04-07 12:47 - INFO   : 🎨 Analyzing style from image: ref-style-img.png
+04-07 12:47 - INFO   :    -> Auto-approved (--skip_plan_review).
+04-07 12:47 - INFO   : 🔀 Presentation plan approved. Proceeding to dispatch slide tasks.
+04-07 12:47 - INFO   : ✅ Node 'review_plan' completed.
+04-07 12:47 - INFO   : Using previous style description and critique for refinement.
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:48 - INFO   : ✅ Style analysis successful.
+04-07 12:48 - INFO   : Style description saved to output/0407_1243\style\style_protocol_v1.md
+04-07 12:48 - INFO   : ✅ Node 'analyze_image_style' completed.
+04-07 12:48 - INFO   : --- NODE: CheckStyleProtocol ---
+04-07 12:48 - INFO   : 🧐 Style Critic is reviewing the style description against the reference image...
+04-07 12:48 - INFO   : 🗺️ Mapping slides to parallel generation tasks...
+04-07 12:48 - INFO   :   - Dispatching 21 tasks.
+04-07 12:48 - INFO   : ✅ Node 'dispatch_slide_tasks' completed.
+04-07 12:48 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:48 - INFO   :    -> Critic LLM call successful. Result: REJECTED
+04-07 12:48 - INFO   :    -> Critique history saved to: output/0407_1243\style\critique_history.json
+04-07 12:48 - WARNING:    -> ❌ Style protocol REJECTED. Critique: The design specifica...
+04-07 12:48 - INFO   : 🔀 Style protocol not verified. Routing to style analysis.
+04-07 12:48 - INFO   : ✅ Node 'check_style_protocol' completed.
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 1): ExpandSlidePlan ---
+04-07 12:48 - INFO   :    -> [Slide 1] Expanding slide plan...
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 2): ExpandSlidePlan ---
+04-07 12:48 - INFO   :    -> [Slide 2] Expanding slide plan...
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 3): ExpandSlidePlan ---
+04-07 12:48 - INFO   :    -> [Slide 3] Expanding slide plan...
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 4): ExpandSlidePlan ---
+04-07 12:48 - INFO   :    -> [Slide 4] Expanding slide plan...
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 5): ExpandSlidePlan ---
+04-07 12:48 - INFO   :    -> [Slide 5] Expanding slide plan...
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 6): ExpandSlidePlan ---
+04-07 12:48 - INFO   :    -> [Slide 6] Expanding slide plan...
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:48 - INFO   : Retrying request to /chat/completions in 0.468966 seconds
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:48 - INFO   : Retrying request to /chat/completions in 0.463894 seconds
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:48 - INFO   : Retrying request to /chat/completions in 0.861047 seconds
+04-07 12:48 - INFO   : Retrying request to /chat/completions in 0.792147 seconds
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:48 - INFO   : Retrying request to /chat/completions in 1.561729 seconds
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:48 - INFO   : Retrying request to /chat/completions in 1.630169 seconds
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:48 - ERROR  :    -> [Slide 3] Slide plan expansion failed: Received response with null value for 'choices'. This can happen when using OpenAI-compatible APIs (e.g., vLLM) that return a response in an unexpected format. Full response keys: ['id', 'choices', 'created', 'model', 'object', 'service_tier', 'system_fingerprint', 'usage']
+04-07 12:48 - WARNING: ⚠️ [Slide 3] Slide plan expansion failed. SVG generator will use the original plan.
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 3): GenerateSlideSVG ---
+04-07 12:48 - INFO   :    -> [Slide 3] SVG generation: creating from plan.
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:48 - ERROR  :    -> [Slide 2] Slide plan expansion failed: Received response with null value for 'choices'. This can happen when using OpenAI-compatible APIs (e.g., vLLM) that return a response in an unexpected format. Full response keys: ['id', 'choices', 'created', 'model', 'object', 'service_tier', 'system_fingerprint', 'usage']
+04-07 12:48 - WARNING: ⚠️ [Slide 2] Slide plan expansion failed. SVG generator will use the original plan.
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 2): GenerateSlideSVG ---
+04-07 12:48 - INFO   :    -> [Slide 2] SVG generation: creating from plan.
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:48 - INFO   :    -> SVG generated for slide 2 (2743 chars)
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 2): OptimizeSVGCRAP ---
+04-07 12:48 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 2743 chars
+04-07 12:48 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:48 - INFO   :    -> SVG generated for slide 3 (2973 chars)
+04-07 12:48 - INFO   : --- SUBGRAPH NODE (Slide 3): OptimizeSVGCRAP ---
+04-07 12:48 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 2973 chars
+04-07 12:49 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:49 - INFO   :    -> CRAP optimizer: output 3032 chars
+04-07 12:49 - INFO   :    -> [Slide 2] CRAP optimization applied.
+04-07 12:49 - INFO   :    -> ✅ [Slide 2] SVG optimized and finalized: output/0407_1243\result\slide_02\slide_v0.svg
+04-07 12:49 - INFO   : 🔀 [Slide 2] SVG optimized successfully. Proceeding to design check.
+04-07 12:49 - INFO   : --- SUBGRAPH NODE (Slide 2): CheckSlideDesign ---
+04-07 12:49 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v0.svg...
+04-07 12:49 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:49 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmpaaso_660\preview.pptx (30,917 bytes)
+04-07 12:49 - INFO   :    -> Converting slide to image for review...
+04-07 12:49 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:49 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:49 - INFO   :    -> CRAP optimizer: output 3296 chars
+04-07 12:49 - INFO   :    -> [Slide 3] CRAP optimization applied.
+04-07 12:49 - INFO   :    -> ✅ [Slide 3] SVG optimized and finalized: output/0407_1243\result\slide_03\slide_v0.svg
+04-07 12:49 - INFO   : 🔀 [Slide 3] SVG optimized successfully. Proceeding to design check.
+04-07 12:49 - INFO   : --- SUBGRAPH NODE (Slide 3): CheckSlideDesign ---
+04-07 12:49 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v0.svg...
+04-07 12:49 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:49 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmpti2kla0m\preview.pptx (31,124 bytes)
+04-07 12:49 - INFO   :    -> Converting slide to image for review...
+04-07 12:49 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:49 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:49 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmpaaso_660
+04-07 12:49 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmpaaso_660\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:49 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:49 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:49 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmpti2kla0m
+04-07 12:49 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmpti2kla0m\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:49 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:49 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:49 - INFO   :    -> ✅ Critique Result: PASS.
+04-07 12:49 - INFO   :    -> ✅ [Success] Slide 02 passed visual critique.
+04-07 12:49 - INFO   : ✅ SUBGRAPH NODE (Slide 2): CheckSlideDesign completed.
+04-07 12:49 - INFO   : 🔀 [Slide 2] Design verified. Completing slide subgraph.
+04-07 12:49 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:49 - INFO   : --- SUBGRAPH NODE (Slide 7): ExpandSlidePlan ---
+04-07 12:49 - INFO   :    -> [Slide 7] Expanding slide plan...
+04-07 12:49 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:49 - INFO   :    -> ✅ Critique Result: PASS.
+04-07 12:49 - INFO   :    -> ✅ [Success] Slide 03 passed visual critique.
+04-07 12:49 - INFO   : ✅ SUBGRAPH NODE (Slide 3): CheckSlideDesign completed.
+04-07 12:49 - INFO   : 🔀 [Slide 3] Design verified. Completing slide subgraph.
+04-07 12:49 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:49 - INFO   : --- SUBGRAPH NODE (Slide 8): ExpandSlidePlan ---
+04-07 12:49 - INFO   :    -> [Slide 8] Expanding slide plan...
+04-07 12:49 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:49 - ERROR  :    -> [Slide 8] Slide plan expansion failed: Received response with null value for 'choices'. This can happen when using OpenAI-compatible APIs (e.g., vLLM) that return a response in an unexpected format. Full response keys: ['id', 'choices', 'created', 'model', 'object', 'service_tier', 'system_fingerprint', 'usage']
+04-07 12:49 - WARNING: ⚠️ [Slide 8] Slide plan expansion failed. SVG generator will use the original plan.
+04-07 12:49 - INFO   : --- SUBGRAPH NODE (Slide 8): GenerateSlideSVG ---
+04-07 12:49 - INFO   :    -> [Slide 8] SVG generation: creating from plan.
+04-07 12:49 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:49 - INFO   :    -> SVG generated for slide 8 (5140 chars)
+04-07 12:49 - INFO   : --- SUBGRAPH NODE (Slide 8): OptimizeSVGCRAP ---
+04-07 12:49 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 5140 chars
+04-07 12:49 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:49 - INFO   :    -> CRAP optimizer: output 5140 chars
+04-07 12:49 - INFO   :    -> [Slide 8] CRAP optimization applied.
+04-07 12:49 - INFO   :    -> ✅ [Slide 8] SVG optimized and finalized: output/0407_1243\result\slide_08\slide_v0.svg
+04-07 12:49 - INFO   : 🔀 [Slide 8] SVG optimized successfully. Proceeding to design check.
+04-07 12:49 - INFO   : --- SUBGRAPH NODE (Slide 8): CheckSlideDesign ---
+04-07 12:49 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v0.svg...
+04-07 12:49 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:49 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmp8m_ikerc\preview.pptx (31,579 bytes)
+04-07 12:49 - INFO   :    -> Converting slide to image for review...
+04-07 12:49 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:50 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:50 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmp8m_ikerc
+04-07 12:50 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmp8m_ikerc\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:50 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:50 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:50 - WARNING:    -> ⚠️ Critique Result: REVISE.
+04-07 12:50 - WARNING:    -> ⚠️ Visual critique suggested revisions for slide 8 (Attempt 1).
+04-07 12:50 - INFO   : ✅ SUBGRAPH NODE (Slide 8): CheckSlideDesign completed (with revisions needed).
+04-07 12:50 - INFO   : 🔀 [Slide 8] Design not verified. Routing to SVG generation for refinements (Attempt 2/3).
+04-07 12:50 - INFO   : --- SUBGRAPH NODE (Slide 8): GenerateSlideSVG ---
+04-07 12:50 - INFO   :    -> [Slide 8] SVG design retry mode: fixing visual issues from critique.
+04-07 12:50 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:50 - INFO   :    -> [Slide 1] Slide plan expanded (5152 chars).
+04-07 12:50 - INFO   :    -> [Slide 1] Slide detail saved to output/0407_1243\result\slide_01\slide_detail.md
+04-07 12:50 - INFO   : --- SUBGRAPH NODE (Slide 1): GenerateSlideSVG ---
+04-07 12:50 - INFO   :    -> [Slide 1] SVG generation: creating from plan.
+04-07 12:50 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:50 - INFO   :    -> SVG generated for slide 1 (1439 chars)
+04-07 12:50 - INFO   : --- SUBGRAPH NODE (Slide 1): OptimizeSVGCRAP ---
+04-07 12:50 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 1439 chars
+04-07 12:50 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:50 - INFO   :    -> CRAP optimizer: output 1435 chars
+04-07 12:50 - INFO   :    -> [Slide 1] CRAP optimization applied.
+04-07 12:50 - INFO   :    -> ✅ [Slide 1] SVG optimized and finalized: output/0407_1243\result\slide_01\slide_v0.svg
+04-07 12:50 - INFO   : 🔀 [Slide 1] SVG optimized successfully. Proceeding to design check.
+04-07 12:50 - INFO   : --- SUBGRAPH NODE (Slide 1): CheckSlideDesign ---
+04-07 12:50 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v0.svg...
+04-07 12:50 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:50 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmpjfu7q0pt\preview.pptx (30,183 bytes)
+04-07 12:50 - INFO   :    -> Converting slide to image for review...
+04-07 12:50 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:50 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:50 - INFO   :    -> SVG generated for slide 8 (5144 chars)
+04-07 12:50 - INFO   : --- SUBGRAPH NODE (Slide 8): OptimizeSVGCRAP ---
+04-07 12:50 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 5144 chars
+04-07 12:50 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:50 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmpjfu7q0pt
+04-07 12:50 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmpjfu7q0pt\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:50 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:50 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:50 - INFO   :    -> ✅ Critique Result: PASS.
+04-07 12:50 - INFO   :    -> ✅ [Success] Slide 01 passed visual critique.
+04-07 12:50 - INFO   : ✅ SUBGRAPH NODE (Slide 1): CheckSlideDesign completed.
+04-07 12:50 - INFO   : 🔀 [Slide 1] Design verified. Completing slide subgraph.
+04-07 12:50 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:50 - INFO   : --- SUBGRAPH NODE (Slide 9): ExpandSlidePlan ---
+04-07 12:50 - INFO   :    -> [Slide 9] Expanding slide plan...
+04-07 12:50 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:50 - INFO   :    -> [Slide 4] Slide plan expanded (7357 chars).
+04-07 12:50 - INFO   :    -> [Slide 4] Slide detail saved to output/0407_1243\result\slide_04\slide_detail.md
+04-07 12:50 - INFO   : --- SUBGRAPH NODE (Slide 4): GenerateSlideSVG ---
+04-07 12:50 - INFO   :    -> [Slide 4] SVG generation: creating from plan.
+04-07 12:50 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:50 - INFO   :    -> CRAP optimizer: output 5152 chars
+04-07 12:50 - INFO   :    -> [Slide 8] CRAP optimization applied.
+04-07 12:50 - INFO   :    -> ✅ [Slide 8] SVG optimized and finalized: output/0407_1243\result\slide_08\slide_v1.svg
+04-07 12:50 - INFO   : 🔀 [Slide 8] SVG optimized successfully. Proceeding to design check.
+04-07 12:50 - INFO   : --- SUBGRAPH NODE (Slide 8): CheckSlideDesign ---
+04-07 12:50 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v1.svg...
+04-07 12:50 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:50 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmpqik2_tdp\preview.pptx (31,579 bytes)
+04-07 12:50 - INFO   :    -> Converting slide to image for review...
+04-07 12:50 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:50 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:50 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmpqik2_tdp
+04-07 12:50 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmpqik2_tdp\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:50 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - WARNING:    -> ⚠️ Critique Result: REVISE.
+04-07 12:51 - WARNING:    -> ⚠️ Visual critique suggested revisions for slide 8 (Attempt 2).
+04-07 12:51 - INFO   : ✅ SUBGRAPH NODE (Slide 8): CheckSlideDesign completed (with revisions needed).
+04-07 12:51 - INFO   : 🔀 [Slide 8] Design not verified. Routing to SVG generation for refinements (Attempt 3/3).
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 8): GenerateSlideSVG ---
+04-07 12:51 - INFO   :    -> [Slide 8] SVG design retry mode: fixing visual issues from critique.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> [Slide 6] Slide plan expanded (7874 chars).
+04-07 12:51 - INFO   :    -> [Slide 6] Slide detail saved to output/0407_1243\result\slide_06\slide_detail.md
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 6): GenerateSlideSVG ---
+04-07 12:51 - INFO   :    -> [Slide 6] SVG generation: creating from plan.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> SVG generated for slide 4 (6273 chars)
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 4): OptimizeSVGCRAP ---
+04-07 12:51 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 6273 chars
+04-07 12:51 - INFO   :    -> CRAP optimizer: 1 geometry issue(s) detected, passing to LLM for fixing.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> [Slide 7] Slide plan expanded (15158 chars).
+04-07 12:51 - INFO   :    -> [Slide 7] Slide detail saved to output/0407_1243\result\slide_07\slide_detail.md
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 7): GenerateSlideSVG ---
+04-07 12:51 - INFO   :    -> [Slide 7] SVG generation: creating from plan.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> SVG generated for slide 6 (3590 chars)
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 6): OptimizeSVGCRAP ---
+04-07 12:51 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 3590 chars
+04-07 12:51 - INFO   :    -> CRAP optimizer: 6 geometry issue(s) detected, passing to LLM for fixing.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> SVG generated for slide 8 (5150 chars)
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 8): OptimizeSVGCRAP ---
+04-07 12:51 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 5150 chars
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> SVG generated for slide 7 (4248 chars)
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 7): OptimizeSVGCRAP ---
+04-07 12:51 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 4248 chars
+04-07 12:51 - INFO   :    -> CRAP optimizer: 6 geometry issue(s) detected, passing to LLM for fixing.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> CRAP optimizer: output 3590 chars
+04-07 12:51 - INFO   :    -> [Slide 6] CRAP optimization applied.
+[FILE] slide_v0.svg
+   [OK] S:/project/SlidesGen/output/0407_1243/raw/images/_page_2_Figure_0.jpeg (64.3 KB)
+   [SIZE] 3.4 KB -> 89.1 KB
+04-07 12:51 - INFO   :    -> ✅ [Slide 6] SVG optimized and finalized: output/0407_1243\result\slide_06\slide_v0.svg
+04-07 12:51 - INFO   : 🔀 [Slide 6] SVG optimized successfully. Proceeding to design check.
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 6): CheckSlideDesign ---
+04-07 12:51 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v0.svg...
+04-07 12:51 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:51 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmpmmd6vvsa\preview.pptx (84,099 bytes)
+04-07 12:51 - INFO   :    -> Converting slide to image for review...
+04-07 12:51 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> [Slide 5] Slide plan expanded (7412 chars).
+04-07 12:51 - INFO   :    -> [Slide 5] Slide detail saved to output/0407_1243\result\slide_05\slide_detail.md
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 5): GenerateSlideSVG ---
+04-07 12:51 - INFO   :    -> [Slide 5] SVG generation: creating from plan.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> CRAP optimizer: output 6278 chars
+04-07 12:51 - INFO   :    -> [Slide 4] CRAP optimization applied.
+04-07 12:51 - INFO   :    -> ✅ [Slide 4] SVG optimized and finalized: output/0407_1243\result\slide_04\slide_v0.svg
+04-07 12:51 - INFO   : 🔀 [Slide 4] SVG optimized successfully. Proceeding to design check.
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 4): CheckSlideDesign ---
+04-07 12:51 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v0.svg...
+04-07 12:51 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:51 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmpfa1x2_8v\preview.pptx (31,977 bytes)
+04-07 12:51 - INFO   :    -> Converting slide to image for review...
+04-07 12:51 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:51 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:51 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmpmmd6vvsa
+04-07 12:51 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmpmmd6vvsa\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:51 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> CRAP optimizer: output 5152 chars
+04-07 12:51 - INFO   :    -> [Slide 8] CRAP optimization applied.
+04-07 12:51 - INFO   :    -> ✅ [Slide 8] SVG optimized and finalized: output/0407_1243\result\slide_08\slide_v2.svg
+04-07 12:51 - INFO   : 🔀 [Slide 8] SVG optimized successfully. Proceeding to design check.
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 8): CheckSlideDesign ---
+04-07 12:51 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v2.svg...
+04-07 12:51 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:51 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmpw7wk8jon\preview.pptx (31,586 bytes)
+04-07 12:51 - INFO   :    -> Converting slide to image for review...
+04-07 12:51 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:51 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> CRAP optimizer: output 4248 chars
+04-07 12:51 - INFO   :    -> [Slide 7] CRAP optimization applied.
+[FILE] slide_v0.svg
+   [OK] S:/project/SlidesGen/output/0407_1243/raw/images/_page_3_Figure_0.jpeg (37.9 KB)
+   [SIZE] 4.0 KB -> 54.6 KB
+04-07 12:51 - INFO   :    -> ✅ [Slide 7] SVG optimized and finalized: output/0407_1243\result\slide_07\slide_v0.svg
+04-07 12:51 - INFO   : 🔀 [Slide 7] SVG optimized successfully. Proceeding to design check.
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 7): CheckSlideDesign ---
+04-07 12:51 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v0.svg...
+04-07 12:51 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:51 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmp7c30vx3m\preview.pptx (63,083 bytes)
+04-07 12:51 - INFO   :    -> Converting slide to image for review...
+04-07 12:51 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:51 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmpfa1x2_8v
+04-07 12:51 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmpfa1x2_8v\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:51 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - WARNING:    -> ⚠️ Critique Result: REVISE.
+04-07 12:51 - WARNING:    -> ⚠️ Visual critique suggested revisions for slide 6 (Attempt 1).
+04-07 12:51 - INFO   : ✅ SUBGRAPH NODE (Slide 6): CheckSlideDesign completed (with revisions needed).
+04-07 12:51 - INFO   : 🔀 [Slide 6] Design not verified. Routing to SVG generation for refinements (Attempt 2/3).
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 6): GenerateSlideSVG ---
+04-07 12:51 - INFO   :    -> [Slide 6] SVG design retry mode: fixing visual issues from critique.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.496587 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> ✅ Critique Result: PASS.
+04-07 12:51 - INFO   :    -> ✅ [Success] Slide 04 passed visual critique.
+04-07 12:51 - INFO   : ✅ SUBGRAPH NODE (Slide 4): CheckSlideDesign completed.
+04-07 12:51 - INFO   : 🔀 [Slide 4] Design verified. Completing slide subgraph.
+04-07 12:51 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 10): ExpandSlidePlan ---
+04-07 12:51 - INFO   :    -> [Slide 10] Expanding slide plan...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.998388 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 1.546783 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - ERROR  :    -> [Slide 6] LLM call failed: Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': 'b8899dd0-90b5-4d36-864c-876bce99ec17'}}
+04-07 12:51 - ERROR  : ❌ [Slide 6] SVG generation failed (Attempt 1).
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 6): OptimizeSVGCRAP ---
+04-07 12:51 - ERROR  : ❌ [Slide 6] No SVG code available (retry_count=1).
+04-07 12:51 - INFO   : 🔀 [Slide 6] SVG validation failed. Routing back to SVG generation (Attempt 2/3).
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 6): GenerateSlideSVG ---
+04-07 12:51 - INFO   :    -> [Slide 6] SVG generation: creating from plan.
+04-07 12:51 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.412188 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - INFO   :    -> [Slide 9] Slide plan expanded (6908 chars).
+04-07 12:51 - INFO   :    -> [Slide 9] Slide detail saved to output/0407_1243\result\slide_09\slide_detail.md
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 9): GenerateSlideSVG ---
+04-07 12:51 - INFO   :    -> [Slide 9] SVG generation: creating from plan.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.465278 seconds
+04-07 12:51 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmpw7wk8jon
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.937374 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.817473 seconds
+04-07 12:51 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmpw7wk8jon\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:51 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 1.565622 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 1.868461 seconds
+04-07 12:51 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:51 - ERROR  :    -> [Slide 9] LLM call failed: Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': '4b1f5487-d67a-4d3f-ab05-46bf5c338170'}}
+04-07 12:51 - ERROR  : ❌ [Slide 9] SVG generation failed (Attempt 1).
+04-07 12:51 - INFO   :    -> SVG generated for slide 5 (5249 chars)
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 9): OptimizeSVGCRAP ---
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 5): OptimizeSVGCRAP ---
+04-07 12:51 - ERROR  : ❌ [Slide 9] No SVG code available (retry_count=1).
+04-07 12:51 - INFO   :    -> CRAP optimizer: canvas 1280x720, input 5249 chars
+04-07 12:51 - INFO   : 🔀 [Slide 9] SVG validation failed. Routing back to SVG generation (Attempt 2/3).
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 9): GenerateSlideSVG ---
+04-07 12:51 - INFO   :    -> [Slide 9] SVG generation: creating from plan.
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.456944 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.489560 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - ERROR  :    -> [Slide 6] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': '6bbf26bd-e561-4687-8dc0-1c3d4681e930'}}
+04-07 12:51 - ERROR  : ❌ [Slide 6] SVG generation failed (Attempt 2).
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 6): OptimizeSVGCRAP ---
+04-07 12:51 - ERROR  : ❌ [Slide 6] No SVG code available (retry_count=2).
+04-07 12:51 - INFO   : 🔀 [Slide 6] SVG validation failed. Routing back to SVG generation (Attempt 3/3).
+04-07 12:51 - INFO   : --- SUBGRAPH NODE (Slide 6): GenerateSlideSVG ---
+04-07 12:51 - INFO   :    -> [Slide 6] SVG generation: creating from plan.
+04-07 12:51 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmp7c30vx3m
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.459189 seconds
+04-07 12:51 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmp7c30vx3m\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:51 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.995749 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.820051 seconds
+04-07 12:51 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:51 - INFO   : Retrying request to /chat/completions in 0.940948 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.780667 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.945338 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.574528 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:52 - INFO   :    -> ✅ Critique Result: PASS.
+04-07 12:52 - INFO   :    -> ✅ [Success] Slide 07 passed visual critique.
+04-07 12:52 - INFO   : ✅ SUBGRAPH NODE (Slide 7): CheckSlideDesign completed.
+04-07 12:52 - INFO   : 🔀 [Slide 7] Design verified. Completing slide subgraph.
+04-07 12:52 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 11): ExpandSlidePlan ---
+04-07 12:52 - INFO   :    -> [Slide 11] Expanding slide plan...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 9] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': 'ed183ab9-6c15-4fd9-b3fe-feb7d6d2aad3'}}
+04-07 12:52 - ERROR  : ❌ [Slide 9] SVG generation failed (Attempt 2).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 9): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 9] No SVG code available (retry_count=2).
+04-07 12:52 - INFO   : 🔀 [Slide 9] SVG validation failed. Routing back to SVG generation (Attempt 3/3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 9): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 9] SVG generation: creating from plan.
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.450646 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> CRAP optimizer LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': '0b643c7d-d4a7-4df9-aae8-71943d7634c7'}}
+04-07 12:52 - INFO   :    -> [Slide 5] CRAP optimization returned no result. Keeping original.
+04-07 12:52 - INFO   :    -> ✅ [Slide 5] SVG optimized and finalized: output/0407_1243\result\slide_05\slide_v0.svg
+04-07 12:52 - INFO   : 🔀 [Slide 5] SVG optimized successfully. Proceeding to design check.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 5): CheckSlideDesign ---
+04-07 12:52 - INFO   : 🧐 Visual Critic is evaluating slide: slide_v0.svg...
+04-07 12:52 - INFO   :    -> Converting 1 SVG(s) to PPTX...
+04-07 12:52 - INFO   :    -> PPTX created: C:\Users\ADMINI~1\AppData\Local\Temp\tmpa2na3lyx\preview.pptx (31,604 bytes)
+04-07 12:52 - INFO   :    -> Converting slide to image for review...
+04-07 12:52 - INFO   : Converting PPT to PDF: preview.pptx...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 6] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': '7ed98b1d-f9eb-4820-96fa-557e39ffb3fd'}}
+04-07 12:52 - ERROR  : ❌ [Slide 6] SVG generation failed (Attempt 3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 6): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 6] No SVG code available (retry_count=3).
+04-07 12:52 - WARNING: ⚠️ [Slide 6] SVG failed after 3/3 retries. Aborting this slide.
+04-07 12:52 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 12): ExpandSlidePlan ---
+04-07 12:52 - INFO   :    -> [Slide 12] Expanding slide plan...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.968908 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.687232 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 9] LLM call failed: Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': '00ea294c-b974-49c8-bb8b-e6a1dfd39073'}}
+04-07 12:52 - ERROR  : ❌ [Slide 9] SVG generation failed (Attempt 3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 9): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 9] No SVG code available (retry_count=3).
+04-07 12:52 - WARNING: ⚠️ [Slide 9] SVG failed after 3/3 retries. Aborting this slide.
+04-07 12:52 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 13): ExpandSlidePlan ---
+04-07 12:52 - INFO   :    -> [Slide 13] Expanding slide plan...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:52 - WARNING:    -> ⚠️ Critique Result: REVISE.
+04-07 12:52 - WARNING:    -> ⚠️ Visual critique suggested revisions for slide 8 (Attempt 3).
+04-07 12:52 - INFO   : ✅ SUBGRAPH NODE (Slide 8): CheckSlideDesign completed (with revisions needed).
+04-07 12:52 - WARNING: ⚠️ [Slide 8] Design check failed after 3 retries (limit=3). Accepting the last generated version to ensure output.
+04-07 12:52 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 14): ExpandSlidePlan ---
+04-07 12:52 - INFO   :    -> [Slide 14] Expanding slide plan...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:52 - ERROR  :    -> [Slide 13] Slide plan expansion failed: Received response with null value for 'choices'. This can happen when using OpenAI-compatible APIs (e.g., vLLM) that return a response in an unexpected format. Full response keys: ['id', 'choices', 'created', 'model', 'object', 'service_tier', 'system_fingerprint', 'usage']
+04-07 12:52 - WARNING: ⚠️ [Slide 13] Slide plan expansion failed. SVG generator will use the original plan.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 13): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 13] SVG generation: creating from plan.
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.433831 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.973014 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:52 - ERROR  :    -> [Slide 14] Slide plan expansion failed: Received response with null value for 'choices'. This can happen when using OpenAI-compatible APIs (e.g., vLLM) that return a response in an unexpected format. Full response keys: ['id', 'choices', 'created', 'model', 'object', 'service_tier', 'system_fingerprint', 'usage']
+04-07 12:52 - WARNING: ⚠️ [Slide 14] Slide plan expansion failed. SVG generator will use the original plan.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 14): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 14] SVG generation: creating from plan.
+04-07 12:52 - INFO   : PDF generated. Rendering to images (DPI=300)...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.418151 seconds
+04-07 12:52 - INFO   : Successfully saved 1 images to: C:\Users\Administrator\AppData\Local\Temp\tmpa2na3lyx
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.961672 seconds
+04-07 12:52 - INFO   : Downscaled image C:\Users\Administrator\AppData\Local\Temp\tmpa2na3lyx\slide_01.jpg from 4001x2250 to 2048x1152
+04-07 12:52 - INFO   :    -> Invoking Vision LLM for critique...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.613522 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.674907 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 13] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': 'd574e6df-bffd-4b6b-bf09-52fff9d5a862'}}
+04-07 12:52 - ERROR  : ❌ [Slide 13] SVG generation failed (Attempt 1).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 13): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 13] No SVG code available (retry_count=1).
+04-07 12:52 - INFO   : 🔀 [Slide 13] SVG validation failed. Routing back to SVG generation (Attempt 2/3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 13): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 13] SVG generation: creating from plan.
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.396630 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.917854 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 14] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': 'cd3b85ee-d12b-4bb0-b533-882cb67052d0'}}
+04-07 12:52 - ERROR  : ❌ [Slide 14] SVG generation failed (Attempt 1).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 14): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 14] No SVG code available (retry_count=1).
+04-07 12:52 - INFO   : 🔀 [Slide 14] SVG validation failed. Routing back to SVG generation (Attempt 2/3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 14): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 14] SVG generation: creating from plan.
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:52 - INFO   :    -> ✅ Critique Result: PASS.
+04-07 12:52 - INFO   :    -> ✅ [Success] Slide 05 passed visual critique.
+04-07 12:52 - INFO   : ✅ SUBGRAPH NODE (Slide 5): CheckSlideDesign completed.
+04-07 12:52 - INFO   : 🔀 [Slide 5] Design verified. Completing slide subgraph.
+04-07 12:52 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 15): ExpandSlidePlan ---
+04-07 12:52 - INFO   :    -> [Slide 15] Expanding slide plan...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.488897 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.998555 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.776752 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.765357 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 13] LLM call failed: Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': 'd7e05d36-53f3-4ccd-95f6-b6963f8b2319'}}
+04-07 12:52 - ERROR  : ❌ [Slide 13] SVG generation failed (Attempt 2).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 13): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 13] No SVG code available (retry_count=2).
+04-07 12:52 - INFO   : 🔀 [Slide 13] SVG validation failed. Routing back to SVG generation (Attempt 3/3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 13): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 13] SVG generation: creating from plan.
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.466871 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.857059 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 14] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': '827bd5df-4622-4cd3-878f-b525049925f7'}}
+04-07 12:52 - ERROR  : ❌ [Slide 14] SVG generation failed (Attempt 2).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 14): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 14] No SVG code available (retry_count=2).
+04-07 12:52 - INFO   : 🔀 [Slide 14] SVG validation failed. Routing back to SVG generation (Attempt 3/3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 14): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 14] SVG generation: creating from plan.
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.410658 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.981744 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.751427 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.557913 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 13] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': '21a5ae66-e81d-4d5b-a62a-c7180d456c50'}}
+04-07 12:52 - ERROR  : ❌ [Slide 13] SVG generation failed (Attempt 3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 13): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 13] No SVG code available (retry_count=3).
+04-07 12:52 - WARNING: ⚠️ [Slide 13] SVG failed after 3/3 retries. Aborting this slide.
+04-07 12:52 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 16): ExpandSlidePlan ---
+04-07 12:52 - INFO   :    -> [Slide 16] Expanding slide plan...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 14] LLM call failed: Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': '389afe7b-f329-4176-ab84-3019a4da6f09'}}
+04-07 12:52 - ERROR  : ❌ [Slide 14] SVG generation failed (Attempt 3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 14): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 14] No SVG code available (retry_count=3).
+04-07 12:52 - WARNING: ⚠️ [Slide 14] SVG failed after 3/3 retries. Aborting this slide.
+04-07 12:52 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 17): ExpandSlidePlan ---
+04-07 12:52 - INFO   :    -> [Slide 17] Expanding slide plan...
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:52 - ERROR  :    -> [Slide 17] Slide plan expansion failed: Received response with null value for 'choices'. This can happen when using OpenAI-compatible APIs (e.g., vLLM) that return a response in an unexpected format. Full response keys: ['id', 'choices', 'created', 'model', 'object', 'service_tier', 'system_fingerprint', 'usage']
+04-07 12:52 - WARNING: ⚠️ [Slide 17] Slide plan expansion failed. SVG generator will use the original plan.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 17): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 17] SVG generation: creating from plan.
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.432694 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.849996 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.685840 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 17] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': '1f8bb9b1-52f2-410c-be32-4f7651ab580c'}}
+04-07 12:52 - ERROR  : ❌ [Slide 17] SVG generation failed (Attempt 1).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 17): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 17] No SVG code available (retry_count=1).
+04-07 12:52 - INFO   : 🔀 [Slide 17] SVG validation failed. Routing back to SVG generation (Attempt 2/3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 17): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 17] SVG generation: creating from plan.
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.465976 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.941605 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.812724 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 17] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': '9748befa-7bc0-42c1-993b-e81aa9c756b5'}}
+04-07 12:52 - ERROR  : ❌ [Slide 17] SVG generation failed (Attempt 2).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 17): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 17] No SVG code available (retry_count=2).
+04-07 12:52 - INFO   : 🔀 [Slide 17] SVG validation failed. Routing back to SVG generation (Attempt 3/3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 17): GenerateSlideSVG ---
+04-07 12:52 - INFO   :    -> [Slide 17] SVG generation: creating from plan.
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.479885 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 0.937294 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - INFO   : Retrying request to /chat/completions in 1.788002 seconds
+04-07 12:52 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:52 - ERROR  :    -> [Slide 17] LLM call failed: Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': '874461b3-6d9a-498e-b85d-f62daebb8880'}}
+04-07 12:52 - ERROR  : ❌ [Slide 17] SVG generation failed (Attempt 3).
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 17): OptimizeSVGCRAP ---
+04-07 12:52 - ERROR  : ❌ [Slide 17] No SVG code available (retry_count=3).
+04-07 12:52 - WARNING: ⚠️ [Slide 17] SVG failed after 3/3 retries. Aborting this slide.
+04-07 12:52 - INFO   : ✅ Node 'generate_single_slide' completed.
+04-07 12:52 - INFO   : --- SUBGRAPH NODE (Slide 18): ExpandSlidePlan ---
+04-07 12:52 - INFO   :    -> [Slide 18] Expanding slide plan...
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:53 - INFO   :    -> [Slide 12] Slide plan expanded (8030 chars).
+04-07 12:53 - INFO   :    -> [Slide 12] Slide detail saved to output/0407_1243\result\slide_12\slide_detail.md
+04-07 12:53 - INFO   : --- SUBGRAPH NODE (Slide 12): GenerateSlideSVG ---
+04-07 12:53 - INFO   :    -> [Slide 12] SVG generation: creating from plan.
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 0.422907 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 0.985656 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 1.877805 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - ERROR  :    -> [Slide 12] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': '958f459f-5cdd-4bd0-8350-d66745101801'}}
+04-07 12:53 - ERROR  : ❌ [Slide 12] SVG generation failed (Attempt 1).
+04-07 12:53 - INFO   : --- SUBGRAPH NODE (Slide 12): OptimizeSVGCRAP ---
+04-07 12:53 - ERROR  : ❌ [Slide 12] No SVG code available (retry_count=1).
+04-07 12:53 - INFO   : 🔀 [Slide 12] SVG validation failed. Routing back to SVG generation (Attempt 2/3).
+04-07 12:53 - INFO   : --- SUBGRAPH NODE (Slide 12): GenerateSlideSVG ---
+04-07 12:53 - INFO   :    -> [Slide 12] SVG generation: creating from plan.
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 0.467911 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 0.962142 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 1.961771 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - ERROR  :    -> [Slide 12] LLM call failed: Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': '07246d70-5524-4588-aacf-10ecc9bb1b78'}}
+04-07 12:53 - ERROR  : ❌ [Slide 12] SVG generation failed (Attempt 2).
+04-07 12:53 - INFO   : --- SUBGRAPH NODE (Slide 12): OptimizeSVGCRAP ---
+04-07 12:53 - ERROR  : ❌ [Slide 12] No SVG code available (retry_count=2).
+04-07 12:53 - INFO   : 🔀 [Slide 12] SVG validation failed. Routing back to SVG generation (Attempt 3/3).
+04-07 12:53 - INFO   : --- SUBGRAPH NODE (Slide 12): GenerateSlideSVG ---
+04-07 12:53 - INFO   :    -> [Slide 12] SVG generation: creating from plan.
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 0.410186 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 0.910000 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:53 - INFO   :    -> [Slide 10] Slide plan expanded (7105 chars).
+04-07 12:53 - INFO   :    -> [Slide 10] Slide detail saved to output/0407_1243\result\slide_10\slide_detail.md
+04-07 12:53 - INFO   : --- SUBGRAPH NODE (Slide 10): GenerateSlideSVG ---
+04-07 12:53 - INFO   :    -> [Slide 10] SVG generation: creating from plan.
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 0.434701 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 1.813798 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 0.813411 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - INFO   : Retrying request to /chat/completions in 1.986498 seconds
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_executor.py:181: RuntimeWarning: coroutine 'arun_with_retry' was never awaited
+  self.tasks.pop(task)
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_executor.py:181: RuntimeWarning: coroutine 'AsyncSqliteSaver.aput_writes' was never awaited
+  self.tasks.pop(task)
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+04-07 12:53 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+04-07 12:53 - ERROR  :    -> [Slide 10] LLM call failed: Error code: 429 - {'error': {'message': 'We have to rate limit you for model Qwen/Qwen3-Coder-480B-A35B-Instruct. If you need higher limits, please consider other (commercial) API providers.', 'request_id': '826e5831-f0ab-4bca-84a9-3756c1628b11'}}
+04-07 12:53 - ERROR  : ❌ [Slide 10] SVG generation failed (Attempt 1).
+04-07 12:54 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:54 - INFO   :    -> [Slide 11] Slide plan expanded (8184 chars).
+04-07 12:54 - INFO   :    -> [Slide 11] Slide detail saved to output/0407_1243\result\slide_11\slide_detail.md
+04-07 12:54 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:54 - INFO   :    -> [Slide 15] Slide plan expanded (9134 chars).
+04-07 12:54 - INFO   :    -> [Slide 15] Slide detail saved to output/0407_1243\result\slide_15\slide_detail.md
+04-07 12:55 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 12:55 - INFO   :    -> [Slide 18] Slide plan expanded (8248 chars).
+04-07 12:55 - INFO   :    -> [Slide 18] Slide detail saved to output/0407_1243\result\slide_18\slide_detail.md
+04-07 13:02 - INFO   : Retrying request to /chat/completions in 0.389003 seconds
+04-07 13:03 - INFO   : HTTP Request: POST https://api-inference.modelscope.cn/v1/chat/completions "HTTP/1.1 200 OK"
+04-07 13:03 - INFO   :    -> [Slide 16] Slide plan expanded (11484 chars).
+04-07 13:03 - INFO   :    -> [Slide 16] Slide detail saved to output/0407_1243\result\slide_16\slide_detail.md
+04-07 13:03 - CRITICAL: Uncaught exception
+Traceback (most recent call last):
+  File "S:\project\SlidesGen\agents\execution\svg_generator.py", line 259, in generate_slide_svg
+    response = llm.invoke(messages)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\language_models\chat_models.py", line 454, in invoke
+    self.generate_prompt(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1201, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1010, in generate
+    self._generate_with_cache(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1313, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_openai\chat_models\base.py", line 1488, in _generate
+    _handle_openai_api_error(e)
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_openai\chat_models\base.py", line 1483, in _generate
+    raw_response = self.client.with_raw_response.create(**payload)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\_legacy_response.py", line 367, in wrapped
+    return cast(LegacyAPIResponse[R], func(*args, **kwargs))
+                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\_utils\_utils.py", line 286, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\resources\chat\completions\completions.py", line 1211, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\_base_client.py", line 1297, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\_base_client.py", line 1070, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': '1bb402a8-b555-470c-8189-d57132b5a917'}}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "S:\project\SlidesGen\main.py", line 240, in <module>
+    asyncio.run(main())
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "S:\project\SlidesGen\main.py", line 236, in main
+    await run_workflow(graph, initial_state, config)
+  File "S:\project\SlidesGen\main.py", line 130, in run_workflow
+    async for event in graph.astream(graph_input, config=config, stream_mode="updates"):
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\main.py", line 3111, in astream
+    async for _ in runner.atick(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_runner.py", line 410, in atick
+    _panic_or_proceed(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_runner.py", line 520, in _panic_or_proceed
+    raise exc
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_executor.py", line 217, in gated
+    return await coro
+           ^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_retry.py", line 211, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\main.py", line 3462, in ainvoke
+    async for chunk in self.astream(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\main.py", line 3111, in astream
+    async for _ in runner.atick(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_runner.py", line 304, in atick
+    await arun_with_retry(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_retry.py", line 211, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\_internal\_runnable.py", line 473, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\runnables\config.py", line 636, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\runnables\config.py", line 627, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "S:\project\SlidesGen\workflow\nodes.py", line 222, in generate_slide_svg_node
+    svg_code = generate_slide_svg(
+               ^^^^^^^^^^^^^^^^^^^
+  File "S:\project\SlidesGen\agents\execution\svg_generator.py", line 279, in generate_slide_svg
+    raise_if_fatal_llm_error(e)
+  File "S:\project\SlidesGen\utils\llm.py", line 67, in raise_if_fatal_llm_error
+    raise FatalLLMError(f"Fatal LLM error (non-retryable): {exc}") from exc
+utils.llm.FatalLLMError: Fatal LLM error (non-retryable): Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': '1bb402a8-b555-470c-8189-d57132b5a917'}}
+Traceback (most recent call last):
+  File "S:\project\SlidesGen\agents\execution\svg_generator.py", line 259, in generate_slide_svg
+    response = llm.invoke(messages)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\language_models\chat_models.py", line 454, in invoke
+    self.generate_prompt(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1201, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1010, in generate
+    self._generate_with_cache(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1313, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_openai\chat_models\base.py", line 1488, in _generate
+    _handle_openai_api_error(e)
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_openai\chat_models\base.py", line 1483, in _generate
+    raw_response = self.client.with_raw_response.create(**payload)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\_legacy_response.py", line 367, in wrapped
+    return cast(LegacyAPIResponse[R], func(*args, **kwargs))
+                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\_utils\_utils.py", line 286, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\resources\chat\completions\completions.py", line 1211, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\_base_client.py", line 1297, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\openai\_base_client.py", line 1070, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.RateLimitError: Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': '1bb402a8-b555-470c-8189-d57132b5a917'}}
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "S:\project\SlidesGen\main.py", line 240, in <module>
+    asyncio.run(main())
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "S:\project\SlidesGen\main.py", line 236, in main
+    await run_workflow(graph, initial_state, config)
+  File "S:\project\SlidesGen\main.py", line 130, in run_workflow
+    async for event in graph.astream(graph_input, config=config, stream_mode="updates"):
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\main.py", line 3111, in astream
+    async for _ in runner.atick(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_runner.py", line 410, in atick
+    _panic_or_proceed(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_runner.py", line 520, in _panic_or_proceed
+    raise exc
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_executor.py", line 217, in gated
+    return await coro
+           ^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_retry.py", line 211, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\main.py", line 3462, in ainvoke
+    async for chunk in self.astream(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\main.py", line 3111, in astream
+    async for _ in runner.atick(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_runner.py", line 304, in atick
+    await arun_with_retry(
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\pregel\_retry.py", line 211, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langgraph\_internal\_runnable.py", line 473, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\runnables\config.py", line 636, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\concurrent\futures\thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "s:\dev\miniconda3\envs\slides-gen\Lib\site-packages\langchain_core\runnables\config.py", line 627, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "S:\project\SlidesGen\workflow\nodes.py", line 222, in generate_slide_svg_node
+    svg_code = generate_slide_svg(
+               ^^^^^^^^^^^^^^^^^^^
+  File "S:\project\SlidesGen\agents\execution\svg_generator.py", line 279, in generate_slide_svg
+    raise_if_fatal_llm_error(e)
+  File "S:\project\SlidesGen\utils\llm.py", line 67, in raise_if_fatal_llm_error
+    raise FatalLLMError(f"Fatal LLM error (non-retryable): {exc}") from exc
+utils.llm.FatalLLMError: Fatal LLM error (non-retryable): Error code: 429 - {'error': {'message': "You have exceeded today's quota for model Qwen/Qwen3-Coder-480B-A35B-Instruct,  please try again tomorrow, or consider using other models", 'request_id': '1bb402a8-b555-470c-8189-d57132b5a917'}}

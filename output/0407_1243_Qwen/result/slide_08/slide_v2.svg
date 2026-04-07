@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#005587" />
+
+  
+  <text x="640" y="100" text-anchor="middle" font-size="36" font-weight="bold" fill="#005587" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Technical Innovation: Multi-Head Attention
+  </text>
+
+  
+  
+  <path fill="#005587" stroke="#005587" stroke-width="1" d="M52,140 H401 A12,12 0 0 1 413,152 V328 A12,12 0 0 1 401,340 H52 A12,12 0 0 1 40,328 V152 A12,12 0 0 1 52,140 Z" />
+  <path fill="#005587" d="M52,140 H401 A12,12 0 0 1 413,152 V183 A12,12 0 0 1 401,195 H52 A12,12 0 0 1 40,183 V152 A12,12 0 0 1 52,140 Z" />
+  <text x="226.5" y="172" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Core Concept
+  </text>
+  <text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="211.6">• Allows model to jointly attend to</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="213.2">  information from different</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="214.8">  representation subspaces.</text><path fill="#005587" stroke="#005587" stroke-width="1" d="M465,140 H814 A12,12 0 0 1 826,152 V328 A12,12 0 0 1 814,340 H465 A12,12 0 0 1 453,328 V152 A12,12 0 0 1 465,140 Z" />
+  <path fill="#005587" d="M465,140 H814 A12,12 0 0 1 826,152 V183 A12,12 0 0 1 814,195 H465 A12,12 0 0 1 453,183 V152 A12,12 0 0 1 465,140 Z" />
+  <text x="639.5" y="172" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Projection
+  </text>
+  <text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="473" y="211.6">• Linearly projects queries, keys,</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="473" y="213.2">  and values h times with different</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="473" y="214.8">  learned projections.</text><path fill="#005587" stroke="#005587" stroke-width="1" d="M878,140 H1227 A12,12 0 0 1 1239,152 V328 A12,12 0 0 1 1227,340 H878 A12,12 0 0 1 866,328 V152 A12,12 0 0 1 878,140 Z" />
+  <path fill="#005587" d="M878,140 H1227 A12,12 0 0 1 1239,152 V183 A12,12 0 0 1 1227,195 H878 A12,12 0 0 1 866,183 V152 A12,12 0 0 1 878,140 Z" />
+  <text x="1052.5" y="172" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Parallelism
+  </text>
+  <text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="886" y="211.6">• Performs attention in parallel</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="886" y="213.2">  on each projected version.</text><path fill="#005587" stroke="#005587" stroke-width="1" d="M52,360 H401 A12,12 0 0 1 413,372 V548 A12,12 0 0 1 401,560 H52 A12,12 0 0 1 40,548 V372 A12,12 0 0 1 52,360 Z" />
+  <path fill="#005587" d="M52,360 H401 A12,12 0 0 1 413,372 V403 A12,12 0 0 1 401,415 H52 A12,12 0 0 1 40,403 V372 A12,12 0 0 1 52,360 Z" />
+  <text x="226.5" y="392" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Configuration
+  </text>
+  <text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="431.6">• Model uses h=8 parallel attention</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="433.2">  heads with d_k=d_v=d_model/h=64.</text><path fill="#005587" stroke="#005587" stroke-width="1" d="M465,360 H814 A12,12 0 0 1 826,372 V548 A12,12 0 0 1 814,560 H465 A12,12 0 0 1 453,548 V372 A12,12 0 0 1 465,360 Z" />
+  <path fill="#005587" d="M465,360 H814 A12,12 0 0 1 826,372 V403 A12,12 0 0 1 814,415 H465 A12,12 0 0 1 453,403 V372 A12,12 0 0 1 465,360 Z" />
+  <text x="639.5" y="392" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Output Processing
+  </text>
+  <text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="473" y="431.6">• Concatenates outputs from all</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="473" y="433.2">  heads and applies final linear</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="473" y="434.8">  projection.</text><path fill="#005587" stroke="#005587" stroke-width="1" d="M878,360 H1227 A12,12 0 0 1 1239,372 V548 A12,12 0 0 1 1227,560 H878 A12,12 0 0 1 866,548 V372 A12,12 0 0 1 878,360 Z" />
+  <path fill="#005587" d="M878,360 H1227 A12,12 0 0 1 1239,372 V403 A12,12 0 0 1 1227,415 H878 A12,12 0 0 1 866,403 V372 A12,12 0 0 1 878,360 Z" />
+  <text x="1052.5" y="392" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Specialization
+  </text>
+  <text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="886" y="431.6">• Single attention head would</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="886" y="433.2">  average information, inhibiting</text><text fill="#FFFFFF" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="886" y="434.8">  specialized learning.</text><path fill="#F8FAFC" stroke="#005587" stroke-width="1" d="M52,580 H1228 A12,12 0 0 1 1240,592 V648 A12,12 0 0 1 1228,660 H52 A12,12 0 0 1 40,648 V592 A12,12 0 0 1 52,580 Z" />
+  <text fill="#005587" font-size="16" font-family="Microsoft YaHei, SimSun, sans-serif" text-anchor="middle" x="640" y="611.4">MultiHead(Q, K, V ) = Concat(head₁, ..., headₕ)Wᴼ</text><text fill="#005587" font-size="16" font-family="Microsoft YaHei, SimSun, sans-serif" text-anchor="middle" x="640" y="613">where headᵢ = Attention(QWᵢᴼ, KWᵢᴷ, VWᵢⱽ)</text><text x="1240" y="708" text-anchor="end" font-size="12" fill="#94A3B8" font-family="Microsoft YaHei, SimSun, sans-serif">
+    08 / 21
+  </text>
+</svg>

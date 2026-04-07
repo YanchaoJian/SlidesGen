@@ -314,7 +314,12 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
     # 3. 写入文件 + 后处理
     slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
     os.makedirs(slide_dir, exist_ok=True)
-    svg_path = os.path.join(slide_dir, f"slide_v{retry_count}.svg")
+    # 版本号按目录中已存在的 slide_v*.svg 数量单调递增，避免 design_review
+    # 重试时（svg_review.retry_count 不变）覆盖之前的版本，从而保留完整历史。
+    import glob
+    existing_versions = glob.glob(os.path.join(slide_dir, "slide_v*.svg"))
+    version = len(existing_versions)
+    svg_path = os.path.join(slide_dir, f"slide_v{version}.svg")
 
     with open(svg_path, "w", encoding="utf-8") as f:
         f.write(final_svg)

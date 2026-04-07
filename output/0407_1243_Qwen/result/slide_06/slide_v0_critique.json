@@ -1,0 +1,6 @@
+[
+  {
+    "pass": false,
+    "critique": "FAIL: 1. **Image caption overlaps with canvas boundary**: The caption text `<text x='200' y='690'>` has `y='690'`, which exceeds the safe canvas height of 680px. **Fix**: Change `y='690'` to `y='675'`. 2. **Caption font size too small**: The caption uses `font-size='12'`, making it hard to read. **Fix**: Increase to `font-size='14'`. 3. **Takeaway box overlaps with title**: The takeaway box `<rect y='145' ...>` starts at y=145, while the title ends at y=100, leaving insufficient vertical space. **Fix**: Move the box down by setting `y='160'`."
+  }
+]

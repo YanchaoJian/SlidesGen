@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#005587" />
+
+  
+  <text x="640" y="100" text-anchor="middle" font-size="36" font-weight="bold" fill="#005587" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Sequence Transduction is Transforming Language Technology
+  </text>
+
+  
+  <path fill="#E6F0FA" d="M48,120 H1232 A8,8 0 0 1 1240,128 V157 A8,8 0 0 1 1232,165 H48 A8,8 0 0 1 40,157 V128 A8,8 0 0 1 48,120 Z" />
+  <text x="640" y="150" text-anchor="middle" font-size="18" fill="#005587" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Understanding how sequence models drive modern NLP applications
+  </text>
+
+  
+  
+  <path fill="#FFFFFF" stroke="#005587" stroke-width="1" d="M52,185 H401 A12,12 0 0 1 413,197 V533 A12,12 0 0 1 401,545 H52 A12,12 0 0 1 40,533 V197 A12,12 0 0 1 52,185 Z" />
+  <path fill="#005587" d="M52,185 H401 A12,12 0 0 1 413,197 V228 A12,12 0 0 1 401,240 H52 A12,12 0 0 1 40,228 V197 A12,12 0 0 1 52,185 Z" />
+  <text x="226" y="217" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Core Applications
+  </text>
+  <text fill="#000000" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="266.6">• Machine translation</text><text fill="#000000" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="268.2">• Text summarization</text><text fill="#000000" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="269.8">• Speech recognition</text><path fill="#FFFFFF" stroke="#005587" stroke-width="1" d="M465,185 H814 A12,12 0 0 1 826,197 V533 A12,12 0 0 1 814,545 H465 A12,12 0 0 1 453,533 V197 A12,12 0 0 1 465,185 Z" />
+  <path fill="#005587" d="M465,185 H814 A12,12 0 0 1 826,197 V228 A12,12 0 0 1 814,240 H465 A12,12 0 0 1 453,228 V197 A12,12 0 0 1 465,185 Z" />
+  <text x="639" y="217" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Model Evolution
+  </text>
+  <text fill="#000000" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="473" y="266.6">• RNN-based processing</text><text fill="#000000" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="473" y="268.2">• Attention mechanisms</text><text fill="#000000" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="473" y="269.8">• Long-range dependencies</text><path fill="#FFFFFF" stroke="#005587" stroke-width="1" d="M878,185 H1227 A12,12 0 0 1 1239,197 V533 A12,12 0 0 1 1227,545 H878 A12,12 0 0 1 866,533 V197 A12,12 0 0 1 878,185 Z" />
+  <path fill="#005587" d="M878,185 H1227 A12,12 0 0 1 1239,197 V228 A12,12 0 0 1 1227,240 H878 A12,12 0 0 1 866,228 V197 A12,12 0 0 1 878,185 Z" />
+  <text x="1052" y="217" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, SimSun, sans-serif">
+    Research Trends
+  </text>
+  <text fill="#000000" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="886" y="266.6">• Faster training methods</text><text fill="#000000" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="886" y="268.2">• Improved architectures</text><text fill="#000000" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="886" y="269.8">• Scalability challenges</text><text x="1240" y="700" text-anchor="end" font-size="12" fill="#94A3B8" font-family="Microsoft YaHei, SimSun, sans-serif">
+    02 / 21
+  </text>
+</svg>

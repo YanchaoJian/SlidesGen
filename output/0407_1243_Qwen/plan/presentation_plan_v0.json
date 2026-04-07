@@ -1,0 +1,479 @@
+[
+  {
+    "slide_page": 1,
+    "title": "Attention Is All You Need",
+    "content": [
+      "Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin",
+      "Google Brain · Google Research · University of Toronto",
+      "31st Conference on Neural Information Processing Systems (NeurIPS 2017)",
+      "A new sequence transduction architecture based solely on attention mechanisms."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Greet the audience, introduce yourself, and frame the paper in one sentence: this work replaces recurrence and convolution with pure attention."
+  },
+  {
+    "slide_page": 2,
+    "title": "Background: Sequence Transduction is Transforming Language Technology",
+    "content": [
+      "Sequence transduction models power critical applications: machine translation, text summarization, speech recognition.",
+      "Neural machine translation has revolutionized how we communicate across languages.",
+      "Traditional approaches rely on recurrent neural networks (RNNs) processing sequences step-by-step.",
+      "Attention mechanisms have become integral to sequence modeling, enabling dependency modeling regardless of distance.",
+      "The field is rapidly evolving with demands for faster training and better long-range dependency capture."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Start with the importance of sequence transduction. Make the audience care about this research area by highlighting real-world applications like translation services they use daily."
+  },
+  {
+    "slide_page": 3,
+    "title": "Problem: Sequential Computation Limits Model Efficiency",
+    "content": [
+      "RNNs have inherently sequential nature that precludes parallelization within training examples.",
+      "At longer sequence lengths, memory constraints limit batching across examples.",
+      "Convolutional approaches require operations that grow with distance between positions (linearly or logarithmically).",
+      "Learning dependencies between distant positions remains difficult with existing architectures.",
+      "State-of-the-art models require significant training time and computational resources.",
+      "Ensemble methods are often needed to achieve best results, multiplying computational costs."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Transition from field importance to specific problem. Help audience understand why sequential computation is a fundamental bottleneck that limits both training speed and model quality."
+  },
+  {
+    "slide_page": 4,
+    "title": "Computational Complexity: Why Sequential Models Struggle",
+    "content": [
+      "Recurrent models require O(n) sequential operations where n is sequence length.",
+      "This limits training efficiency especially for long sequences.",
+      "Maximum path length of O(n) makes learning long-range dependencies difficult.",
+      "Convolutional approaches improve parallelization but still have path length growing with distance.",
+      "The fundamental constraint remains despite improvements through factorization tricks.",
+      "Need for a architecture that enables full parallelization while capturing global dependencies."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {
+      "caption": "Table 1: Maximum path lengths, per-layer complexity and minimum number of sequential operations for different layer types",
+      "markdown": "| Layer Type                  | Complexity per Layer  | Sequential<br>Operations | Maximum Path Length |\n|-----------------------------|-----------------------|--------------------------|---------------------|\n| Self-Attention              | 2<br>O(n<br>· d)      | O(1)                     | O(1)                |\n| Recurrent                   | 2<br>O(n · d<br>)     | O(n)                     | O(n)                |\n| Convolutional               | 2<br>O(k · n · d<br>) | O(1)                     | O(logk(n))          |\n| Self-Attention (restricted) | O(r · n · d)          | O(1)                     | O(n/r)              |"
+    },
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Use Table 1 to quantify the computational advantages. Self-Attention requires only O(1) sequential operations compared to O(n) for Recurrent, enabling full parallelization. This is the key motivation for the Transformer."
+  },
+  {
+    "slide_page": 5,
+    "title": "Solution Overview: The Transformer Architecture",
+    "content": [
+      "First sequence transduction model based entirely on attention mechanisms.",
+      "Eschews recurrence entirely and relies solely on attention for global dependencies.",
+      "Follows encoder-decoder structure using stacked self-attention and point-wise fully connected layers.",
+      "Allows significantly more parallelization than RNN or CNN-based architectures.",
+      "Achieves state-of-the-art translation quality after training for as little as twelve hours.",
+      "Core innovation: multi-headed self-attention replaces recurrent layers in encoder-decoder architectures."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Introduce the Transformer at a high level. Emphasize that this is the first model to completely eliminate recurrence and convolution, relying purely on attention mechanisms."
+  },
+  {
+    "slide_page": 6,
+    "title": "Methodology: Complete Transformer Architecture",
+    "content": [
+      "Encoder composed of N=6 identical layers with two sub-layers each.",
+      "First sub-layer: multi-head self-attention mechanism.",
+      "Second sub-layer: position-wise fully connected feed-forward network.",
+      "Decoder also has N=6 layers but adds third sub-layer for encoder-decoder attention.",
+      "Residual connections around each sub-layer followed by layer normalization.",
+      "All sub-layers produce outputs of dimension d_model=512.",
+      "Input/output embeddings multiplied by √d_model before adding positional encoding."
+    ],
+    "includes_figure": true,
+    "figure_reference": {
+      "caption": "The Transformer - model architecture showing encoder-decoder structure with stacked self-attention and feed-forward layers",
+      "path": "S:/project/SlidesGen/output/0407_1243/raw/images/_page_2_Figure_0.jpeg",
+      "dimensions": {
+        "width": 591,
+        "height": 866,
+        "aspect_ratio": 0.682,
+        "orientation": "portrait"
+      }
+    },
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Walk through the architecture diagram. Point out the encoder stack on left, decoder stack on right, and the three types of attention mechanisms. Explain residual connections and layer normalization."
+  },
+  {
+    "slide_page": 7,
+    "title": "Technical Core: Scaled Dot-Product Attention",
+    "content": [
+      "Core attention function maps queries and key-value pairs to output vectors.",
+      "Computed as weighted sum of values where weights come from query-key compatibility.",
+      "Scaling by √d_k counteracts large dot product magnitudes.",
+      "Prevents softmax from pushing into regions with extremely small gradients.",
+      "Enables parallel computation of attention across all query positions simultaneously.",
+      "Fundamental building block that replaces sequential RNN computations."
+    ],
+    "includes_figure": true,
+    "figure_reference": {
+      "caption": "Scaled Dot-Product Attention (left) and Multi-Head Attention with parallel attention layers (right)",
+      "path": "S:/project/SlidesGen/output/0407_1243/raw/images/_page_3_Figure_0.jpeg",
+      "dimensions": {
+        "width": 850,
+        "height": 452,
+        "aspect_ratio": 1.881,
+        "orientation": "landscape"
+      }
+    },
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {
+      "latex": "Attention(Q, K, V ) = softmax(QKT\n√\ndk\n)V (1)",
+      "context": "In practice, we compute the attention function on a set of queries simultaneously, packed together into a matrix Q. The keys and values are also packed together into matrices K and V . We compute the matrix of outputs as: Attention(Q, K, V ) = softmax(QKT\n√\ndk\n)V (1). The two most commonly used attention functions are additive attention, and dot-product (multiplicative) attention. Dot-product attention is identical to our algorithm, except for the scaling factor of √1/dk."
+    },
+    "presenter_notes": "Explain the attention formula. The scaling factor is crucial - without it, large dot products push softmax into saturation. This mechanism allows the model to focus on relevant parts of the input regardless of distance."
+  },
+  {
+    "slide_page": 8,
+    "title": "Technical Innovation: Multi-Head Attention",
+    "content": [
+      "Allows model to jointly attend to information from different representation subspaces.",
+      "Linearly projects queries, keys, and values h times with different learned projections.",
+      "Performs attention in parallel on each projected version.",
+      "Model uses h=8 parallel attention heads with d_k=d_v=d_model/h=64.",
+      "Concatenates outputs from all heads and applies final linear projection.",
+      "Single attention head would average information, inhibiting specialized learning.",
+      "Different heads learn to perform different tasks related to syntactic and semantic structure."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {
+      "latex": "MultiHead(Q, K, V ) = Concat(head1, ..., headh)WO\nwhere headi = Attention(QWQ\ni\n, KW K\ni\n, V WV\ni\n)",
+      "context": "Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions. With a single attention head, averaging inhibits this. Where the projections are parameter matrices WQi ∈ R^dmodel×dk, WKi ∈ R^dmodel×dk, WVi ∈ R^dmodel×dv and WO ∈ R^hdv×dmodel."
+    },
+    "presenter_notes": "Explain why multi-head is essential. Each head can focus on different aspects - some on syntax, others on semantics. This parallel attention mechanism is what gives Transformer its power."
+  },
+  {
+    "slide_page": 9,
+    "title": "Technical Details: Feed-Forward Networks & Positional Encoding",
+    "content": [
+      "Position-wise Feed-Forward Networks applied to each position separately and identically.",
+      "Consists of two linear transformations with ReLU activation: FFN(x) = max(0, xW_1+b_1)W_2+b_2.",
+      "Dimensionality: d_model=512, inner-layer d_ff=2048.",
+      "Model contains no recurrence or convolution, so needs positional information injected.",
+      "Positional Encoding uses sine and cosine functions of different frequencies.",
+      "Each dimension corresponds to a sinusoid with wavelengths forming geometric progression.",
+      "Allows model to learn to attend by relative positions for any fixed offset."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {
+      "latex": "FFN(x) = max(0, xW1 + b1)W2 + b2 (2)",
+      "context": "In addition to attention sub-layers, each of the layers in our encoder and decoder contains a fully connected feed-forward network, which is applied to each position separately and identically. This consists of two linear transformations with a ReLU activation in between. The dimensionality of input and output is dmodel = 512, and the inner-layer has dimensionality df f = 2048."
+    },
+    "presenter_notes": "Cover two key components. Feed-forward networks add non-linearity at each position. Positional encoding is clever - it injects order information without learned parameters, using fixed sine/cosine functions."
+  },
+  {
+    "slide_page": 10,
+    "title": "Technical Details: Positional Encoding Formula & Training",
+    "content": [
+      "Positional Encoding formula: PE(pos,2i) = sin(pos/10000^(2i/d_model)).",
+      "PE(pos,2i+1) = cos(pos/10000^(2i/d_model)).",
+      "Wavelengths form geometric progression from 2π to 10000·2π.",
+      "Training uses Adam optimizer with β1=0.9, β2=0.98, ε=10^-9.",
+      "Learning rate schedule increases linearly for first 4000 warmup steps.",
+      "Then decreases proportionally to inverse square root of step number.",
+      "This adaptive schedule stabilizes training in early steps while allowing convergence later."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {
+      "latex": "P E(pos,2i) = sin(pos/100002i/dmodel)\nP E(pos,2i+1) = cos(pos/100002i/dmodel)",
+      "context": "In this work, we use sine and cosine functions of different frequencies: where pos is the position and i is the dimension. That is, each dimension of the positional encoding corresponds to a sinusoid. The wavelengths form a geometric progression from 2π to 10000 · 2π. We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions."
+    },
+    "presenter_notes": "Complete the technical picture with positional encoding formula and training details. The learning rate schedule is important - warmup prevents early instability, then gradual decrease enables fine-tuning."
+  },
+  {
+    "slide_page": 11,
+    "title": "Training Optimization: Learning Rate Schedule",
+    "content": [
+      "Learning rate formula: lrate = d_model^(-0.5) · min(step_num^(-0.5), step_num · warmup_steps^(-1.5)).",
+      "Corresponds to increasing learning rate linearly for first warmup_steps training steps.",
+      "Then decreasing it thereafter proportionally to inverse square root of step number.",
+      "Used warmup_steps = 4000 for all experiments.",
+      "This schedule is crucial for training deep Transformer models effectively.",
+      "Combined with Adam optimizer enables efficient training of the architecture.",
+      "Allows model to reach convergence faster than traditional fixed learning rate approaches."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": true,
+    "equation_reference": {
+      "latex": "lrate = d\n−0.5\nmodel · min(step_num−0.5\n, step_num · warmup_steps−1.5\n) (3)",
+      "context": "We used the Adam optimizer with β1 = 0.9, β2 = 0.98 and ϵ = 10−9. We varied the learning rate over the course of training, according to the formula. This corresponds to increasing the learning rate linearly for the first warmup_steps training steps, and decreasing it thereafter proportionally to the inverse square root of the step number. We used warmup_steps = 4000."
+    },
+    "presenter_notes": "Dedicate a slide to the learning rate schedule as it's critical for training success. Explain the warmup phase prevents early divergence, while the decay phase enables fine convergence."
+  },
+  {
+    "slide_page": 12,
+    "title": "Key Results: English-to-German Translation Performance",
+    "content": [
+      "Transformer (big) achieves 28.4 BLEU on WMT 2014 English-to-German.",
+      "Outperforms best previously reported models including ensembles by over 2.0 BLEU.",
+      "Training takes 3.5 days on 8 P100 GPUs.",
+      "Base model achieves 27.3 BLEU at fraction of training cost.",
+      "3.3·10^18 FLOPs vs 7.7·10^19 for ConvS2S Ensemble.",
+      "Represents significant efficiency gains while achieving superior quality.",
+      "First single model to outperform all previous ensembles on this task."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {
+      "caption": "Table 2: The Transformer achieves better BLEU scores than previous state-of-the-art models on the English-to-German and English-to-French newstest2014 tests at a fraction of the training cost",
+      "markdown": "|                                 | BLEU  |       | Training Cost (FLOPs) |            |  |  |\n|---------------------------------|-------|-------|-----------------------|------------|--|--|\n| Model                           | EN-DE | EN-FR | EN-DE                 | EN-FR      |  |  |\n| ByteNet [18]                    | 23.75 |       |                       |            |  |  |\n| Deep-Att + PosUnk [39]          |       | 39.2  |                       | 1.0 · 1020 |  |  |\n| GNMT + RL [38]                  | 24.6  | 39.92 | 2.3 · 1019            | 1.4 · 1020 |  |  |\n| ConvS2S [9]                     | 25.16 | 40.46 | 9.6 · 1018            | 1.5 · 1020 |  |  |\n| MoE [32]                        | 26.03 | 40.56 | 2.0 · 1019            | 1.2 · 1020 |  |  |\n| Deep-Att + PosUnk Ensemble [39] |       | 40.4  |                       | 8.0 · 1020 |  |  |\n| GNMT + RL Ensemble [38]         | 26.30 | 41.16 | 1.8 · 1020            | 1.1 · 1021 |  |  |\n| ConvS2S Ensemble [9]            | 26.36 | 41.29 | 7.7 · 1019            | 1.2 · 1021 |  |  |\n| Transformer (base model)        | 27.3  | 38.1  |                       | 3.3 · 1018 |  |  |\n| Transformer (big)               | 28.4  | 41.8  |                       | 2.3 · 1019 |  |  |"
+    },
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Highlight the main results. Transformer achieves 28.4 BLEU on EN-DE, beating all previous models including ensembles. Training cost is dramatically lower - this is the key breakthrough."
+  },
+  {
+    "slide_page": 13,
+    "title": "Key Results: English-to-French Translation & Training Efficiency",
+    "content": [
+      "Transformer (big) achieves 41.8 BLEU on WMT 2014 English-to-French.",
+      "New single-model state-of-the-art, surpassing previous best ensemble of 41.29.",
+      "Training cost: 2.3·10^19 FLOPs vs 1.2·10^21 for ConvS2S Ensemble.",
+      "Represents less than 1/4 training cost of previous state-of-the-art.",
+      "Base model at 3.3·10^18 FLOPs outperforms all previous single models.",
+      "Training time: 3.5 days on eight GPUs vs weeks for previous approaches.",
+      "Demonstrates Transformer achieves state-of-the-art quality at fraction of computational cost."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Continue with EN-FR results. Emphasize the training efficiency - less than 1/4 the cost while achieving better quality. This makes state-of-the-art translation accessible to more researchers."
+  },
+  {
+    "slide_page": 14,
+    "title": "Ablation Study: Architecture Design Choices",
+    "content": [
+      "Single-head attention (h=1) performs 0.9 BLEU worse than 8-head base.",
+      "Multi-head attention is essential for optimal performance.",
+      "Reducing attention key size d_k hurts quality (25.1 vs 25.8 BLEU).",
+      "Compatibility determination between queries and keys is not easy.",
+      "Bigger models perform better: d_model=1024 achieves 26.0 BLEU vs 24.5 for d_model=256.",
+      "Dropout is very helpful: 0.1 rate optimal, 0.0 drops to 24.6 BLEU.",
+      "Sinusoidal vs learned positional embeddings produce nearly identical results."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {
+      "caption": "Table 3: Variations on the Transformer architecture",
+      "markdown": "|      | N | dmodel | dff  | h  | dk  | dv  | Pdrop                                     | ϵls | train<br>steps | PPL<br>(dev) | BLEU<br>(dev) | params<br>×106 |\n|------|---|--------|------|----|-----|-----|-------------------------------------------|-----|----------------|--------------|---------------|----------------|\n| base | 6 | 512    | 2048 | 8  | 64  | 64  | 0.1                                       | 0.1 | 100K           | 4.92         | 25.8          | 65             |\n|      |   |        |      | 1  | 512 | 512 |                                           |     |                | 5.29         | 24.9          |                |\n|      |   |        |      | 4  | 128 | 128 |                                           |     |                | 5.00         | 25.5          |                |\n| (A)  |   |        |      | 16 | 32  | 32  |                                           |     |                | 4.91         | 25.8          |                |\n|      |   |        |      | 32 | 16  | 16  |                                           |     |                | 5.01         | 25.4          |                |\n| (B)  |   |        |      |    | 16  |     |                                           |     |                | 5.16         | 25.1          | 58             |\n|      |   |        |      |    | 32  |     |                                           |     |                | 5.01         | 25.4          | 60             |\n|      | 2 |        |      |    |     |     |                                           |     |                | 6.11         | 23.7          | 36             |\n|      | 4 |        |      |    |     |     |                                           |     |                | 5.19         | 25.3          | 50             |\n|      | 8 |        |      |    |     |     |                                           |     |                | 4.88         | 25.5          | 80             |\n| (C)  |   | 256    |      |    | 32  | 32  |                                           |     |                | 5.75         | 24.5          | 28             |\n|      |   | 1024   |      |    | 128 | 128 |                                           |     |                | 4.66         | 26.0          | 168            |\n|      |   |        | 1024 |    |     |     |                                           |     |                | 5.12         | 25.4          | 53             |\n|      |   |        | 4096 |    |     |     |                                           |     |                | 4.75         | 26.2          | 90             |\n| (D)  |   |        |      |    |     |     | 0.0                                       |     |                | 5.77         | 24.6          |                |\n|      |   |        |      |    |     |     | 0.2                                       |     |                | 4.95         | 25.5          |                |\n|      |   |        |      |    |     |     |                                           | 0.0 |                | 4.67         | 25.3          |                |\n|      |   |        |      |    |     |     |                                           | 0.2 |                | 5.47         | 25.7          |                |\n| (E)  |   |        |      |    |     |     | positional embedding instead of sinusoids |     |                | 4.92         | 25.7          |                |\n| big  | 6 | 1024   | 4096 | 16 |     |     | 0.3                                       |     | 300K           | 4.33         | 26.4          | 213            |"
+    },
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Walk through the ablation study. Multi-head is critical - single head loses 0.9 BLEU. Model size matters. Dropout prevents overfitting. These design choices were carefully validated."
+  },
+  {
+    "slide_page": 15,
+    "title": "Generalization: English Constituency Parsing Results",
+    "content": [
+      "Transformer generalizes well beyond machine translation to parsing tasks.",
+      "With WSJ only training (40K sentences), achieves 91.3 F1.",
+      "Outperforms most previous models and approaches best of 91.7.",
+      "In semi-supervised setting (17M sentences), achieves 92.7 F1.",
+      "Surpasses all previous semi-supervised models (best previous 92.1).",
+      "Outperforms RNN sequence-to-sequence models even in small-data regimes.",
+      "Proves architecture generalizes well to tasks with strong structural constraints."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": true,
+    "table_reference": {
+      "caption": "Table 4: The Transformer generalizes well to English constituency parsing",
+      "markdown": "| Parser                              | Training                 | WSJ 23 F1 |\n|-------------------------------------|--------------------------|-----------|\n| Vinyals & Kaiser el al. (2014) [37] | WSJ only, discriminative | 88.3      |\n| Petrov et al. (2006) [29]           | WSJ only, discriminative | 90.4      |\n| Zhu et al. (2013) [40]              | WSJ only, discriminative | 90.4      |\n| Dyer et al. (2016) [8]              | WSJ only, discriminative | 91.7      |\n| Transformer (4 layers)              | WSJ only, discriminative | 91.3      |\n| Zhu et al. (2013) [40]              | semi-supervised          | 91.3      |\n| Huang & Harper (2009) [14]          | semi-supervised          | 91.3      |\n| McClosky et al. (2006) [26]         | semi-supervised          | 92.1      |\n| Vinyals & Kaiser el al. (2014) [37] | semi-supervised          | 92.1      |\n| Transformer (4 layers)              | semi-supervised          | 92.7      |\n| Luong et al. (2015) [23]            | multi-task               | 93.0      |\n| Dyer et al. (2016) [8]              | generative               | 93.3      |"
+    },
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Show Transformer's versatility. It's not just for translation - works on parsing too. This demonstrates the architecture captures general sequence relationships, not just translation-specific patterns."
+  },
+  {
+    "slide_page": 16,
+    "title": "Analysis: Attention Mechanism Interpretability",
+    "content": [
+      "Self-attention yields more interpretable models than black-box RNN approaches.",
+      "Individual attention heads learn to perform different tasks.",
+      "Some heads handle syntactic dependencies, others handle semantic relationships.",
+      "Attention patterns reveal model learns meaningful linguistic structures without explicit supervision.",
+      "Long-distance dependencies are captured effectively - verb 'making' attends to 'more difficult'.",
+      "Anaphora resolution: attention heads connect 'its' to antecedents with sharp focus.",
+      "This interpretability is a valuable side benefit of the self-attention mechanism."
+    ],
+    "includes_figure": true,
+    "figure_reference": {
+      "caption": "Attention mechanism following long-distance dependencies in encoder self-attention layer 5, showing verb 'making' attending to complete phrase 'making...more difficult'",
+      "path": "S:/project/SlidesGen/output/0407_1243/raw/images/_page_12_Figure_1.jpeg",
+      "dimensions": {
+        "width": 1035,
+        "height": 523,
+        "aspect_ratio": 1.979,
+        "orientation": "landscape"
+      }
+    },
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Show the attention visualization. Point out how the model captures long-distance dependencies. This interpretability makes Transformer more transparent than RNNs - we can see what the model is attending to."
+  },
+  {
+    "slide_page": 17,
+    "title": "Analysis: Specialized Attention Head Functions",
+    "content": [
+      "Different attention heads exhibit specialized behavior patterns.",
+      "Some heads focus on syntactic dependencies within sentences.",
+      "Others handle semantic coreference and anaphora resolution.",
+      "Attention distributions are sharp and focused on relevant words.",
+      "Layer 5 heads show particularly clear linguistic structure learning.",
+      "Model learns these patterns without explicit linguistic supervision.",
+      "Demonstrates self-attention can discover meaningful linguistic representations."
+    ],
+    "includes_figure": true,
+    "figure_reference": {
+      "caption": "Two attention heads in layer 5 involved in anaphora resolution, showing sharp attention from word 'its' to antecedents",
+      "path": "S:/project/SlidesGen/output/0407_1243/raw/images/_page_13_Figure_0.jpeg",
+      "dimensions": {
+        "width": 1051,
+        "height": 1149,
+        "aspect_ratio": 0.915,
+        "orientation": "portrait"
+      }
+    },
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Show the anaphora resolution example. The word 'its' clearly connects to its antecedent. Different heads learn different functions - this specialization is emergent from training, not designed."
+  },
+  {
+    "slide_page": 18,
+    "title": "Conclusion: Core Contributions Summary",
+    "content": [
+      "First sequence transduction model based entirely on attention mechanisms.",
+      "Replaces recurrent layers with multi-headed self-attention in encoder-decoder architectures.",
+      "Achieves new state-of-the-art on WMT 2014 English-to-German (28.4 BLEU) and English-to-French (41.8 BLEU).",
+      "Outperforms all previously reported ensembles on English-to-German translation.",
+      "Trains significantly faster than recurrent or convolutional architectures.",
+      "Self-attention yields more interpretable models with learned syntactic and semantic structures.",
+      "Generalizes well to other tasks like English constituency parsing."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Summarize the main contributions. Emphasize this is a paradigm shift - pure attention replaces recurrence. Better quality, faster training, more interpretable."
+  },
+  {
+    "slide_page": 19,
+    "title": "Future Work & Broader Impact",
+    "content": [
+      "Apply attention-based models to other tasks beyond translation and parsing.",
+      "Extend Transformer to problems with input/output modalities other than text.",
+      "Potential applications: images, audio, video processing.",
+      "Investigate local restricted attention mechanisms for large inputs/outputs.",
+      "Make generation less sequential to further improve efficiency.",
+      "Code available at github.com/tensorflow/tensor2tensor for community adoption.",
+      "This architecture opens new directions for sequence modeling research."
+    ],
+    "includes_figure": true,
+    "figure_reference": {
+      "caption": "Attention heads exhibiting behavior related to sentence structure, showing different heads performing different tasks in encoder self-attention layer 5",
+      "path": "S:/project/SlidesGen/output/0407_1243/raw/images/_page_14_Figure_0.jpeg",
+      "dimensions": {
+        "width": 1045,
+        "height": 1083,
+        "aspect_ratio": 0.965,
+        "orientation": "portrait"
+      }
+    },
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Discuss future directions. The Transformer architecture is general - can apply to images, audio, video. Code is open source, enabling community research. This work fundamentally changed NLP."
+  },
+  {
+    "slide_page": 20,
+    "title": "Questions & Discussion",
+    "content": [
+      "Thank you for your attention!",
+      "Questions and feedback are welcome."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Encourage audience engagement and discussion. Be prepared to answer questions about attention mechanisms, training details, or applications to other domains."
+  },
+  {
+    "slide_page": 21,
+    "title": "Acknowledgements",
+    "content": [
+      "Thank you to Google Brain and Google Research for supporting this work.",
+      "Grateful to University of Toronto collaborators.",
+      "Thanks to the NeurIPS 2017 community for feedback and discussion.",
+      "Appreciate all researchers whose work built the foundation for this research.",
+      "Special thanks to the tensor2tensor team for making code publicly available.",
+      "This work benefited from discussions with many colleagues in the deep learning community."
+    ],
+    "includes_figure": false,
+    "figure_reference": null,
+    "includes_table": false,
+    "table_reference": null,
+    "includes_equation": false,
+    "equation_reference": null,
+    "presenter_notes": "Acknowledge all contributors and supporting institutions. Thank the community that enabled this research through prior work and open collaboration."
+  }
+]

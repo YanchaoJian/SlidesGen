@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect width="1280" height="720" fill="#FFFFFF" />
+
+  
+  <rect x="0" y="0" width="1280" height="6" fill="#005587" />
+
+  
+  <text x="40" y="100" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="36" font-weight="bold" fill="#005587">
+    Solution Overview: The Transformer Architecture
+  </text>
+
+  
+  <path fill="#005587" fill-opacity="0.08" d="M46,150 H1234 A6,6 0 0 1 1240,156 V189 A6,6 0 0 1 1234,195 H46 A6,6 0 0 1 40,189 V156 A6,6 0 0 1 46,150 Z" />
+  <text x="60" y="178" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="15" font-weight="bold" fill="#005587">
+    Pure attention mechanisms replace recurrence, enabling massive parallelization and state-of-the-art speed.
+  </text>
+
+  
+  <path fill="#FFFFFF" stroke="#005587" stroke-width="1" d="M52,205 H388 A12,12 0 0 1 400,217 V363 A12,12 0 0 1 388,375 H52 A12,12 0 0 1 40,363 V217 A12,12 0 0 1 52,205 Z" />
+  <path fill="#005587" d="M52,205 H388 A12,12 0 0 1 400,217 V248 A12,12 0 0 1 388,260 H52 A12,12 0 0 1 40,248 V217 A12,12 0 0 1 52,205 Z" />
+  <text x="60" y="240" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    Attention-Based
+  </text>
+  <text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="276.6">First sequence transduction</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="278.2">model based entirely on</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="279.8">attention mechanisms.</text><path fill="#FFFFFF" stroke="#005587" stroke-width="1" d="M472,205 H808 A12,12 0 0 1 820,217 V363 A12,12 0 0 1 808,375 H472 A12,12 0 0 1 460,363 V217 A12,12 0 0 1 472,205 Z" />
+  <path fill="#005587" d="M472,205 H808 A12,12 0 0 1 820,217 V248 A12,12 0 0 1 808,260 H472 A12,12 0 0 1 460,248 V217 A12,12 0 0 1 472,205 Z" />
+  <text x="480" y="240" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    No Recurrence
+  </text>
+  <text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="480" y="276.6">Eschews recurrence entirely</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="480" y="278.2">and relies solely on</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="480" y="279.8">attention for global deps.</text><path fill="#FFFFFF" stroke="#005587" stroke-width="1" d="M892,205 H1228 A12,12 0 0 1 1240,217 V363 A12,12 0 0 1 1228,375 H892 A12,12 0 0 1 880,363 V217 A12,12 0 0 1 892,205 Z" />
+  <path fill="#005587" d="M892,205 H1228 A12,12 0 0 1 1240,217 V248 A12,12 0 0 1 1228,260 H892 A12,12 0 0 1 880,248 V217 A12,12 0 0 1 892,205 Z" />
+  <text x="900" y="240" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    Encoder-Decoder
+  </text>
+  <text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="900" y="276.6">Follows encoder-decoder</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="900" y="278.2">structure using stacked</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="900" y="279.8">self-attention and layers.</text><path fill="#FFFFFF" stroke="#005587" stroke-width="1" d="M52,435 H388 A12,12 0 0 1 400,447 V593 A12,12 0 0 1 388,605 H52 A12,12 0 0 1 40,593 V447 A12,12 0 0 1 52,435 Z" />
+  <path fill="#005587" d="M52,435 H388 A12,12 0 0 1 400,447 V478 A12,12 0 0 1 388,490 H52 A12,12 0 0 1 40,478 V447 A12,12 0 0 1 52,435 Z" />
+  <text x="60" y="470" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    Parallelization
+  </text>
+  <text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="506.6">Allows significantly more</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="508.2">parallelization than RNN</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="60" y="509.8">or CNN-based architectures.</text><path fill="#FFFFFF" stroke="#005587" stroke-width="1" d="M472,435 H808 A12,12 0 0 1 820,447 V593 A12,12 0 0 1 808,605 H472 A12,12 0 0 1 460,593 V447 A12,12 0 0 1 472,435 Z" />
+  <path fill="#005587" d="M472,435 H808 A12,12 0 0 1 820,447 V478 A12,12 0 0 1 808,490 H472 A12,12 0 0 1 460,478 V447 A12,12 0 0 1 472,435 Z" />
+  <text x="480" y="470" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    Training Speed
+  </text>
+  <text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="480" y="506.6">Achieves state-of-the-art</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="480" y="508.2">translation quality after</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="480" y="509.8">training for 12 hours.</text><path fill="#FFFFFF" stroke="#005587" stroke-width="1" d="M892,435 H1228 A12,12 0 0 1 1240,447 V593 A12,12 0 0 1 1228,605 H892 A12,12 0 0 1 880,593 V447 A12,12 0 0 1 892,435 Z" />
+  <path fill="#005587" d="M892,435 H1228 A12,12 0 0 1 1240,447 V478 A12,12 0 0 1 1228,490 H892 A12,12 0 0 1 880,478 V447 A12,12 0 0 1 892,435 Z" />
+  <text x="900" y="470" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    Core Innovation
+  </text>
+  <text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="900" y="506.6">Multi-headed self-attention</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="900" y="508.2">replaces recurrent layers in</text><text fill="#334155" font-size="18" font-family="Microsoft YaHei, SimSun, sans-serif" x="900" y="509.8">encoder-decoder arch.</text><text x="1240" y="700" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="12" fill="#94A3B8" text-anchor="end">
+    5 / 21
+  </text>
+
+  
+  <text x="40" y="700" font-family="Microsoft YaHei, SimSun, sans-serif" font-size="10" fill="#94A3B8">
+    Source: Vaswani et al., 'Attention Is All You Need', 2017
+  </text>
+</svg>

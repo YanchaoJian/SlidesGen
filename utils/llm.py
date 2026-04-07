@@ -101,11 +101,34 @@ def create_llm(
     )
 
 
-def encode_image_to_base64(image_path: str) -> str:
-    """将图片文件编码为 Base64 字符串。"""
+def encode_image_to_base64(image_path: str, max_dim: int = 2048) -> str:
+    """将图片文件编码为 Base64 字符串。
+
+    若任一边超过 ``max_dim``，按比例缩放后再编码，避免触发视觉模型
+    的输入尺寸上限（如 2048x2048）。
+    """
     try:
+        from io import BytesIO
+        from PIL import Image
+
+        with Image.open(image_path) as img:
+            w, h = img.size
+            if max(w, h) > max_dim:
+                img.thumbnail((max_dim, max_dim), Image.LANCZOS)
+                logger.info(
+                    f"Downscaled image {image_path} from {w}x{h} to {img.size[0]}x{img.size[1]}"
+                )
+                fmt = (img.format or "PNG").upper()
+                if fmt not in ("PNG", "JPEG"):
+                    fmt = "PNG"
+                if fmt == "JPEG" and img.mode != "RGB":
+                    img = img.convert("RGB")
+                buf = BytesIO()
+                img.save(buf, format=fmt)
+                return base64.b64encode(buf.getvalue()).decode("utf-8")
+
         with open(image_path, "rb") as image_file:
-            return base64.b64encode(image_file.read()).decode('utf-8')
+            return base64.b64encode(image_file.read()).decode("utf-8")
     except FileNotFoundError:
         logger.error(f"Image file not found at: {image_path}")
         raise

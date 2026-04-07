@@ -94,6 +94,11 @@ def fix_image_orientation(image_obj: Image.Image, client: OpenAI, model: str = "
     try:
         pair = _build_orientation_pair(image_obj)
 
+        # 视觉模型有 2048x2048 输入上限，超出时按比例缩放
+        max_dim = 2048
+        if max(pair.size) > max_dim:
+            pair.thumbnail((max_dim, max_dim), Image.LANCZOS)
+
         buf = io.BytesIO()
         # 用 PNG 保留完整分辨率和清晰度，JPEG 在小字上会失真
         pair.save(buf, format="PNG")

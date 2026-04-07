@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+  <text x="640" y="160" text-anchor="middle" font-size="60" font-weight="bold" fill="#005587" font-family="Microsoft YaHei">Attention Is All You Need</text>
+  <rect x="40" y="210" width="1200" height="2" fill="#005587"/>
+  <text x="640" y="250" text-anchor="middle" font-size="20" fill="#64748B" font-family="Microsoft YaHei">A new sequence transduction architecture based solely on attention mechanisms.</text>
+  <text x="640" y="320" text-anchor="middle" font-size="18" fill="#64748B" font-family="Microsoft YaHei">Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit,</text>
+  <text x="640" y="350" text-anchor="middle" font-size="18" fill="#64748B" font-family="Microsoft YaHei">Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</text>
+  <text x="640" y="420" text-anchor="middle" font-size="18" fill="#64748B" font-family="Microsoft YaHei">Google Brain · Google Research · University of Toronto</text>
+  <text x="40" y="650" font-size="16" fill="#94A3B8" font-family="Microsoft YaHei">31st Conference on Neural Information Processing Systems</text>
+  <text x="40" y="675" font-size="16" fill="#94A3B8" font-family="Microsoft YaHei">(NeurIPS 2017)</text>
+  <text x="1240" y="700" text-anchor="end" font-size="12" fill="#94A3B8" font-family="Microsoft YaHei">1</text>
+</svg>

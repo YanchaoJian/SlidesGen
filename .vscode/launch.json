@@ -17,11 +17,11 @@
                 // [Optional] Root output directory (default: output/)
                 "--output_dir", "output/",
                 // [Optional] Default LLM model, fallback for all stages (default: gpt-4o)
-                "--model_name", "Qwen/Qwen3.5-35B-A3B",
+                "--model_name", "ZhipuAI/GLM-5",
                 // [Optional] Per-stage model overrides (default: use --model_name)
-                // "--vision_model", "gemini-3.1-pro-preview",
-                // "--svg_model", "claude-sonnet-4-6",
-                // "--text_model", "claude-sonnet-4-6",
+                "--vision_model", "Qwen/Qwen3-VL-8B-Instruct",
+                "--svg_model", "Qwen/Qwen3-Coder-480B-A35B-Instruct",
+                "--text_model", "Qwen/Qwen3.5-397B-A17B",
                 // [Optional] Path to local Marker model for PDF parsing (default: models/marker)
                 "--marker_path", "models/marker",
                 // [Optional] Unified retry limit for ALL LLM-related loops
