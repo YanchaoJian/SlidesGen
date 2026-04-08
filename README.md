@@ -31,7 +31,7 @@ PDF  ─►  Content Extraction  ─►  Style Analysis  ─►  Plan  ─►  E
 - 📄 **PDF understanding** — Layout, OCR, equations, and tables via Marker
 - 🎨 **Style transfer** — Extracts a visual protocol from any reference image
 - 🧠 **Multi-agent planning** — Outline → per-slide layout → SVG generation
-- 🔁 **Self-correcting** — CRAP design critique loop (≤5 retries) + SVG validation (≤3 retries)
+- 🔁 **Self-correcting** — Unified retry budget (`--llm_max_retries`, default 3) covers style protocol, SVG validation, and CRAP design critique loops
 - ⚡ **Parallel slide generation** — Each slide runs as an independent LangGraph subgraph
 - 👤 **Human-in-the-loop** — Approve/revise the plan and the final deck
 - 💾 **Resumable** — SQLite-checkpointed; resume any interrupted session
@@ -105,8 +105,9 @@ Each slide runs as an independent **subgraph**:
 ```
 expand_plan → generate_svg → optimize_svg_crap → check_design → ✓
                   ▲                  │                  │
-                  └── retry ≤3 ──────┘                  │
-                  └────── retry ≤5 ─────────────────────┘
+                  └── retry ────────┘                  │
+                  └────── retry ───────────────────────┘
+       (both loops share the unified --llm_max_retries budget)
 ```
 
 ### Pipeline Phases
@@ -127,7 +128,7 @@ output/0407_1126_gpt-4o/
 ├── raw/                     # Extracted PDF content
 ├── style/                   # Style protocols & critiques
 ├── result/
-│   ├── slide_01/            # slide.pptx, code_v*.py, slide_critique.json
+│   ├── slide_01/            # slide_v*.svg, slide_detail.md, slide_critique.json
 │   ├── slide_02/
 │   └── Final_Presentation.pptx
 ├── checkpoints/             # LangGraph SQLite checkpoint
