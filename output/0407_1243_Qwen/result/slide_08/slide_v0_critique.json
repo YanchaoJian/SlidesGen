@@ -1,6 +1,0 @@
-[
-  {
-    "pass": false,
-    "critique": "FAIL: 1. **Text overflow in 'Parallelism' card**: The text `<text x='1052' y='172'>Parallelism</text>` is positioned at x=1052, but the card width is only 373px (x=866 to x=1239), so the text extends beyond the card boundary. **Fix**: Move the text to `x='1052'` → `x='1052 - 373/2 = 840'` or reduce card width to `width='373'` and adjust x accordingly. 2. **Body text overflow in 'Parallelism' card**: The body text `<text x='886' y='430'>...` has `x='886'`, which exceeds the card's right edge at `x='1239'`. **Fix**: Reduce font size to `font-size='14'` or move text group left by setting `x='886 - 100 = 786'`."
-  }
-]

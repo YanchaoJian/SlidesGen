@@ -1,6 +1,0 @@
-[
-  {
-    "pass": false,
-    "critique": "FAIL: 1. **Text overflow in 'Parallelism' card**: The text `<text x='1052.5' y='172'>` has content that exceeds its container width. **Fix**: Reduce the `width` of the card to `350` or increase `x` to `1060`. 2. **Text overflow in 'Specialization' card**: The text `<text x='886' y='430'>` overflows its container. **Fix**: Reduce `width` of card to `350` or increase `x` to `890`. 3. **Equation block overflow**: The equation `<rect x='40' y='580' width='1200' height='80'>` extends beyond canvas boundary (y=580+80=660 > 720). **Fix**: Reduce `height` to `60` or move `y` to `640`. 4. **Page number overflow**: The page number `<text x='1240' y='708'>` is outside the canvas (y=708 > 720). **Fix**: Move to `y='700'`."
-  }
-]

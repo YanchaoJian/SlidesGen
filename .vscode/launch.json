@@ -17,7 +17,7 @@
                 // [Optional] Root output directory (default: output/)
                 "--output_dir", "output/",
                 // [Optional] Default LLM model, fallback for all stages (default: gpt-4o)
-                "--model_name", "ZhipuAI/GLM-5",
+                "--model_name", "Qwen",
                 // [Optional] Per-stage model overrides (default: use --model_name)
                 "--vision_model", "Qwen/Qwen3-VL-8B-Instruct",
                 "--svg_model", "Qwen/Qwen3-Coder-480B-A35B-Instruct",

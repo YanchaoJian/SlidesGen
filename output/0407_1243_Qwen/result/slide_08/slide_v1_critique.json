@@ -1,6 +1,0 @@
-[
-  {
-    "pass": false,
-    "critique": "FAIL: 1. **Text overflow in 'Parallelism' card**: The text `<text x='1052.5' y='392'>` has content that exceeds its container's width due to insufficient horizontal padding. **Fix**: Increase the card width from `width='373'` to `400`. 2. **Equation block overflow**: The equation block `<rect x='40' y='580' width='1200' height='80'>` is correctly sized, but the text inside uses `y='610'`, which is within bounds. However, the text content itself is too long and wraps awkwardly. **Fix**: Reduce font-size to `16` for better fit or add more horizontal space by increasing the container width slightly (e.g., `width='1220'`)."
-  }
-]

@@ -1,0 +1,64 @@
+● 基于对实际产物的检查（不只是日志），以下是几点具体的程序优化建议：                                                                 
+                                                                                                                                     
+  1. Critic 严重幻觉，浪费 retry 预算                                                                                                
+                                                                                                                                     
+  证据： slide_01/slide_v0_critique.json 5 次全 fail，但批评内容相互矛盾且与 SVG 实际不符：                                          
+  - Round 3 说 footer fill='#003D7C' 不可见——但 SVG 里 footer 实际是 fill="#FFFFFF"                                                  
+  - Round 1 说 polygon 覆盖 "Attention" 首字母——polygon 在 x=1040，标题在 x=80，根本不挨着                                           
+  - Round 5 说 fill='#FFFFFF' "在白底上不可见"——但它显然在右上的蓝色 polygon 上                                                      
+                                                                                                                                  
+  这是典型的视觉模型对 1280×720 渲染图的坐标误判。建议：
+  - agents/execution/slide_critic.py：在 prompt 里强制要求 critic 引用具体坐标，并由代码做一次"声明 vs 实际属性"的校验（拿
+  ElementTree parse 出 critic 引用的元素 id/坐标，反查实际属性，对不上则丢弃该条 critique）。
+  - 若同一 slide 连续 N 次 critique 互相矛盾（fix 方向相反），直接判定 critic 不可靠并 early-accept，避免无意义消耗 token。
+
+  2. Retry 预算耗尽后默默接受失败稿，没有标记
+
+  slide_01 5 次全失败，最终仍以 slide_v0.svg 落地，没有任何 "rejected/best-effort" 标记。下游 PPTX 合并不知道这是张"问题片"。
+  建议： SlideState 增加 final_status: "passed" | "exhausted" | "error"，写入 slide_meta.json；pptx_merger 可据此在 PPT
+  备注页打标，便于人工复检。
+
+  3. 文件版本号没真正递增
+
+  所有 slide 目录里只有 slide_v0.svg，但 _critique.json 里有 5 条记录，说明重试时 SVG 被原地覆盖。失去了"演化历史"，调试 critic
+  行为时无法对照前后差异。
+  建议： 重试时把生成结果写成 slide_v1.svg / slide_v2.svg ...（critique 名也对齐），与 slide_v0_critique.json 的"列表 =
+  多轮"语义统一。或者反过来：每轮生成新文件，critique 也 1 文件 1 轮。
+
+  4. tspan/dy 渲染失败是 SVG→PPTX 已知坑，应在 prompt 层封禁
+
+  slide_05 critique 第 1、2 轮都报 <tspan dy="1.5em"> 导致文字堆叠，第 3 轮"修好了"——也就是说 LLM 还在反复生成已知会坏的写法。
+  建议：
+  - 把 "禁止使用 <tspan dy=> 做换行，必须用绝对 y 坐标的多个 <text>" 加进 agents/execution/prompts.py 的 SVG 生成 system prompt 的
+  banned features 列表
+  - 同时在 pipeline/svg_validator.py 的 banned-feature 检查里加入 tspan[@dy] 的静态拒绝（现有 15 项 ban list 没覆盖这个），让它在
+  validation 阶段就 fail-fast，不必等 critic 来发现。
+
+  5. 多 LLM 失败时不应继续浪费 token
+
+  日志里 slide_14、16 在收到 401 后又被 critic 链路触发了一次 vision call（slide_critic.py:85），再次 401。
+  建议： 在 utils/llm.py 里维护一个进程级 "auth/quota broken" 标志，碰到 401/quota 错误后所有后续 LLM
+  调用直接短路抛出，不再发请求；并把全图 graceful-shutdown，让 checkpoint 至少能存盘。
+
+  6. Checkpoint 没落盘 → 无法 resume
+
+  session 目录里没有 checkpoints/ 子目录，但文档承诺 --thread_id 可以续跑。要么是 sqlite 写到了别处（路径配置 bug），要么是因
+  KeyboardInterrupt 在 AsyncSqliteSaver flush 之前就退出了。
+  建议： 检查 checkpoint 路径配置（应该在 output/{session}/checkpoints/），并在 main.py 入口注册 SIGINT handler，先 await
+  checkpointer.aclose() 再退出，保证中断也能续跑。
+
+  7. Style protocol 与实际 SVG 偏差
+
+  protocol v1 写明 "Card 必须 skewX(-20deg) 平行四边形"、"Left/right margin 60px"，但 slide_05 的卡片是普通直角矩形，左边距是
+  40px。说明 expand_slide_plan / generate_slide_svg 没把 protocol 作为强约束传下去（或被 LLM 忽略）。
+  建议： 把 protocol 里的关键数字（margins、card shape、skew angle）抽成结构化字段（不只是 markdown 文本），在 SVG 生成前 inject 成
+  JSON 约束块，并在 validator 里做硬检查（例如所有 content card 必须包含 skewX(-20) 或 transform="matrix(...)" 等价形式）。
+
+  8. 未通过的 critique 项 "pass": true 也带 critique 文本
+
+  slide_05 第 3 条 "pass": true, "critique": "No critique text provided by the model." ——说明 critic schema
+  解析有降级路径在硬塞占位字符串。
+  建议： schema 校验失败应记 parse_error 而不是伪造 pass=true，否则会把"模型答非所问"误判为通过。
+
+  ---
+  优先级排序：#5/#6（流程鲁棒性，立刻见效）> #1/#8（critic 可靠性，决定产物质量）> #4/#7（约束硬化）> #2/#3（可观测性 / 调试体验）。
