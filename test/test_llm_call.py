@@ -13,7 +13,7 @@ from openai import OpenAI
 
 load_dotenv()
 
-DEFAULT_MODEL = "Qwen/Qwen3.5-397B-A17B"
+DEFAULT_MODEL = "deepseek-ai/DeepSeek-V3.2"
 DEFAULT_PROMPT = "Reply with exactly: pong"
 
 
