@@ -191,7 +191,7 @@ def build_graph(checkpointer: BaseCheckpointSaver):
     workflow.add_node("dispatch_slide_tasks", lambda state: {})
     slide_subgraph = build_slide_subgraph() 
     workflow.add_node("generate_single_slide", slide_subgraph)
-    workflow.add_node("merge_slides_to_deck", merge_slides_to_deck_node)
+    workflow.add_node("merge_slides_to_deck", merge_slides_to_deck_node, defer=True)
     workflow.add_node("review_pptx_design", review_pptx_design_node)
 
     # --- 边与流程拓扑定义 ---

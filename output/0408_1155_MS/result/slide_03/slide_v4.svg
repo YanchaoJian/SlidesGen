@@ -1,0 +1,111 @@
+<svg:svg xmlns:svg="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <svg:defs>
+    <svg:filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <svg:feOffset dx="8" dy="8" result="offsetBlur" />
+      <svg:feFlood flood-color="#FFFFFF" flood-opacity="1" />
+      <svg:feComposite in2="offsetBlur" operator="in" />
+      <svg:feMerge>
+        <svg:feMergeNode />
+        <svg:feMergeNode in="SourceGraphic" />
+      </svg:feMerge>
+    </svg:filter>
+  </svg:defs>
+  
+  
+  <svg:rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  
+  
+  <svg:line x1="60" y1="100" x2="1220" y2="100" stroke="#0A3D8F" stroke-width="3" />
+  
+  
+  <svg:g transform="translate(60, 20)">
+    <svg:path d="M5 10 L5 40 L45 40 L45 10 L25 18 Z" fill="none" stroke="#0A3D8F" stroke-width="2.5" />
+    <svg:path d="M5 10 L25 18 L45 10" fill="none" stroke="#0A3D8F" stroke-width="2.5" />
+    <svg:path d="M25 18 L25 38" fill="none" stroke="#0A3D8F" stroke-width="2" />
+    <svg:line x1="10" y1="15" x2="20" y2="15" stroke="#0A3D8F" stroke-width="1.5" />
+    <svg:line x1="10" y1="22" x2="18" y2="22" stroke="#0A3D8F" stroke-width="1.5" />
+    <svg:line x1="30" y1="15" x2="40" y2="15" stroke="#0A3D8F" stroke-width="1.5" />
+    <svg:line x1="30" y1="22" x2="38" y2="22" stroke="#0A3D8F" stroke-width="1.5" />
+  </svg:g>
+  
+  
+  <svg:text x="120" y="65" font-size="44" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">The Problem: The Sequential Computation Bottleneck</svg:text>
+  
+  
+  <svg:g transform="translate(60, 130)">
+    
+    <svg:polygon points="0,8 520,8 480,428 0,428" fill="#FFFFFF" stroke="#0A3D8F" stroke-width="2" />
+    
+    <svg:polygon points="0,0 520,0 480,420 0,420" fill="#0A3D8F" />
+    
+    
+    <svg:text x="260" y="40" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Key Challenges</svg:text>
+    
+    
+    <svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="95">1. RNNs are inherently sequential: to process</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="130">position 'n', you must first process</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="165">positions 1 through n-1.</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="215">2. This results in O(n) sequential operations,</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="250">severely limiting parallelization during training.</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="305">3. Long training times for long sequences</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="340">become a major practical constraint.</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="395">4. Convolutional approaches (ByteNet, ConvS2S)</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="430">enable parallel computation but introduce</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="465">another issue...</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="500">5. The number of operations needed to connect</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="535">distant positions grows with distance</svg:text><svg:text fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="22" x="30" y="570">(e.g., O(logₖ(n))).</svg:text></svg:g>
+  
+  
+  <svg:g transform="translate(600, 130)">
+    
+    <svg:polygon points="0,8 600,8 580,430 0,430" fill="#FFFFFF" stroke="#0A3D8F" stroke-width="2" />
+    
+    <svg:polygon points="0,0 600,0 580,422 0,422" fill="#1E5AA8" />
+    
+    
+    <svg:text x="300" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Table 1: Maximum path lengths, per-layer complexity and minimum</svg:text>
+    <svg:text x="300" y="55" text-anchor="middle" font-size="16" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">number of sequential operations for different layer types.</svg:text>
+    
+    
+    <svg:rect x="20" y="75" width="560" height="40" fill="#0A3D8F" />
+    <svg:text x="40" y="100" font-size="14" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Layer Type</svg:text>
+    <svg:text x="210" y="100" font-size="14" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Complexity per Layer</svg:text>
+    <svg:text x="360" y="100" font-size="14" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Sequential Operations</svg:text>
+    <svg:text x="500" y="100" font-size="14" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Max Path Length</svg:text>
+    
+    
+    <svg:rect x="20" y="115" width="560" height="85" fill="#1E5AA8" />
+    <svg:text x="40" y="145" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Self-Attention</svg:text>
+    <svg:text x="210" y="145" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(n² · d)</svg:text>
+    <svg:text x="360" y="145" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(1)</svg:text>
+    <svg:text x="500" y="145" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(1)</svg:text>
+    
+    
+    <svg:rect x="20" y="200" width="560" height="85" fill="#1E5AA8" />
+    <svg:text x="40" y="230" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Recurrent</svg:text>
+    <svg:text x="210" y="230" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(n · d²)</svg:text>
+    <svg:text x="360" y="230" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(n)</svg:text>
+    <svg:text x="500" y="230" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(n)</svg:text>
+    
+    
+    <svg:rect x="20" y="285" width="560" height="85" fill="#1E5AA8" />
+    <svg:text x="40" y="315" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Convolutional</svg:text>
+    <svg:text x="210" y="315" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(k · n · d)</svg:text>
+    <svg:text x="360" y="315" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(1)</svg:text>
+    <svg:text x="500" y="315" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(logₖ(n))</svg:text>
+    
+    
+    <svg:rect x="20" y="370" width="560" height="85" fill="#1E5AA8" />
+    <svg:text x="40" y="400" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Self-Attention (restricted)</svg:text>
+    <svg:text x="210" y="400" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(r · n · d)</svg:text>
+    <svg:text x="360" y="400" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(1)</svg:text>
+    <svg:text x="500" y="400" font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">O(n/r)</svg:text>
+    
+    
+    <svg:text x="20" y="460" font-size="12" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" fill-opacity="0.8">Note: n = sequence length, d = representation dimension, k = kernel size, r = neighborhood size</svg:text>
+  </svg:g>
+  
+  
+  <svg:line x1="60" y1="620" x2="1220" y2="620" stroke="#0A3D8F" stroke-width="1" />
+  
+  
+  <svg:text x="60" y="640" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Source: Vaswani et al., "Attention Is All You Need" (2017)</svg:text>
+  
+  
+  <svg:text x="60" y="665" font-size="18" fill="#1A1A1A" font-family="KaiTi, STKaiti, serif" font-style="italic">海纳百川 · 自强不息</svg:text>
+  
+  
+  <svg:text x="1220" y="665" text-anchor="end" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">2024</svg:text>
+  
+  
+  <svg:text x="1220" y="695" text-anchor="end" font-size="14" fill="#718096" font-family="Arial, sans-serif">03 / 16</svg:text>
+</svg:svg>

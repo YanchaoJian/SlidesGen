@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720"> <defs>
+    <!-- Book icon -->
+    <g id="bookIcon">
+      <path d="M25 8 L25 42 L50 35 L50 12 Z" fill="#0A3D8F" fill-opacity="0.3"/>
+      <path d="M50 12 L50 35 L75 42 L75 8 Z" fill="#0A3D8F"/>
+      <path d="M25 8 L50 12 L50 35 L25 42 Z" fill="#0A3D8F" fill-opacity="0.6"/>
+      <line x1="50" y1="12" x2="50" y2="35" stroke="#FFFFFF" stroke-width="1.5"/>
+    </g>
+    
+    <!-- Institutional logo -->
+    <g id="institutionalLogo">
+      <circle cx="40" cy="40" r="35" fill="#0A3D8F"/>
+      <circle cx="40" cy="40" r="28" fill="#FFFFFF"/>
+      <circle cx="40" cy="40" r="20" fill="#0A3D8F"/>
+      <text x="40" y="48" text-anchor="middle" font-size="16" font-weight="bold" fill="#FFFFFF">DUT</text>
+    </g>
+  </defs>
+  
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- Top decorative bar -->
+  <rect x="0" y="100" width="1280" height="3" fill="#0A3D8F"/>
+  
+  <!-- Book icon at title left -->
+  <use href="#bookIcon" x="40" y="40" width="50" height="50"/>
+  
+  <!-- Institutional logo at upper right -->
+  <use href="#institutionalLogo" x="1120" y="40" width="80" height="80"/>
+  
+  <!-- Title -->
+  <text x="100" y="70" font-size="44" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">Conclusion &amp; Core Contributions</text>
+  
+  <!-- Card 1: Paradigm Shift (top-left) -->
+  <!-- White shadow layer -->
+  <polygon points="48,118 628,118 628,333 48,333" fill="#FFFFFF"/>
+  <!-- Blue parallelogram card -->
+  <polygon points="40,110 620,110 620,325 40,325" fill="#0A3D8F"/>
+  <!-- Header -->
+  <text x="330" y="150" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">Paradigm Shift</text>
+  <!-- Body -->
+  <text x="80" y="195" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">The Transformer introduced a paradigm shift:</text>
+  <text x="80" y="225" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">attention mechanisms alone are sufficient</text>
+  <text x="80" y="255" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">for state-of-the-art sequence modeling.</text>
+  
+  <!-- Card 2: Architecture (top-right) -->
+  <!-- White shadow layer -->
+  <polygon points="668,118 1248,118 1248,333 668,333" fill="#FFFFFF"/>
+  <!-- Blue parallelogram card -->
+  <polygon points="660,110 1240,110 1240,325 660,325" fill="#0A3D8F"/>
+  <!-- Header -->
+  <text x="950" y="150" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">1. Architecture</text>
+  <!-- Body -->
+  <text x="700" y="195" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">A novel, recurrence-free, convolution-free</text>
+  <text x="700" y="225" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">encoder-decoder model based solely on</text>
+  <text x="700" y="255" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">attention.</text>
+  
+  <!-- Card 3: Efficiency (middle-left) -->
+  <!-- White shadow layer -->
+  <polygon points="48,373 628,373 628,588 48,588" fill="#FFFFFF"/>
+  <!-- Blue parallelogram card -->
+  <polygon points="40,365 620,365 620,580 40,580" fill="#0A3D8F"/>
+  <!-- Header -->
+  <text x="330" y="405" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">2. Efficiency</text>
+  <!-- Body -->
+  <text x="80" y="450" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">Massively parallelizable, leading to</text>
+  <text x="80" y="480" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">drastically reduced training times.</text>
+  
+  <!-- Card 4: Modeling (middle-right) -->
+  <!-- White shadow layer -->
+  <polygon points="668,373 1248,373 1248,588 668,588" fill="#FFFFFF"/>
+  <!-- Blue parallelogram card -->
+  <polygon points="660,365 1240,365 1240,580 660,580" fill="#0A3D8F"/>
+  <!-- Header -->
+  <text x="950" y="405" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">3. Modeling</text>
+  <!-- Body -->
+  <text x="700" y="450" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">Constant operational path length between</text>
+  <text x="700" y="480" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">any two positions, facilitating learning of</text>
+  <text x="700" y="510" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">long-range dependencies.</text>
+  
+  <!-- Card 5: Performance &amp; Generality (bottom-center) - repositioned to fit canvas -->
+  <!-- White shadow layer -->
+  <polygon points="368,618 948,618 948,703 368,703" fill="#FFFFFF"/>
+  <!-- Blue parallelogram card -->
+  <polygon points="360,610 940,610 940,695 360,695" fill="#0A3D8F"/>
+  <!-- Header -->
+  <text x="650" y="645" text-anchor="middle" font-size="26" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">4. Performance &amp; 5. Generality</text>
+  <!-- Body - consolidated to fit within canvas -->
+  <text x="400" y="680" font-size="16" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">4. SOTA translation results • 5. Strong parsing performance</text>
+  
+  <!-- Footer: Institutional motto (calligraphic style) -->
+  <text x="40" y="660" font-size="16" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">海纳百川 自强不息</text>
+  
+  <!-- Footer: Date -->
+  <text x="1240" y="660" text-anchor="end" font-size="16" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">2024</text>
+  
+  <!-- Page number -->
+  <text x="1240" y="690" text-anchor="end" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">14</text>
+</svg>

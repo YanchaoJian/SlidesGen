@@ -1,0 +1,17 @@
+[
+  {
+    "version": "slide_v3",
+    "pass": false,
+    "critique": "FAIL: 1. **Title overlaps with content card**: The title text `<text x='620' y='175'>` is positioned directly above the content card, visually overlapping its top border. **Fix**: Move the title to `y='190'` or increase the card's `y` value to `y='160'`. 2. **Footer overflow**: The footer text `<text x='1240' y='700'>` exceeds the canvas boundary (max y=720). **Fix**: Change `y='700'` to `y='680'`."
+  },
+  {
+    "version": "slide_v4",
+    "pass": false,
+    "critique": "FAIL: 1. **Title overlaps with content card**: The title text `<text x='620' y='190'>` is positioned directly above the content card, causing visual overlap. **Fix**: Move title to `y='180'` or increase card height. 2. **Content text too small**: Body text uses `font-size='18'`, which is too small for readability. **Fix**: Increase to `font-size='20'`. 3. **No visual hierarchy**: Both cards use identical header styling and lack distinct color differentiation. **Fix**: Add a colored header strip (e.g., `<rect fill='#0A3D8F' width='1160' height='40'/>`) above each card header text."
+  },
+  {
+    "version": "slide_v5",
+    "pass": true,
+    "critique": ""
+  }
+]

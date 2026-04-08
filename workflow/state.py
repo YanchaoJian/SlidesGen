@@ -1,5 +1,15 @@
-import operator
 from typing import TypedDict, List, Dict, Optional, Annotated, Any
+
+
+def _merge_slide_paths(left: Dict[int, str], right: Dict[int, str]) -> Dict[int, str]:
+    """Reducer：按 slide_page 合并路径，后写入覆盖先写入。
+
+    用于 generated_slide_paths：并行子图各自返回 {page: path}，HITL 局部
+    重生成时新版本自动覆盖旧版本，避免累加列表里残留过期条目。
+    """
+    merged = dict(left or {})
+    merged.update(right or {})
+    return merged
 
 
 # ==============================================================================
@@ -39,8 +49,9 @@ class OverallState(TypedDict):
     plan_review: ReviewCycle                       # 演示计划审查
 
     # --- 执行层产物 (Reducer) ---
-    # 存储各 slide 的代码文件路径（.py），用于最终 merge_deck 合并
-    generated_slide_paths: Annotated[List[str], operator.add]
+    # 存储各 slide 的最终 SVG 路径，key 为 slide_page。后写覆盖先写，
+    # 局部重生成 / 恢复执行时不会留下过期条目。
+    generated_slide_paths: Annotated[Dict[int, str], _merge_slide_paths]
 
     # --- 交付层产物 ---
     final_pptx_path: Optional[str]
@@ -79,7 +90,7 @@ class SlideState(TypedDict):
     design_review: ReviewCycle                     # 设计质量验证
 
     # --- 输出 ---
-    generated_slide_paths: List[str]
+    generated_slide_paths: Dict[int, str]
 
 
 # ==============================================================================
@@ -94,7 +105,7 @@ def initialize_overall_state() -> OverallState:
         "main_content": None,
         "presentation_plan": None,
         "plan_review": _default_review_cycle(),
-        "generated_slide_paths": [],
+        "generated_slide_paths": {},
         "final_pptx_path": None,
         "pptx_review": _default_review_cycle(),
         "pptx_feedback_scope": None,
@@ -119,5 +130,5 @@ def initialize_slide_state(
         "error_log": None,
         "svg_review": _default_review_cycle(),
         "design_review": _default_review_cycle(),
-        "generated_slide_paths": [],
+        "generated_slide_paths": {},
     }

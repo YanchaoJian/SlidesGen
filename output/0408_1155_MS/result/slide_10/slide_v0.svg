@@ -1,0 +1,234 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4" result="offsetBlur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.12" result="shadowColor"/>
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- Top decorative line -->
+  <line x1="0" y1="100" x2="1280" y2="100" stroke="#0A3D8F" stroke-width="3"/>
+  
+  <!-- Book icon -->
+  <g transform="translate(40, 40)">
+    <path d="M5 8 L5 42 L45 42 L45 8 L25 16 Z" fill="none" stroke="#0A3D8F" stroke-width="2.5"/>
+    <path d="M5 8 L25 16 L45 8" fill="none" stroke="#0A3D8F" stroke-width="2.5"/>
+    <line x1="25" y1="16" x2="25" y2="42" stroke="#0A3D8F" stroke-width="2"/>
+    <path d="M5 25 L25 33 L45 25" fill="none" stroke="#0A3D8F" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="100" y="52" font-size="44" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, sans-serif">Ablation Study: Validating Design Choices</text>
+  
+  <!-- Takeaway Box -->
+  <rect x="40" y="80" width="1200" height="45" fill="#0A3D8F" fill-opacity="0.08"/>
+  <text x="640" y="110" text-anchor="middle" font-size="15" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, sans-serif">▸ 8 attention heads, sufficient dimensionality, and dropout are optimal; larger models perform better as expected.</text>
+  
+  <!-- Key Findings Card (Parallelogram with white offset) -->
+  <!-- White offset layer -->
+  <polygon points="68,148 1228,148 1228,288 68,288" fill="#FFFFFF" filter="url(#shadow)"/>
+  <!-- Blue parallelogram -->
+  <polygon points="60,140 1220,140 1220,280 60,280" fill="#0A3D8F"/>
+  <!-- Card header -->
+  <text x="640" y="175" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Key Findings</text>
+  <!-- Card body - findings -->
+  <text x="80" y="215" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">• 8 heads optimal • d_k reduction hurts quality • Larger models perform better</text>
+  <text x="80" y="250" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">• Dropout crucial for preventing overfitting • Sinusoidal ≈ learned positional encoding</text>
+  
+  <!-- Table Card -->
+  <rect x="60" y="300" width="1160" height="340" fill="#FFFFFF" stroke="#0A3D8F" stroke-width="2"/>
+  <!-- Table header -->
+  <rect x="60" y="300" width="1160" height="50" fill="#0A3D8F"/>
+  <text x="640" y="333" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Table 3: Transformer Architecture Ablation Study</text>
+  
+  <!-- Table content -->
+  <!-- Column headers -->
+  <g font-family="Microsoft YaHei, PingFang SC, sans-serif">
+    <!-- Row 1: Headers -->
+    <rect x="60" y="350" width="1160" height="28" fill="#0A3D8F"/>
+    <text x="80" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">N</text>
+    <text x="145" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">d_model</text>
+    <text x="225" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">d_ff</text>
+    <text x="300" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">h</text>
+    <text x="360" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">d_k</text>
+    <text x="430" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">d_v</text>
+    <text x="500" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">P_drop</text>
+    <text x="600" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">ε_ls</text>
+    <text x="700" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">train steps</text>
+    <text x="820" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">PPL (dev)</text>
+    <text x="940" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">BLEU (dev)</text>
+    <text x="1080" y="370" font-size="13" font-weight="bold" fill="#FFFFFF">params×10⁶</text>
+    
+    <!-- Data rows - alternating backgrounds -->
+    <!-- Row 2: base model (highlighted) -->
+    <rect x="60" y="378" width="1160" height="28" fill="#F8F9FA"/>
+    <text x="80" y="398" font-size="13" fill="#1A1A1A">base</text>
+    <text x="145" y="398" font-size="13" fill="#1A1A1A">6</text>
+    <text x="225" y="398" font-size="13" fill="#1A1A1A">512</text>
+    <text x="300" y="398" font-size="13" fill="#1A1A1A">8</text>
+    <text x="360" y="398" font-size="13" fill="#1A1A1A">64</text>
+    <text x="430" y="398" font-size="13" fill="#1A1A1A">64</text>
+    <text x="500" y="398" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="398" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="398" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="398" font-size="13" font-weight="bold" fill="#2E7D32">4.92</text>
+    <text x="940" y="398" font-size="13" font-weight="bold" fill="#2E7D32">25.8</text>
+    <text x="1080" y="398" font-size="13" fill="#1A1A1A">65</text>
+    
+    <!-- Row 3: h=1 -->
+    <rect x="60" y="406" width="1160" height="28" fill="#FFFFFF"/>
+    <text x="80" y="426" font-size="13" fill="#1A1A1A"></text>
+    <text x="145" y="426" font-size="13" fill="#1A1A1A"></text>
+    <text x="225" y="426" font-size="13" fill="#1A1A1A"></text>
+    <text x="300" y="426" font-size="13" fill="#1A1A1A">1</text>
+    <text x="360" y="426" font-size="13" fill="#1A1A1A">512</text>
+    <text x="430" y="426" font-size="13" fill="#1A1A1A">512</text>
+    <text x="500" y="426" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="426" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="426" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="426" font-size="13" fill="#1A1A1A">5.29</text>
+    <text x="940" y="426" font-size="13" fill="#1A1A1A">24.9</text>
+    <text x="1080" y="426" font-size="13" fill="#718096">-</text>
+    
+    <!-- Row 4: h=4 -->
+    <rect x="60" y="434" width="1160" height="28" fill="#F8F9FA"/>
+    <text x="80" y="454" font-size="13" fill="#1A1A1A"></text>
+    <text x="145" y="454" font-size="13" fill="#1A1A1A"></text>
+    <text x="225" y="454" font-size="13" fill="#1A1A1A"></text>
+    <text x="300" y="454" font-size="13" fill="#1A1A1A">4</text>
+    <text x="360" y="454" font-size="13" fill="#1A1A1A">128</text>
+    <text x="430" y="454" font-size="13" fill="#1A1A1A">128</text>
+    <text x="500" y="454" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="454" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="454" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="454" font-size="13" fill="#1A1A1A">5.00</text>
+    <text x="940" y="454" font-size="13" fill="#1A1A1A">25.5</text>
+    <text x="1080" y="454" font-size="13" fill="#718096">-</text>
+    
+    <!-- Row 5: (A) h=16 -->
+    <rect x="60" y="462" width="1160" height="28" fill="#FFFFFF"/>
+    <text x="80" y="482" font-size="13" font-weight="bold" fill="#1A1A1A">(A)</text>
+    <text x="145" y="482" font-size="13" fill="#1A1A1A"></text>
+    <text x="225" y="482" font-size="13" fill="#1A1A1A"></text>
+    <text x="300" y="482" font-size="13" fill="#1A1A1A">16</text>
+    <text x="360" y="482" font-size="13" fill="#1A1A1A">32</text>
+    <text x="430" y="482" font-size="13" fill="#1A1A1A">32</text>
+    <text x="500" y="482" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="482" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="482" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="482" font-size="13" fill="#1A1A1A">4.91</text>
+    <text x="940" y="482" font-size="13" fill="#1A1A1A">25.8</text>
+    <text x="1080" y="482" font-size="13" fill="#718096">-</text>
+    
+    <!-- Row 6: h=32 -->
+    <rect x="60" y="490" width="1160" height="28" fill="#F8F9FA"/>
+    <text x="80" y="510" font-size="13" fill="#1A1A1A"></text>
+    <text x="145" y="510" font-size="13" fill="#1A1A1A"></text>
+    <text x="225" y="510" font-size="13" fill="#1A1A1A"></text>
+    <text x="300" y="510" font-size="13" fill="#1A1A1A">32</text>
+    <text x="360" y="510" font-size="13" fill="#1A1A1A">16</text>
+    <text x="430" y="510" font-size="13" fill="#1A1A1A">16</text>
+    <text x="500" y="510" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="510" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="510" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="510" font-size="13" fill="#1A1A1A">5.01</text>
+    <text x="940" y="510" font-size="13" fill="#1A1A1A">25.4</text>
+    <text x="1080" y="510" font-size="13" fill="#718096">-</text>
+    
+    <!-- Row 7: (B) dk=16 -->
+    <rect x="60" y="518" width="1160" height="28" fill="#FFFFFF"/>
+    <text x="80" y="538" font-size="13" font-weight="bold" fill="#1A1A1A">(B)</text>
+    <text x="145" y="538" font-size="13" fill="#1A1A1A"></text>
+    <text x="225" y="538" font-size="13" fill="#1A1A1A"></text>
+    <text x="300" y="538" font-size="13" fill="#1A1A1A">8</text>
+    <text x="360" y="538" font-size="13" fill="#1A1A1A">16</text>
+    <text x="430" y="538" font-size="13" fill="#1A1A1A">64</text>
+    <text x="500" y="538" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="538" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="538" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="538" font-size="13" fill="#1A1A1A">5.16</text>
+    <text x="940" y="538" font-size="13" fill="#1A1A1A">25.1</text>
+    <text x="1080" y="538" font-size="13" fill="#1A1A1A">58</text>
+    
+    <!-- Row 8: dk=32 -->
+    <rect x="60" y="546" width="1160" height="28" fill="#F8F9FA"/>
+    <text x="80" y="566" font-size="13" fill="#1A1A1A"></text>
+    <text x="145" y="566" font-size="13" fill="#1A1A1A"></text>
+    <text x="225" y="566" font-size="13" fill="#1A1A1A"></text>
+    <text x="300" y="566" font-size="13" fill="#1A1A1A">8</text>
+    <text x="360" y="566" font-size="13" fill="#1A1A1A">32</text>
+    <text x="430" y="566" font-size="13" fill="#1A1A1A">64</text>
+    <text x="500" y="566" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="566" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="566" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="566" font-size="13" fill="#1A1A1A">5.01</text>
+    <text x="940" y="566" font-size="13" fill="#1A1A1A">25.4</text>
+    <text x="1080" y="566" font-size="13" fill="#1A1A1A">60</text>
+    
+    <!-- Row 9: N=2 -->
+    <rect x="60" y="574" width="1160" height="28" fill="#FFFFFF"/>
+    <text x="80" y="594" font-size="13" fill="#1A1A1A"></text>
+    <text x="145" y="594" font-size="13" fill="#1A1A1A">2</text>
+    <text x="225" y="594" font-size="13" fill="#1A1A1A">512</text>
+    <text x="300" y="594" font-size="13" fill="#1A1A1A">8</text>
+    <text x="360" y="594" font-size="13" fill="#1A1A1A">64</text>
+    <text x="430" y="594" font-size="13" fill="#1A1A1A">64</text>
+    <text x="500" y="594" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="594" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="594" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="594" font-size="13" fill="#1A1A1A">6.11</text>
+    <text x="940" y="594" font-size="13" fill="#1A1A1A">23.7</text>
+    <text x="1080" y="594" font-size="13" fill="#1A1A1A">36</text>
+    
+    <!-- Row 10: N=4 -->
+    <rect x="60" y="602" width="1160" height="28" fill="#F8F9FA"/>
+    <text x="80" y="622" font-size="13" fill="#1A1A1A"></text>
+    <text x="145" y="622" font-size="13" fill="#1A1A1A">4</text>
+    <text x="225" y="622" font-size="13" fill="#1A1A1A">512</text>
+    <text x="300" y="622" font-size="13" fill="#1A1A1A">8</text>
+    <text x="360" y="622" font-size="13" fill="#1A1A1A">64</text>
+    <text x="430" y="622" font-size="13" fill="#1A1A1A">64</text>
+    <text x="500" y="622" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="622" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="622" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="622" font-size="13" fill="#1A1A1A">5.19</text>
+    <text x="940" y="622" font-size="13" fill="#1A1A1A">25.3</text>
+    <text x="1080" y="622" font-size="13" fill="#1A1A1A">50</text>
+    
+    <!-- Row 11: N=8 -->
+    <rect x="60" y="630" width="1160" height="28" fill="#FFFFFF"/>
+    <text x="80" y="650" font-size="13" fill="#1A1A1A"></text>
+    <text x="145" y="650" font-size="13" fill="#1A1A1A">8</text>
+    <text x="225" y="650" font-size="13" fill="#1A1A1A">512</text>
+    <text x="300" y="650" font-size="13" fill="#1A1A1A">8</text>
+    <text x="360" y="650" font-size="13" fill="#1A1A1A">64</text>
+    <text x="430" y="650" font-size="13" fill="#1A1A1A">64</text>
+    <text x="500" y="650" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="600" y="650" font-size="13" fill="#1A1A1A">0.1</text>
+    <text x="700" y="650" font-size="13" fill="#1A1A1A">100K</text>
+    <text x="820" y="650" font-size="13" fill="#1A1A1A">4.88</text>
+    <text x="940" y="650" font-size="13" fill="#1A1A1A">25.5</text>
+    <text x="1080" y="650" font-size="13" fill="#1A1A1A">80</text>
+  </g>
+  
+  <!-- Table caption -->
+  <text x="640" y="685" text-anchor="middle" font-size="11" fill="#4A5568" font-family="Microsoft YaHei, PingFang SC, sans-serif">Table 3: Variations on the Transformer architecture. Unlisted values are identical to those of the base model.</text>
+  <text x="640" y="700" text-anchor="middle" font-size="11" fill="#4A5568" font-family="Microsoft YaHei, PingFang SC, sans-serif">All metrics are on the English-to-German translation development set, newstest2013.</text>
+  
+  <!-- Footer decorative line -->
+  <line x1="60" y1="620" x2="1220" y2="620" stroke="#0A3D8F" stroke-width="3"/>
+  
+  <!-- Footer elements -->
+  <text x="60" y="680" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, sans-serif">Source: Vaswani et al., 'Attention Is All You Need' (2017)</text>
+  <text x="1240" y="680" text-anchor="end" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, sans-serif">[Presentation Date]</text>
+  <text x="1240" y="700" text-anchor="end" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, sans-serif">10</text>
+</svg>

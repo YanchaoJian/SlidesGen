@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- Definitions -->
+  <defs>
+    <!-- Book Icon -->
+    <g id="bookIcon">
+      <path d="M25 5 L25 45 Q25 42 22 40 L5 30 Q2 28 5 26 L22 16 Q25 14 25 11 Z" fill="#0A3D8F"/>
+      <path d="M25 5 L25 45 Q25 42 28 40 L45 30 Q48 28 45 26 L28 16 Q25 14 25 11 Z" fill="#0A3D8F" fill-opacity="0.7"/>
+      <line x1="25" y1="5" x2="25" y2="45" stroke="#FFFFFF" stroke-width="1"/>
+    </g>
+  </defs>
+  
+  <!-- Top decorative bar -->
+  <rect x="0" y="100" width="1280" height="3" fill="#0A3D8F"/>
+  
+  <!-- Decorative parallelogram (white offset layer) -->
+  <polygon points="468,148 868,148 468,588 68,588" fill="#FFFFFF"/>
+  
+  <!-- Decorative parallelogram (blue main) -->
+  <polygon points="460,140 860,140 460,580 60,580" fill="#0A3D8F"/>
+  
+  <!-- Book icon -->
+  <use href="#bookIcon" x="60" y="30" width="50" height="50"/>
+  
+  <!-- Title -->
+  <text x="120" y="85" font-size="56" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Attention Is All You Need</text>
+  
+  <!-- Separator line below title -->
+  <line x1="120" y1="100" x2="1160" y2="100" stroke="#0A3D8F" stroke-width="3"/>
+  
+  <!-- Authors -->
+  <text x="500" y="215" font-size="24" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit,</text>
+  <text x="500" y="255" font-size="24" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</text>
+  
+  <!-- Affiliations -->
+  <text x="500" y="310" font-size="20" fill="#4A5568" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Google Brain; Google Research; University of Toronto;</text>
+  <text x="500" y="340" font-size="20" fill="#4A5568" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Independent (work performed while at Google Research)</text>
+  
+  <!-- Conference -->
+  <text x="500" y="385" font-size="18" fill="#4A5568" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">31st Conference on Neural Information Processing Systems (NeurIPS 2017)</text>
+  
+  <!-- Core Contribution - Blue Card -->
+  <rect x="500" y="440" width="720" height="145" fill="#0A3D8F"/>
+  <text x="530" y="475" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">A new simple network architecture, the Transformer,</text>
+  <text x="530" y="510" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">based solely on attention mechanisms, dispensing with</text>
+  <text x="530" y="545" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">recurrence and convolutions entirely.</text>
+  
+  <!-- Institutional logo placeholder -->
+  <circle cx="1160" cy="60" r="40" fill="#0A3D8F"/>
+  <text x="1160" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFFFFF">DUT</text>
+  <text x="1160" y="75" text-anchor="middle" font-size="8" fill="#FFFFFF">Academic</text>
+  
+  <!-- Footer - Institutional motto -->
+  <text x="60" y="660" font-size="20" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" style="font-family: 'KaiTi', 'STKaiti', serif;">自强不息 知行合一</text>
+  
+  <!-- Footer - Date/Context -->
+  <text x="1100" y="660" font-size="16" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Academic Presentation</text>
+  
+  <!-- Page number -->
+  <text x="1240" y="700" text-anchor="end" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">1</text>
+</svg>

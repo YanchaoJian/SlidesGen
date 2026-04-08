@@ -193,7 +193,7 @@ async def main():
     
     default_model = args.model_name
     config = {
-        "max_concurrency": 6,  # LangGraph 顶层字段：限制 Send 扇出的并发子任务数
+        "max_concurrency": 4,  # LangGraph 顶层字段：限制 Send 扇出的并发子任务数
         "configurable": {
             "thread_id": thread_id,
             "pdf_path": args.pdf_path,
@@ -210,8 +210,8 @@ async def main():
             "skip_plan_review": args.skip_plan_review,
             "skip_pptx_review": args.skip_pptx_review,
             "llm_max_retries": args.llm_max_retries,
-            "base_url": os.getenv("MS_BASE_URL"),
-            "api_key": os.getenv("MS_API_KEY"),
+            "base_url": os.getenv("OPENAI_BASE_URL"),
+            "api_key": os.getenv("OPENAI_API_KEY"),
         },
     }
 

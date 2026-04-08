@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="8" dy="8" result="offsetBlur" />
+      <feFlood flood-color="#FFFFFF" flood-opacity="0.3" />
+      <feComposite in="offsetBlur" in2="SourceAlpha" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  
+  
+  <rect x="0" y="0" width="1280" height="3" fill="#0A3D8F" />
+  
+  
+  <text x="60" y="60" font-size="44" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, sans-serif">Conclusion &amp; Core Contributions</text>
+  
+  
+  <path fill="#E2E8F0" d="M44,80 H1236 A4,4 0 0 1 1240,84 V121 A4,4 0 0 1 1236,125 H44 A4,4 0 0 1 40,121 V84 A4,4 0 0 1 44,80 Z" />
+  <text x="60" y="105" font-size="20" font-weight="normal" fill="#2D3748" font-family="Microsoft YaHei, sans-serif">The Transformer fundamentally changed how we approach sequence modeling through attention mechanisms.</text>
+  
+  
+  <rect x="60" y="140" width="1160" height="3" fill="#0A3D8F" />
+  
+  
+  
+  <g transform="translate(60, 180)">
+    <rect x="0" y="0" width="360" height="300" fill="#0A3D8F" filter="url(#cardShadow)" transform="skewX(15)" />
+    <rect x="0" y="0" width="360" height="80" fill="#0A3D8F" transform="skewX(15)" />
+    <text x="180" y="50" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, sans-serif">The Transformer</text>
+    <text x="30" y="120" font-size="22" fill="#FFFFFF" font-family="Microsoft YaHei, sans-serif">• Introduced a paradigm shift: attention mechanisms alone are sufficient for state-of-the-art sequence modeling.</text>
+  </g>
+  
+  
+  <g transform="translate(460, 180)">
+    <rect x="0" y="0" width="360" height="300" fill="#0A3D8F" filter="url(#cardShadow)" transform="skewX(15)" />
+    <rect x="0" y="0" width="360" height="80" fill="#0A3D8F" transform="skewX(15)" />
+    <text x="180" y="50" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, sans-serif">Key Contributions</text>
+    <text x="30" y="120" font-size="22" fill="#FFFFFF" font-family="Microsoft YaHei, sans-serif">• Architecture: A novel, recurrence-free, convolution-free encoder-decoder model based solely on attention.</text>
+    <text x="30" y="150" font-size="22" fill="#FFFFFF" font-family="Microsoft YaHei, sans-serif">• Efficiency: Massively parallelizable, leading to drastically reduced training times.</text>
+  </g>
+  
+  
+  <g transform="translate(860, 180)">
+    <rect x="0" y="0" width="360" height="300" fill="#0A3D8F" filter="url(#cardShadow)" transform="skewX(15)" />
+    <rect x="0" y="0" width="360" height="80" fill="#0A3D8F" transform="skewX(15)" />
+    <text x="180" y="50" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, sans-serif">Further Impact</text>
+    <text x="30" y="120" font-size="22" fill="#FFFFFF" font-family="Microsoft YaHei, sans-serif">• Modeling: Constant operational path length between any two positions, facilitating learning of long-range dependencies.</text>
+    <text x="30" y="150" font-size="22" fill="#FFFFFF" font-family="Microsoft YaHei, sans-serif">• Performance: Achieved new SOTA results on major machine translation benchmarks with lower cost.</text>
+    <text x="30" y="180" font-size="22" fill="#FFFFFF" font-family="Microsoft YaHei, sans-serif">• Generality: Demonstrated strong performance on English constituency parsing.</text>
+  </g>
+  
+  
+  <text x="60" y="700" font-size="16" fill="#1A1A1A" font-family="Microsoft YaHei, sans-serif">Dalian University of Technology</text>
+  <text x="1220" y="700" text-anchor="end" font-size="14" fill="#718096" font-family="Arial, sans-serif">14 / 16</text>
+</svg>

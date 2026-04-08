@@ -181,6 +181,79 @@ state that exception explicitly.
 
 ---
 
+## IV-bis. Master Chrome Contract (binding for ALL slides)
+
+This section produces the **single chrome template** that will be embedded into the
+PPTX **slide master**. Every generated slide inherits it automatically. Slides
+themselves will NOT draw any background, header, footer, logo or page number — those
+are owned exclusively by the master.
+
+### Strict reference-only rule
+
+For each chrome region (header / footer / logo / page_number), set `present = yes`
+ONLY if you can point to a concrete visual element in the reference image. If the
+reference image shows a plain slide with no header bar, no footer line, no logo and
+no page number, then ALL four flags MUST be `no`. Do NOT invent decorations to make
+the slide "look more professional" — fidelity to the reference is the only goal.
+
+The full-canvas background is the **one exception**: it is always required (even if
+the reference is plain white) so that slides have a background to inherit.
+
+### Presence table
+
+| Region       | Present? (yes/no) | What you actually see in the reference (or "n/a") |
+| ------------ | ----------------- | -------------------------------------------------- |
+| header       |                   |                                                    |
+| footer       |                   |                                                    |
+| logo         |                   |                                                    |
+| page_number  |                   |                                                    |
+
+### Master Chrome SVG
+
+A single, complete, well-formed SVG block that will be embedded into the PPTX
+slide master. **Rules:**
+
+1. Root must be `<svg viewBox="0 0 1280 720" width="1280" height="720">`.
+2. The **first child** must be a full-canvas `<rect width="1280" height="720"
+   fill="..."/>` providing the background color (always required).
+3. Add header / footer / logo / page-number elements **only** for regions whose
+   present flag above is `yes`. Skip absent regions entirely.
+4. Use **generic placeholder text** for any institution-related strings — write
+   `INSTITUTION NAME`, `MOTTO`, `LOGO` etc., NOT the literal "Dalian University",
+   "MIT", or any specific brand name from the reference. The user will edit
+   these strings inside PowerPoint's master view after generation.
+5. If `page_number.present = yes`, mark the page number position with a single
+   text node whose body is exactly `PGNUM_PLACEHOLDER`. The downstream pipeline
+   replaces this marker with a PowerPoint slide-number field that auto-increments.
+   Style the text element (font, size, color, alignment) the way the reference
+   shows page numbers.
+6. Stay within the supported SVG subset used elsewhere in this generator
+   (no `<clipPath>`, `<mask>`, `<style>`, `class=`, `<foreignObject>`, etc.).
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- 1. Always: full-canvas background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#......"/>
+
+  <!-- 2. Header (only if header.present = yes) -->
+  ...
+
+  <!-- 3. Footer / logo / page number (only if their flags = yes) -->
+  ...
+  <!-- e.g. <text ...>PGNUM_PLACEHOLDER</text> if page_number.present = yes -->
+</svg>
+```
+
+### Safe content bbox
+
+The rectangle that per-slide content must stay inside, derived from the chrome
+above so slide content never collides with the master decorations. Use full
+canvas if there is no chrome.
+
+`x=<int> y=<int> width=<int> height=<int>`
+
+---
+
 ## V. Page-Type Treatments
 
 Downstream generates 4-5 canonical page types. Describe the distinct visual treatment for \
@@ -337,7 +410,14 @@ reference image's visual identity and is **complete enough for SVG code generati
 - Are all applicable page types in Section V (Cover / Chapter / Content / Ending / TOC) described with distinct treatments?
 - Do the inferred page types feel like one family (consistent accent, decoration, typography)?
 
-### 7. Structural Completeness
+### 7. Master Chrome Contract
+- Are the four presence flags (header / footer / logo / page_number) consistent with the reference image? Reject if a region is marked `yes` but the image clearly does not show it, or vice versa.
+- Is the Master Chrome SVG well-formed, with a viewBox of `0 0 1280 720` and a full-canvas background `<rect>` as its first child (regardless of whether other chrome is present)?
+- Are institution-specific strings written as generic placeholders (`INSTITUTION NAME`, `MOTTO`, `LOGO`) rather than literal brand names from the reference?
+- If `page_number.present = yes`, does the SVG contain exactly one `PGNUM_PLACEHOLDER` text node positioned where the reference shows the page number?
+- Does the safe content bbox avoid overlapping any header/footer/logo region declared above?
+
+### 8. Structural Completeness
 - Are all eight sections (I-VIII) present and filled with specific values?
 - Is the grid base unit declared and are spacing values consistent with it?
 - Are there any placeholder values (`__px`, `#......`) that were not filled in?

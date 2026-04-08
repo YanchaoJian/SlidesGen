@@ -1,0 +1,6 @@
+[
+  {
+    "pass": false,
+    "critique": "FAIL: 1. **Title text overlaps with top decorative line**: The title `<text x='125' y='100'>` has its baseline at y=100, which is exactly where the decorative line `<line y1='100' y2='100'>` is positioned. The text descenders and the line visually collide. **Fix**: Move the title down to `y='115'` or move the line up to `y='90'`. 2. **Card 3 image caption overflow risk**: The caption text in Card 3 has `y='300'` with two lines of 13px text (dy=18), placing the second line at y=318. The card ends at y=410 (180+410=590), so this is within bounds, but the caption is very close to the card bottom edge with minimal padding. **Fix**: Move caption up to `y='290'` for better visual breathing room. 3. **Institution logo overlap with page number**: The logo `<use x='1180' y='640'>` extends to y=720 (640+80), and the page number `<text y='700'>` is at y=700, creating overlap. **Fix**: Move page number to `y='735'` (outside canvas, so better: move logo to `y='620'` or page number to `y='655'` with `x='1140'` to avoid overlap). 4. **Missing data source footer**: This is a technical content page with equations and figures but no source attribution in the bottom-left. **Fix**: Add `<text x='60' y='655' font-size='12' fill='#718096'>Source: Vaswani et al., 2017</text>` or appropriate citation."
+  }
+]

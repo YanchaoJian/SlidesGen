@@ -48,7 +48,7 @@ SlidesGen/
 |------|------|
 | `workflow/graph.py` | 构建主图与单页子图。`build_graph()` 装配两条并行管线（风格 / 内容）→ `dispatch_slide_tasks` 扇出 → 合并 → 审查；`build_slide_subgraph()` 构建单页 SVG 子图（`expand_slide_plan → generate_slide_svg → optimize_svg_crap → check_slide_design`）。包含条件边 `map_slides_to_tasks` 用于 `Send()` 并行分发。 |
 | `workflow/nodes.py` | 全部节点函数实现：`extract_pdf_node`、`analyze_image_style_node`、`check_style_protocol_node`、`plan_node`、`review_plan_node`（`interrupt()`）、`expand_slide_plan_node`、`generate_slide_svg_node`、`optimize_svg_crap_node`、`check_slide_design_node`、`merge_slides_node`、`review_pptx_design_node`（`interrupt()`）等。每个节点接收 `RunnableConfig`，通过 `_get_llm_config(configurable, stage)` 读取对应阶段（vision/svg/text）的模型配置。 |
-| `workflow/state.py` | 两个 `TypedDict` 状态：`OverallState`（主图，`generated_slide_paths` 用 `Annotated[List, operator.add]` 支持并行累加）与 `SlideState`（单页子图）。包含 `ReviewCycle` 子结构（`verified` / `retry_count` / `critique`）。 |
+| `workflow/state.py` | 两个 `TypedDict` 状态：`OverallState`（主图，`generated_slide_paths` 用 `Annotated[Dict[int, str], _merge_slide_paths]`，按 `slide_page` 合并、后写覆盖先写）与 `SlideState`（单页子图）。包含 `ReviewCycle` 子结构（`verified` / `retry_count` / `critique`）。 |
 | `workflow/__init__.py` | 包初始化。 |
 
 ---

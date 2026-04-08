@@ -11,6 +11,7 @@ from pptx import Presentation
 from pptx.util import Emu
 
 from .drawingml_converter import convert_svg_to_slide_shapes
+from .master_chrome import inject_chrome_into_master
 from .pptx_dimensions import (
     CANVAS_FORMATS,
     get_slide_dimensions, get_pixel_dimensions,
@@ -48,6 +49,7 @@ def create_pptx_with_native_svg(
     notes: dict[str, str] | None = None,
     enable_notes: bool = True,
     use_native_shapes: bool = False,
+    master_chrome_svg_text: str | None = None,
 ) -> bool:
     """Create a PPTX file with native SVG.
 
@@ -147,6 +149,17 @@ def create_pptx_with_native_svg(
 
         media_dir = extract_dir / 'ppt' / 'media'
         media_dir.mkdir(exist_ok=True)
+
+        # Inject master chrome (background + optional header/footer/logo/page-number)
+        # before any per-slide content is written. The chrome is shared across all
+        # slides via the slide master and is editable in PowerPoint's master view.
+        if master_chrome_svg_text:
+            try:
+                inject_chrome_into_master(extract_dir, master_chrome_svg_text)
+                if verbose:
+                    print("  Master chrome injected into slideMaster1.xml")
+            except Exception as e:
+                print(f"  Warning: master chrome injection failed: {e}")
 
         success_count = 0
         has_any_image = False

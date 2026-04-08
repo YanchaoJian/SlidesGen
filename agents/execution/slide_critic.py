@@ -93,11 +93,12 @@ def evaluate_and_critique_slide(
             critique_text = critique_data.get("critique", "No critique text provided by the model.")
 
             critique_item = {
+                "version": os.path.splitext(os.path.basename(svg_path))[0],
                 "pass": pass_status,
                 "critique": critique_text,
             }
-            # 保存到本地 JSON 列表
-            critique_file = svg_path.replace(".svg", "_critique.json")
+            # 保存到本地 JSON 列表（同一 slide 的所有版本共用一个文件）
+            critique_file = os.path.join(os.path.dirname(svg_path), "slide_critique.json")
             append_critique_to_file(critique_item, filepath=critique_file)
 
             if pass_status is True:

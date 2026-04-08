@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <!-- Book icon -->
+    <g id="bookIcon">
+      <path d="M25 5 L25 45 Q25 48 28 48 L45 48 Q48 48 48 45 L48 5 Q48 2 45 2 L28 2 Q25 2 25 5 Z" fill="none" stroke="#0A3D8F" stroke-width="2"/>
+      <path d="M25 5 L25 45 Q25 48 2848 L45 48 Q48 48 48 45 L48 5 Q48 2 45 2 L28 2 Q25 2 25 5 Z" fill="#0A3D8F" fill-opacity="0.1"/>
+      <line x1="36.5" y1="5" x2="36.5" y2="48" stroke="#0A3D8F" stroke-width="1.5"/>
+      <path d="M25 15 Q30 18 36.5 15" fill="none" stroke="#0A3D8F" stroke-width="1.5"/>
+      <path d="M36.5 15 Q42 18 48 15" fill="none" stroke="#0A3D8F" stroke-width="1.5"/>
+      <path d="M25 25 Q30 28 36.5 25" fill="none" stroke="#0A3D8F" stroke-width="1.5"/>
+      <path d="M36.5 25 Q42 28 48 25" fill="none" stroke="#0A3D8F" stroke-width="1.5"/>
+      <path d="M25 35 Q30 38 36.5 35" fill="none" stroke="#0A3D8F" stroke-width="1.5"/>
+      <path d="M36.5 35 Q42 38 48 35" fill="none" stroke="#0A3D8F" stroke-width="1.5"/>
+    </g>
+    
+    <!-- Institutional logo -->
+    <g id="institutionalLogo">
+      <circle cx="20" cy="25" r="20" fill="none" stroke="#0A3D8F" stroke-width="2"/>
+      <circle cx="20" cy="25" r="15" fill="none" stroke="#0A3D8F" stroke-width="1"/>
+      <path d="M12 25 L20 18 L28 25 L20 32 Z" fill="#0A3D8F"/>
+      <text x="20" y="55" text-anchor="middle" font-size="7" font-weight="bold" fill="#0A3D8F">DUT</text>
+    </g>
+  </defs>
+  
+  <!-- Background -->
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA"/>
+  
+  <!-- Top decorative line -->
+  <line x1="40" y1="100" x2="1240" y2="100" stroke="#0A3D8F" stroke-width="3"/>
+  
+  <!-- Book icon -->
+  <use href="#bookIcon" x="40" y="40" width="50" height="50"/>
+  
+  <!-- Institutional logo -->
+  <use href="#institutionalLogo" x="1160" y="40" width="40" height="60"/>
+  
+  <!-- Title -->
+  <text x="100" y="65" font-size="44" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, sans-serif">Experimental Setup</text>
+  
+  <!-- Takeaway Box -->
+  <rect x="40" y="80" width="1200" height="45" fill="#0A3D8F" fill-opacity="0.08"/>
+  <text x="640" y="108" text-anchor="middle" font-size="15" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, sans-serif">We evaluate on standard translation benchmarks, compare against SOTA baselines, and use a carefully tuned learning rate schedule.</text>
+  
+  <!-- Card 1: Tasks & Data -->
+  <!-- White shadow layer -->
+  <polygon points="48,128 422,128 422,608 48,608" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+  <!-- Blue card -->
+  <polygon points="40,120 414,120 414,600 40,600" fill="#0A3D8F"/>
+  <!-- Card header -->
+  <rect x="40" y="120" width="374" height="80" fill="#0A3D8F"/>
+  <text x="227" y="160" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Tasks &amp; Data</text>
+  <!-- Card body - Fixed spacing to prevent overlap (20px+ gaps) -->
+  <text x="70" y="225" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Machine Translation on</text>
+  <text x="70" y="265" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">two major benchmarks:</text>
+  <text x="70" y="320" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">• WMT 2014 EN-DE</text>
+  <text x="70" y="355" font-size="22" fill="#B8D4F5" font-family="Microsoft YaHei, PingFang SC, sans-serif">4.5M sentence pairs</text>
+  <text x="70" y="400" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">• WMT 2014 EN-FR</text>
+  <text x="70" y="435" font-size="22" fill="#B8D4F5" font-family="Microsoft YaHei, PingFang SC, sans-serif">36M sentence pairs</text>
+  
+  <!-- Card 2: Evaluation & Baselines -->
+  <!-- White shadow layer -->
+  <polygon points="462,128 836,128 836,608 462,608" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+  <!-- Blue card -->
+  <polygon points="454,120 828,120 828,600 454,600" fill="#0A3D8F"/>
+  <!-- Card header -->
+  <rect x="454" y="120" width="374" height="80" fill="#0A3D8F"/>
+  <text x="641" y="160" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Evaluation &amp; Baselines</text>
+  <!-- Card body - Fixed spacing to prevent overlap (20px+ gaps) -->
+  <text x="484" y="225" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Evaluation Metric:</text>
+  <text x="484" y="270" font-size="28" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">BLEU score</text>
+  <text x="484" y="330" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Baselines:</text>
+  <text x="484" y="360" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">State-of-the-art</text>
+  <text x="484" y="390" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">models including:</text>
+  <text x="484" y="435" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">• GNMT+RL</text>
+  <text x="484" y="470" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">• ConvS2S</text>
+  <text x="484" y="505" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">• Their ensembles</text>
+  
+  <!-- Card 3: Training Details -->
+  <!-- White shadow layer -->
+  <polygon points="876,128 1250,128 1250,608 876,608" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1"/>
+  <!-- Blue card -->
+  <polygon points="868,120 1242,120 1242,600 868,600" fill="#0A3D8F"/>
+  <!-- Card header -->
+  <rect x="868" y="120" width="374" height="80" fill="#0A3D8F"/>
+  <text x="1055" y="160" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Training Details</text>
+  <!-- Card body -->
+  <text x="898" y="225" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Optimizer: Adam</text>
+  <text x="898" y="260" font-size="22" fill="#B8D4F5" font-family="Microsoft YaHei, PingFang SC, sans-serif">β₁ = 0.9, β₂ = 0.98</text>
+  <text x="898" y="285" font-size="22" fill="#B8D4F5" font-family="Microsoft YaHei, PingFang SC, sans-serif">ε = 10⁻⁹</text>
+  <text x="898" y="330" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Learning rate schedule:</text>
+  <text x="898" y="365" font-size="22" fill="#B8D4F5" font-family="Microsoft YaHei, PingFang SC, sans-serif">warmup then decay</text>
+  <text x="898" y="405" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">lrate = d_model⁻⁰·⁵</text>
+  <text x="898" y="428" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">· min(step_num⁻⁰·⁵,</text>
+  <text x="898" y="451" font-size="18" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">step_num · warmup_steps⁻¹·⁵)</text>
+  <text x="898" y="490" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">warmup_steps = 4000</text>
+  
+  <!-- Info box within Card 3 -->
+  <rect x="896" y="510" width="334" height="50" fill="#E3F2FD" stroke="#1E5AA8" stroke-width="2"/>
+  <text x="1063" y="530" text-anchor="middle" font-size="14" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, sans-serif">Linear warmup for first warmup_steps,</text>
+  <text x="1063" y="550" text-anchor="middle" font-size="14" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, sans-serif">then inverse square root decay.</text>
+  
+  <!-- Footer -->
+  <text x="40" y="680" font-size="16" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, sans-serif">大连理工大学 | WMT 2014 Benchmark</text>
+  <text x="1100" y="680" font-size="16" fill="#718096" font-family="Microsoft YaHei, PingFang SC, sans-serif">[Presentation Date]</text>
+  <text x="1240" y="700" text-anchor="end" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, sans-serif">8</text>
+</svg>

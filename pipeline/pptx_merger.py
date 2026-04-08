@@ -10,17 +10,24 @@ from pathlib import Path
 from typing import List, Optional
 
 from pipeline.svg_to_pptx import create_pptx_with_native_svg
+from pipeline.svg_to_pptx.master_chrome import extract_master_chrome_svg
 
 logger = logging.getLogger(__name__)
 
 
-def merge_svgs_to_pptx(svg_paths: List[str], output_pptx_path: str) -> Optional[str]:
+def merge_svgs_to_pptx(
+    svg_paths: List[str],
+    output_pptx_path: str,
+    style_protocol: Optional[str] = None,
+) -> Optional[str]:
     """
     将多个已后处理的 SVG 文件合并为一个 PPTX 演示文稿。
 
     Args:
         svg_paths: SVG 文件路径列表（已排序、已后处理）。
         output_pptx_path: 输出 PPTX 路径。
+        style_protocol: 风格协议 markdown 文本。若包含 IV-bis Master Chrome
+            Contract，会从中提取 Master Chrome SVG 注入到 PPTX 母版。
 
     Returns:
         成功返回 PPTX 文件路径，失败返回 None。
@@ -45,6 +52,12 @@ def merge_svgs_to_pptx(svg_paths: List[str], output_pptx_path: str) -> Optional[
 
     os.makedirs(os.path.dirname(output_pptx_path), exist_ok=True)
 
+    chrome_svg = extract_master_chrome_svg(style_protocol)
+    if chrome_svg:
+        logger.info("   -> Master chrome SVG extracted from style protocol; will inject into slide master.")
+    elif style_protocol:
+        logger.info("   -> No Master Chrome Contract found in style protocol; PPTX will use empty master.")
+
     try:
         create_pptx_with_native_svg(
             svg_files=valid_paths,
@@ -52,6 +65,7 @@ def merge_svgs_to_pptx(svg_paths: List[str], output_pptx_path: str) -> Optional[
             canvas_format="ppt169",
             verbose=False,
             use_native_shapes=True,
+            master_chrome_svg_text=chrome_svg,
         )
 
         if os.path.exists(output_pptx_path):

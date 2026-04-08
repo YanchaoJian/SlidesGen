@@ -319,7 +319,8 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
     import glob
     existing_versions = glob.glob(os.path.join(slide_dir, "slide_v*.svg"))
     version = len(existing_versions)
-    svg_path = os.path.join(slide_dir, f"slide_v{version}.svg")
+    # 用 posix 风格统一斜杠，避免快照里出现 "output/xx\\result\\..." 这种混合路径。
+    svg_path = os.path.join(slide_dir, f"slide_v{version}.svg").replace(os.sep, "/")
 
     with open(svg_path, "w", encoding="utf-8") as f:
         f.write(final_svg)
@@ -338,7 +339,7 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
         "svg_code": final_svg,
         "svg_path": svg_path,
         "error_log": None,
-        "generated_slide_paths": [svg_path],
+        "generated_slide_paths": {slide_page: svg_path},
     }
 
 
@@ -380,34 +381,16 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
     config = config["configurable"]
     logger.info("--- NODE: MergeSlidesToDeck ---")
 
-    raw_paths = state.get("generated_slide_paths", [])
-
-    # 去重：generated_slide_paths 是 operator.add 累加器，HITL 2 局部重生成
-    # 时旧条目会残留。按 slide 目录名（slide_03 等）作为 key，后写入的路径覆盖
-    # 先前的，从而只保留每张 slide 的最新版本。
-    by_page: Dict[str, str] = {}
-    for p in raw_paths:
-        key = os.path.basename(os.path.dirname(p))  # e.g. "slide_03"
-        by_page[key] = p
-    svg_paths = sorted(by_page.values())
-
-    if len(raw_paths) != len(svg_paths):
-        logger.info(
-            f"   -> Deduplicated generated_slide_paths: "
-            f"{len(raw_paths)} entries -> {len(svg_paths)} unique slides."
-        )
+    # generated_slide_paths 现在是 {slide_page: path}，由自定义 reducer 合并；
+    # 局部重生成 / 恢复执行的最新版本会自动覆盖旧条目。
+    paths_by_page: Dict[int, str] = state.get("generated_slide_paths") or {}
+    svg_paths = [paths_by_page[k] for k in sorted(paths_by_page.keys())]
 
     # 缺页检测：对比计划页数与实际产出数，让静默失败的 slide 显形。
     plan = state.get("presentation_plan") or []
     if plan:
         expected_pages = {int(s.get("slide_page")) for s in plan if s.get("slide_page") is not None}
-        produced_pages = set()
-        for key in by_page.keys():
-            # key like "slide_03" -> 3
-            try:
-                produced_pages.add(int(key.split("_")[-1]))
-            except ValueError:
-                continue
+        produced_pages = set(paths_by_page.keys())
         missing = sorted(expected_pages - produced_pages)
         if missing:
             logger.error(
@@ -419,8 +402,8 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
         logger.warning("   -> No SVG slides were generated to merge.")
         return {"final_pptx_path": None}
 
-    final_path = os.path.join(config["output_dir"], "result", "Final_Presentation.pptx")
-    result = merge_svgs_to_pptx(svg_paths, final_path)
+    final_path = os.path.join(config["output_dir"], "result", "Final_Presentation.pptx").replace(os.sep, "/")
+    result = merge_svgs_to_pptx(svg_paths, final_path, style_protocol=state.get("style_protocol"))
 
     if result:
         logger.info(f"   -> ✅ Merged {len(svg_paths)} SVG(s) into {final_path}")

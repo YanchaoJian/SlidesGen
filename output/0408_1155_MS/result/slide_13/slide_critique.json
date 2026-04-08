@@ -1,0 +1,17 @@
+[
+  {
+    "version": "slide_v5",
+    "pass": false,
+    "critique": "FAIL: 1. **Title text overflow**: The title `<text x='130' y='75'>` has `y=75`, which is too low, causing the text to visually extend beyond the top safe zone (y=40–680). The text baseline overlaps with the top divider line at y=100. **Fix**: Move title group up by setting `transform='translate(0, -20)'` or increase `y` to `95`. 2. **Takeaway box overlaps with title**: The takeaway box `<rect x='40' y='80' ...>` starts at y=80, directly below the title's y=75, causing visual obstruction. **Fix**: Move takeaway box down by setting `y='100'` or increase title's `y` to `85`."
+  },
+  {
+    "version": "slide_v6",
+    "pass": false,
+    "critique": "FAIL: 1. **Text overflow in parallelogram cards**: The text within the 'Results' card `<text x='510' y='340'>` exceeds its container due to excessive length. **Fix**: Reduce font-size to `font-size='18'` or increase card height to `height='240'`. 2. **Table row overflow**: The last table row `<text x='400' y='740'>` has `y='740'`, exceeding canvas boundary (max y=720). **Fix**: Move text group up by setting `transform='translate(0, -20)'` on the table group or reduce font-size."
+  },
+  {
+    "version": "slide_v7",
+    "pass": false,
+    "critique": "FAIL: 1. **Text overflow in parallelogram cards**: The text within the 'Results' card `<text x='510' y='340'>` exceeds its container due to excessive line length. **Fix**: Reduce font-size to `font-size='16'` or wrap text into multiple lines. 2. **Table row overflow**: The last table row `<text x='400' y='740'>` has `y='740'`, exceeding the 720px canvas boundary. **Fix**: Move this row up by setting `transform='translate(0, -20)'` on the parent `<g>` group."
+  }
+]

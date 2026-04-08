@@ -1,0 +1,112 @@
+<svg:svg xmlns:svg="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <svg:rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  
+  <svg:defs>
+    
+    <svg:filter id="cardShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <svg:feOffset dx="4" dy="4" result="offsetBlur" />
+      <svg:feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor" />
+      <svg:feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <svg:feMerge>
+        <svg:feMergeNode in="shadow" /> <svg:feMergeNode in="SourceGraphic" />
+      </svg:feMerge>
+    </svg:filter>
+  </svg:defs>
+  
+  
+  <svg:rect x="40" y="100" width="1200" height="3" fill="#0A3D8F" />
+  
+  
+  <svg:g transform="translate(40, 40)">
+    <svg:path d="M5 10 L5 40 L25 35 L45 40 L45 10 L25 15 Z" fill="none" stroke="#0A3D8F" stroke-width="2.5" stroke-linejoin="round" />
+    <svg:path d="M25 15 L25 35" stroke="#0A3D8F" stroke-width="2" />
+    <svg:path d="M5 10 Q15 18 25 15 Q35 18 45 10" fill="none" stroke="#0A3D8F" stroke-width="2" />
+    <svg:path d="M5 40 Q15 32 25 35 Q35 32 45 40" fill="none" stroke="#0A3D8F" stroke-width="2" />
+  </svg:g>
+  
+  
+  <svg:text x="100" y="65" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="44" font-weight="bold" fill="#0A3D8F">Background: Sequence Transduction is Fundamental</svg:text>
+  
+  
+  <svg:rect x="40" y="80" width="1200" height="45" rx="0" fill="#0A3D8F" fill-opacity="0.08" />
+  <svg:text x="640" y="108" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="15" font-weight="bold" fill="#0A3D8F">Sequence tasks like translation are NLP's core; RNN encoder-decoder architectures dominated for a decade before attention improved them.</svg:text>
+  
+  
+  <svg:g transform="translate(40, 110)">
+    
+    <svg:polygon points="8,8 382,8 382,243 8,243" fill="#FFFFFF" filter="url(#cardShadow)" />
+    
+    <svg:polygon points="0,0 374,0 374,235 0,235" fill="#0A3D8F" />
+    
+    <svg:rect x="0" y="0" width="374" height="60" fill="#0A3D8F" />
+    <svg:text x="187" y="42" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">Core Tasks</svg:text>
+    
+    <svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="90">Tasks like machine</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="116">translation, text</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="142">summarization, and</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="168">speech recognition</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="194">are core to NLP.</svg:text></svg:g>
+  
+  
+  <svg:g transform="translate(454, 110)">
+    
+    <svg:polygon points="8,8 382,8 382,243 8,243" fill="#FFFFFF" filter="url(#cardShadow)" />
+    
+    <svg:polygon points="0,0 374,0 374,235 0,235" fill="#1E5AA8" />
+    
+    <svg:rect x="0" y="0" width="374" height="60" fill="#1E5AA8" />
+    <svg:text x="187" y="42" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">RNN Era</svg:text>
+    
+    <svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="90">The dominant approach</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="116">for over a decade:</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="142">Recurrent Neural</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="168">Networks (RNNs,</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="194">LSTMs, GRUs).</svg:text></svg:g>
+  
+  
+  <svg:g transform="translate(868, 110)">
+    
+    <svg:polygon points="8,8 382,8 382,243 8,243" fill="#FFFFFF" filter="url(#cardShadow)" />
+    
+    <svg:polygon points="0,0 374,0 374,235 0,235" fill="#0A3D8F" />
+    
+    <svg:rect x="0" y="0" width="374" height="60" fill="#0A3D8F" />
+    <svg:text x="187" y="42" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">Step Processing</svg:text>
+    
+    <svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="90">RNNs process sequences</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="116">step-by-step, maintaining</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="142">a hidden state that</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="168">encodes history.</svg:text></svg:g>
+  
+  
+  <svg:g transform="translate(40, 385)">
+    
+    <svg:polygon points="8,8 382,8 382,243 8,243" fill="#FFFFFF" filter="url(#cardShadow)" />
+    
+    <svg:polygon points="0,0 374,0 374,235 0,235" fill="#0A3D8F" />
+    
+    <svg:rect x="0" y="0" width="374" height="60" fill="#0A3D8F" />
+    <svg:text x="187" y="42" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">Encoder-Decoder</svg:text>
+    
+    <svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="90">The encoder-decoder</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="116">framework became standard:</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="142">an encoder reads the</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="168">input, a decoder</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="194">generates the output.</svg:text></svg:g>
+  
+  
+  <svg:g transform="translate(454, 385)">
+    
+    <svg:polygon points="8,8 382,8 382,243 8,243" fill="#FFFFFF" filter="url(#cardShadow)" />
+    
+    <svg:polygon points="-2,-2 376,-2 376,237 -2,237" fill="none" stroke="#FFFFFF" stroke-width="2" />
+    
+    <svg:polygon points="0,0 374,0 374,235 0,235" fill="#0A3D8F" />
+    
+    <svg:rect x="0" y="0" width="374" height="60" fill="#0A3D8F" />
+    <svg:text x="187" y="42" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="28" font-weight="bold" fill="#FFFFFF">Attention</svg:text>
+    
+    <svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="90">Attention mechanisms were</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="116">later added, allowing the</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="142">decoder to focus on</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="168">relevant parts of the</svg:text><svg:text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="18" fill="#FFFFFF" x="30" y="194">input sequence.</svg:text></svg:g>
+  
+  
+  <svg:g transform="translate(1160, 40)">
+    <svg:circle cx="25" cy="25" r="25" fill="none" stroke="#0A3D8F" stroke-width="2" />
+    <svg:circle cx="25" cy="25" r="20" fill="none" stroke="#0A3D8F" stroke-width="1" />
+    <svg:text x="25" y="30" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="12" font-weight="bold" fill="#0A3D8F">DUT</svg:text>
+  </svg:g>
+  
+  
+  <svg:text x="40" y="660" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#1A1A1A">海纳百川</svg:text>
+  
+  
+  <svg:text x="1240" y="660" text-anchor="end" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#718096">2024</svg:text>
+  
+  
+  <svg:text x="1240" y="700" text-anchor="end" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="14" fill="#718096">2</svg:text>
+</svg:svg>

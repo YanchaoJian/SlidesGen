@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feOffset dx="8" dy="8" result="offsetBlur" />
+      <feFlood flood-color="#FFFFFF" flood-opacity="1" />
+      <feComposite in2="offsetBlur" operator="in" />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  
+  
+  <line x1="60" y1="100" x2="1220" y2="100" stroke="#0A3D8F" stroke-width="3" />
+  
+  
+  <g transform="translate(60, 20)">
+    <path d="M5 10 L5 40 L45 40 L45 10 L25 18 Z" fill="none" stroke="#0A3D8F" stroke-width="2.5" />
+    <path d="M5 10 L25 18 L45 10" fill="none" stroke="#0A3D8F" stroke-width="2.5" />
+    <path d="M25 18 L25 38" fill="none" stroke="#0A3D8F" stroke-width="2" />
+    <line x1="10" y1="15" x2="20" y2="15" stroke="#0A3D8F" stroke-width="1.5" />
+    <line x1="10" y1="22" x2="18" y2="22" stroke="#0A3D8F" stroke-width="1.5" />
+    <line x1="30" y1="15" x2="40" y2="15" stroke="#0A3D8F" stroke-width="1.5" />
+    <line x1="30" y1="22" x2="38" y2="22" stroke="#0A3D8F" stroke-width="1.5" />
+  </g>
+  
+  
+  <text x="120" y="65" font-size="36" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, sans-serif">The Problem: The Sequential Computation Bottleneck</text>
+  
+  
+  <path fill="#E3F2FD" d="M124,80 H1216 A4,4 0 0 1 1220,84 V111 A4,4 0 0 1 1216,115 H124 A4,4 0 0 1 120,111 V84 A4,4 0 0 1 124,80 Z" />
+  <text x="140" y="102" font-size="15" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, sans-serif">▸ RNNs cannot be parallelized, creating a fundamental training speed bottleneck.</text>
+  
+  
+  <g transform="translate(60, 130)">
+    
+    <polygon points="0,8 520,8 480,428 0,428" fill="#FFFFFF" stroke="#0A3D8F" stroke-width="2" />
+    
+    <polygon points="0,0 520,0 480,420 0,420" fill="#0A3D8F" />
+    
+    
+    <text x="260" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Key Challenges</text>
+    
+    
+    <text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="85">1. RNNs are inherently sequential: to process</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="105">position 'n', you must first process</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="125">positions 1 through n-1.</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="155">2. This results in O(n) sequential operations,</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="175">severely limiting parallelization during training.</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="210">3. Long training times for long sequences</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="230">become a major practical constraint.</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="265">4. Convolutional approaches (ByteNet, ConvS2S)</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="285">enable parallel computation but introduce</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="305">another issue...</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="330">5. The number of operations needed to connect</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="350">distant positions grows with distance</text><text font-size="14" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="30" y="370">(e.g., O(log_k(n))).</text></g>
+  
+  
+  <g transform="translate(600, 130)">
+    
+    <polygon points="0,8 600,8 580,430 0,430" fill="#FFFFFF" stroke="#0A3D8F" stroke-width="2" />
+    
+    <polygon points="0,0 600,0 580,422 0,422" fill="#1E5AA8" />
+    
+    
+    <text x="300" y="30" text-anchor="middle" font-size="12" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Table 1: Maximum path lengths, per-layer complexity and minimum</text>
+    <text x="300" y="46" text-anchor="middle" font-size="12" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">number of sequential operations for different layer types.</text>
+    
+    
+    <rect x="20" y="65" width="560" height="35" fill="#0A3D8F" />
+    <text x="40" y="87" font-size="11" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Layer Type</text>
+    <text x="210" y="87" font-size="11" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Complexity per Layer</text>
+    <text x="340" y="87" font-size="11" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Sequential Operations</text>
+    <text x="480" y="87" font-size="11" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Max Path Length</text>
+    
+    
+    <rect x="20" y="100" width="560" height="85" fill="#1E5AA8" />
+    <text x="40" y="122" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Self-Attention</text>
+    <text font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="210" y="118">O(n² · d)</text><text x="340" y="122" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">O(1)</text>
+    <text x="480" y="122" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">O(1)</text>
+    
+    
+    <rect x="20" y="185" width="560" height="85" fill="#1E5AA8" />
+    <text x="40" y="207" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Recurrent</text>
+    <text font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="210" y="203">O(n · d²)</text><text x="340" y="207" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">O(n)</text>
+    <text x="480" y="207" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">O(n)</text>
+    
+    
+    <rect x="20" y="270" width="560" height="85" fill="#1E5AA8" />
+    <text x="40" y="292" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Convolutional</text>
+    <text font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="210" y="288">O(k · n · d)</text><text x="340" y="292" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">O(1)</text>
+    <text x="480" y="292" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">O(log_k(n))</text>
+    
+    
+    <rect x="20" y="355" width="560" height="85" fill="#1E5AA8" />
+    <text x="40" y="377" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">Self-Attention (restricted)</text>
+    <text font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" x="210" y="373">O(r · n · d)</text><text x="340" y="377" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">O(1)</text>
+    <text x="480" y="377" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif">O(n/r)</text>
+    
+    
+    <text x="20" y="440" font-size="10" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, sans-serif" fill-opacity="0.8">Note: n = sequence length, d = representation dimension, k = kernel size, r = neighborhood size</text>
+  </g>
+  
+  
+  <line x1="60" y1="620" x2="1220" y2="620" stroke="#0A3D8F" stroke-width="1" />
+  
+  
+  <text x="60" y="640" font-size="10" fill="#718096" font-family="Microsoft YaHei, PingFang SC, sans-serif">Source: Vaswani et al., "Attention Is All You Need" (2017)</text>
+  
+  
+  <text x="60" y="665" font-size="18" fill="#1A1A1A" font-family="KaiTi, STKaiti, serif" font-style="italic">海纳百川 · 自强不息</text>
+  
+  
+  <text x="1220" y="665" text-anchor="end" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, sans-serif">2024</text>
+  
+  
+  <text x="1220" y="695" text-anchor="end" font-size="12" fill="#718096" font-family="Arial, sans-serif">03 / 16</text>
+</svg>

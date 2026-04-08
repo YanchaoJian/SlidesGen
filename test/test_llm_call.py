@@ -13,7 +13,7 @@ from openai import OpenAI
 
 load_dotenv()
 
-DEFAULT_MODEL = "deepseek-ai/DeepSeek-V3.2"
+DEFAULT_MODEL = "gpt-4o-mini"
 DEFAULT_PROMPT = "Reply with exactly: pong"
 
 
@@ -21,10 +21,10 @@ def main() -> int:
     model = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_MODEL
     prompt = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_PROMPT
 
-    base_url = os.environ.get("MS_BASE_URL")
-    api_key = os.environ.get("MS_API_KEY")
+    base_url = os.environ.get("AWESOME_BASE_URL")
+    api_key = os.environ.get("AWESOME_API_KEY")
     if not base_url or not api_key:
-        print("[ERROR] MS_BASE_URL / MS_API_KEY 未在 .env 中设置")
+        print("[ERROR] AWESOME_BASE_URL / AWESOME_API_KEY 未在 .env 中设置")
         return 1
 
     print(f"[INFO] base_url = {base_url}")

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12" />
+      <feOffset dx="0" dy="6" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.15" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  
+  
+  <rect x="0" y="0" width="1280" height="4" fill="#0A3D8F" />
+  
+  
+  <text x="40" y="40" font-size="24" font-weight="bold" fill="#0A3D8F" font-family="'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif">Questions &amp; Discussion</text>
+  
+  
+  <path fill="#0A3D8F" fill-opacity="0.1" d="M46,80 H1234 A6,6 0 0 1 1240,86 V119 A6,6 0 0 1 1234,125 H46 A6,6 0 0 1 40,119 V86 A6,6 0 0 1 46,80 Z" />
+  <text x="60" y="108" font-size="15" font-weight="bold" fill="#0A3D8F" font-family="'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif">▸ This discussion will address key questions and gather insights to shape our strategy.</text>
+  
+  
+  <rect x="40" y="160" width="1160" height="300" rx="0" fill="#F8F9FA" stroke="#0A3D8F" stroke-width="2" />
+  <rect x="40" y="160" width="1160" height="10" fill="#0A3D8F" />
+  <text x="620" y="190" text-anchor="middle" font-size="24" font-weight="bold" fill="#0A3D8F" font-family="'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif">Questions &amp; Discussion</text>
+  <text fill="#0A3D8F" font-size="18" font-family="'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif" font-weight="500" x="60" y="231.4">Thank you for your attention!</text><text fill="#0A3D8F" font-size="18" font-family="'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif" font-weight="500" x="60" y="232.8">Questions and feedback are welcome.</text><rect x="40" y="470" width="1160" height="200" rx="0" fill="#F8F9FA" stroke="#0A3D8F" stroke-width="2" />
+  <rect x="40" y="470" width="1160" height="10" fill="#0A3D8F" />
+  <text x="620" y="500" text-anchor="middle" font-size="20" font-weight="bold" fill="#0A3D8F" font-family="'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif">Insights &amp; Findings</text>
+  <text fill="#0A3D8F" font-size="18" font-family="'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif" font-weight="500" x="60" y="541.4">Thank you for your attention!</text><text fill="#0A3D8F" font-size="18" font-family="'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif" font-weight="500" x="60" y="542.8">Questions and feedback are welcome.</text><text x="1240" y="680" text-anchor="end" font-size="10" fill="#94A3B8" font-family="Arial, sans-serif">Slide 16 / 16</text>
+</svg>

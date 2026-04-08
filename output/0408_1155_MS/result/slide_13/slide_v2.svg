@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <filter id="shadow" x="-15%" y="-15%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
+      <feOffset dx="4" dy="4" result="offsetBlur" />
+      <feFlood flood-color="#000000" flood-opacity="0.1" result="shadowColor" />
+      <feComposite in="shadowColor" in2="offsetBlur" operator="in" result="shadow" />
+      <feMerge>
+        <feMergeNode in="shadow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  
+  
+  <rect x="0" y="100" width="1280" height="3" fill="#0A3D8F" />
+  
+  
+  <g transform="translate(40, 40)">
+    <path d="M5 10 L5 40 Q5 45 10 45 L20 45 L25 35 L30 45 L40 45 Q45 45 45 40 L45 10 Q45 5 40 5 L25 5 L20 15 L15 5 L10 5 Q5 5 5 10 Z" fill="none" stroke="#0A3D8F" stroke-width="2.5" />
+    <path d="M20 15 L25 5 L30 15" fill="none" stroke="#0A3D8F" stroke-width="2" />
+    <line x1="25" y1="15" x2="25" y2="35" stroke="#0A3D8F" stroke-width="2" />
+  </g>
+  
+  
+  <text x="100" y="65" font-size="44" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">Generalization: Strong Performance on Parsing</text>
+  
+  
+  <g transform="translate(1160, 40)">
+    <circle cx="40" cy="40" r="35" fill="none" stroke="#0A3D8F" stroke-width="2" />
+    <circle cx="40" cy="40" r="28" fill="none" stroke="#0A3D8F" stroke-width="1" />
+    <text x="40" y="45" text-anchor="middle" font-size="12" font-weight="bold" fill="#0A3D8F">DUT</text>
+  </g>
+  
+  
+  <path fill="#0A3D8F" fill-opacity="0.08" d="M46,140 H1234 A6,6 0 0 1 1240,146 V189 A6,6 0 0 1 1234,195 H46 A6,6 0 0 1 40,189 V146 A6,6 0 0 1 46,140 Z" />
+  <text x="640" y="173" text-anchor="middle" font-size="13" font-weight="bold" fill="#0A3D8F">▸ With only WSJ training data, a 4-layer Transformer (91.3 F1) outperforms strong discriminative parsers and remains competitive in semi-supervised settings.</text>
+  
+  
+  <rect x="40" y="200" width="1200" height="240" fill="#0A3D8F" />
+  
+  
+  <text x="640" y="240" text-anchor="middle" font-size="32" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">Experimental Setup</text>
+  
+  
+  <text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif" font-size="14" fill="#FFFFFF" x="90" y="280">Task: English constituency parsing (predict syntactic tree structure)</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif" font-size="14" fill="#FFFFFF" x="90" y="302">Training: Only 40K WSJ sentences (minimal data)</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif" font-size="14" fill="#FFFFFF" x="90" y="324">Model: 4-layer Transformer</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif" font-size="14" fill="#FFFFFF" x="90" y="368">Key Finding:</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif" font-size="14" fill="#FFFFFF" x="90" y="390">• WSJ-only: 91.3 F1 (outperforms Berkeley Parser 90.4)</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif" font-size="14" fill="#FFFFFF" x="90" y="412">• Semi-supervised: 92.7 F1 (competitive with SOTA)</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif" font-size="14" fill="#FFFFFF" x="90" y="434">This proves the Transformer's versatility beyond machine translation.</text><rect x="40" y="460" width="1160" height="200" fill="#0A3D8F" />
+  
+  
+  <text x="640" y="495" text-anchor="middle" font-size="24" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, sans-serif">Parsing Performance Comparison (WSJ Section 23)</text>
+  
+  
+  <rect x="60" y="515" width="1120" height="30" fill="#1E5AA8" />
+  <text x="80" y="535" font-size="13" font-weight="bold" fill="#FFFFFF">Parser</text>
+  <text x="660" y="535" font-size="13" font-weight="bold" fill="#FFFFFF">Training</text>
+  <text x="1080" y="535" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">WSJ 23 F1</text>
+  
+  
+  
+  <rect x="60" y="545" width="1120" height="24" fill="#0A3D8F" />
+  <text x="80" y="562" font-size="13" fill="#FFFFFF">Vinyals &amp; Kaiser et al. (2014) [37]</text>
+  <text x="660" y="562" font-size="13" fill="#FFFFFF">WSJ only, discriminative</text>
+  <text x="1080" y="562" text-anchor="middle" font-size="13" fill="#FFFFFF">88.3</text>
+  
+  
+  <rect x="60" y="569" width="1120" height="24" fill="#1E5AA8" fill-opacity="0.3" />
+  <text x="80" y="586" font-size="13" fill="#FFFFFF">Petrov et al. (2006) [29]</text>
+  <text x="660" y="586" font-size="13" fill="#FFFFFF">WSJ only, discriminative</text>
+  <text x="1080" y="586" text-anchor="middle" font-size="13" fill="#FFFFFF">90.4</text>
+  
+  
+  <rect x="60" y="593" width="1120" height="24" fill="#0A3D8F" />
+  <text x="80" y="610" font-size="13" fill="#FFFFFF">Zhu et al. (2013) [40]</text>
+  <text x="660" y="610" font-size="13" fill="#FFFFFF">WSJ only, discriminative</text>
+  <text x="1080" y="610" text-anchor="middle" font-size="13" fill="#FFFFFF">90.4</text>
+  
+  
+  <rect x="60" y="617" width="1120" height="24" fill="#1E5AA8" fill-opacity="0.3" />
+  <text x="80" y="634" font-size="13" fill="#FFFFFF">Dyer et al. (2016) [8]</text>
+  <text x="660" y="634" font-size="13" fill="#FFFFFF">WSJ only, discriminative</text>
+  <text x="1080" y="634" text-anchor="middle" font-size="13" fill="#FFFFFF">91.7</text>
+  
+  
+  <rect x="60" y="641" width="1120" height="24" fill="#0A3D8F" />
+  <text x="80" y="658" font-size="13" font-weight="bold" fill="#FFFFFF">Transformer (4 layers)</text>
+  <text x="660" y="658" font-size="13" font-weight="bold" fill="#FFFFFF">WSJ only, discriminative</text>
+  <rect x="1030" y="641" width="80" height="24" fill="#0A3D8F" />
+  <text x="1080" y="658" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFFFFF">91.3</text>
+  
+  
+  <text x="40" y="695" font-size="12" fill="#718096">Source: Vaswani et al. (2017), Table 4</text>
+  <text x="1240" y="695" text-anchor="end" font-size="14" fill="#718096">13</text>
+  <text x="1080" y="695" font-size="12" fill="#718096">2024</text>
+  
+  
+  <text x="40" y="715" font-size="11" fill="#1A1A1A" font-family="KaiTi, STKaiti, serif">海纳百川</text>
+</svg>

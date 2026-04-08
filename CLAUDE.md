@@ -97,7 +97,7 @@ Each slide runs as an independent `SlideState` subgraph compiled by `build_slide
 
 Two TypedDict state classes (`workflow/state.py`):
 
-- **OverallState**: Main graph state. `generated_slide_paths` uses `Annotated[List, operator.add]` for parallel accumulation. Includes a dedicated `pptx_feedback_scope: Optional[str]` field that holds the classified feedback scope from the final review (kept separate from `pptx_review.critique`, which always stores the raw user text).
+- **OverallState**: Main graph state. `generated_slide_paths` is `Annotated[Dict[int, str], _merge_slide_paths]` — a custom reducer keyed by `slide_page` so the latest version overwrites prior ones (no duplicate accumulation across HITL local-regen / resume). Includes a dedicated `pptx_feedback_scope: Optional[str]` field that holds the classified feedback scope from the final review (kept separate from `pptx_review.critique`, which always stores the raw user text).
 - **SlideState**: Per-slide subgraph state.
 
 `retry_slide_pages`: `None` = regenerate all; non-empty list = specific pages only; empty list = skip all.

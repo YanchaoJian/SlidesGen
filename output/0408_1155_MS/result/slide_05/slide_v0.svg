@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  <rect x="0" y="0" width="1280" height="720" fill="#F8F9FA" />
+  
+  
+  <line x1="60" y1="110" x2="1220" y2="110" stroke="#0A3D8F" stroke-width="3" />
+  
+  
+  <g transform="translate(60, 40)">
+    <path d="M5 5 L5 40 L45 40 L45 5 L25 15 Z" fill="none" stroke="#0A3D8F" stroke-width="2.5" />
+    <path d="M5 5 L2515 L45 5" fill="none" stroke="#0A3D8F" stroke-width="2.5" />
+    <line x1="25" y1="15" x2="25" y2="40" stroke="#0A3D8F" stroke-width="2" />
+    <line x1="10" y1="10" x2="10" y2="35" stroke="#0A3D8F" stroke-width="1.5" />
+    <line x1="40" y1="10" x2="40" y2="35" stroke="#0A3D8F" stroke-width="1.5" />
+  </g>
+  
+  
+  <text x="120" y="75" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="36" font-weight="bold" fill="#0A3D8F">Technical Core: Scaled Dot-Product Attention</text>
+  
+  
+  
+  <g transform="translate(60, 140)">
+    
+    <polygon points="380,0 420,0 420,420 380,420" fill="#FFFFFF" stroke="#0A3D8F" stroke-width="2" />
+    
+    <polygon points="0,0 380,0 380,420 0,420" fill="#0A3D8F" />
+    <polygon points="0,0 40,0 420,420 380,420" fill="#0A3D8F" />
+    
+    <text x="190" y="45" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">What is Attention</text>
+    <line x1="60" y1="60" x2="320" y2="60" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.5" />
+    
+    <text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="30" y="100">Attention is a function that</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="30" y="128">maps a query and a set of</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="30" y="156">key-value pairs to an output.</text></g>
+  
+  
+  <g transform="translate(500, 140)">
+    
+    <polygon points="380,0 420,0 420,420 380,420" fill="#FFFFFF" stroke="#0A3D8F" stroke-width="2" />
+    
+    <polygon points="0,0 380,0 380,420 0,420" fill="#0A3D8F" />
+    <polygon points="0,0 40,0 420,420 380,420" fill="#0A3D8F" />
+    
+    <text x="190" y="45" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">Weighted Sum</text>
+    <line x1="60" y1="60" x2="320" y2="60" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.5" />
+    
+    <text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="30" y="100">The output is a weighted sum</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="30" y="128">of the values, where the</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="30" y="156">weight is the compatibility of</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="30" y="184">the query with each key.</text></g>
+  
+  
+  <g transform="translate(940, 140)">
+    
+    <polygon points="280,0 320,0 320,420 280,420" fill="#FFFFFF" stroke="#0A3D8F" stroke-width="2" />
+    
+    <polygon points="0,0 280,0 280,420 0,420" fill="#0A3D8F" />
+    <polygon points="0,0 40,0 320,420 280,420" fill="#0A3D8F" />
+    
+    <text x="140" y="45" text-anchor="middle" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">Matrix Form</text>
+    <line x1="40" y1="60" x2="240" y2="60" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.5" />
+    
+    <text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="25" y="100">We compute this for a matrix</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="25" y="128">of queries Q, keys K, and</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="16" fill="#FFFFFF" x="25" y="156">values V simultaneously.</text><path fill="#FFFFFF" fill-opacity="0.15" d="M29,210 H271 A4,4 0 0 1 275,214 V276 A4,4 0 0 1 271,280 H29 A4,4 0 0 1 25,276 V214 A4,4 0 0 1 29,210 Z" />
+    <text font-family="Times New Roman, serif" font-size="20" font-style="italic" fill="#FFFFFF" text-anchor="middle" x="150" y="245">Attention(Q,K,V) = softmax</text><text font-family="Times New Roman, serif" font-size="20" font-style="italic" fill="#FFFFFF" text-anchor="middle" x="150" y="267">(QKT/√dk)V</text></g>
+  
+  
+  <g transform="translate(60, 590)">
+    <text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="14" fill="#4A5568" x="0" y="0">The two most commonly used attention functions are additive attention and dot-product (multiplicative) attention.</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="14" fill="#4A5568" x="0" y="22">Dot-product attention is identical to our algorithm, except for the scaling factor of 1/√dk.</text><text font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="14" fill="#4A5568" x="0" y="44">While similar in theoretical complexity, dot-product attention is much faster and more space-efficient in practice.</text></g>
+  
+  
+  <line x1="60" y1="615" x2="1220" y2="615" stroke="#0A3D8F" stroke-width="1" />
+  
+  
+  <text x="60" y="655" font-family="KaiTi, STKaiti, serif" font-size="18" fill="#1A1A1A">海纳百川 · 自强不息</text>
+  
+  
+  <text x="1220" y="655" text-anchor="end" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" font-size="14" fill="#718096">2024</text>
+  
+  
+  <text x="1220" y="690" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#718096">05 / 16</text>
+</svg>
