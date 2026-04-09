@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SlidesGen — Turn Papers into Beautiful Slides, Automatically</title>
+<meta name="description" content="SlidesGen is a multi-agent system that transforms academic PDF papers into polished, fully-editable PowerPoint presentations." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fafbff;
+    --bg-2:#f3f5fb;
+    --panel:#ffffff;
+    --border:rgba(15,23,42,0.08);
+    --border-strong:rgba(15,23,42,0.14);
+    --fg:#0f172a;
+    --muted:#475569;
+    --dim:#64748b;
+    --brand:#7c3aed;
+    --brand-2:#2563eb;
+    --brand-3:#db2777;
+    --accent:#0891b2;
+    --green:#059669;
+    --orange:#ea580c;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--bg);
+    color:var(--fg);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  code,pre,.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1180px;margin:0 auto;padding:0 24px}
+
+  /* ---------- Backgrounds ---------- */
+  .bg-grid{
+    position:fixed;inset:0;z-index:-2;
+    background-image:
+      linear-gradient(to right,rgba(15,23,42,.05) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(15,23,42,.05) 1px,transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 0%,#000 40%,transparent 100%);
+  }
+  .bg-glow{
+    position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(600px 400px at 15% 10%,rgba(124,58,237,.14),transparent 60%),
+      radial-gradient(700px 500px at 85% 20%,rgba(37,99,235,.12),transparent 60%),
+      radial-gradient(500px 400px at 50% 80%,rgba(219,39,119,.08),transparent 60%);
+  }
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(14px);
+    background:rgba(250,251,255,.78);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
+  .logo-mark{
+    width:30px;height:30px;border-radius:8px;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2) 60%,var(--brand-3));
+    display:grid;place-items:center;font-size:16px;color:#fff;
+    box-shadow:0 6px 20px rgba(124,58,237,.35);
+  }
+  .nav-links{display:flex;gap:32px;font-size:14px;color:var(--muted)}
+  .nav-links a:hover{color:var(--fg)}
+  .nav-cta{
+    padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;
+    background:var(--fg);color:#fff;
+  }
+  .nav-cta:hover{opacity:.88}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:96px 0 72px;text-align:center;position:relative}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 14px;border-radius:999px;
+    border:1px solid var(--border-strong);
+    background:#fff;
+    font-size:12.5px;color:var(--muted);
+    margin-bottom:28px;
+    box-shadow:0 2px 8px rgba(15,23,42,.04);
+  }
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  h1{
+    font-size:clamp(40px,6.2vw,78px);
+    line-height:1.05;
+    letter-spacing:-0.035em;
+    font-weight:800;
+    margin:0 0 22px;
+  }
+  h1 .grad{
+    background:linear-gradient(120deg,#7c3aed 0%,#2563eb 50%,#db2777 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{
+    max-width:680px;margin:0 auto 36px;
+    font-size:19px;color:var(--muted);
+  }
+  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:13px 24px;border-radius:10px;
+    font-size:14.5px;font-weight:600;
+    transition:all .2s ease;cursor:pointer;border:1px solid transparent;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;
+    box-shadow:0 10px 30px rgba(124,58,237,.32);
+  }
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 14px 40px rgba(124,58,237,.42)}
+  .btn-ghost{
+    background:#fff;
+    border-color:var(--border-strong);color:var(--fg);
+    box-shadow:0 2px 8px rgba(15,23,42,.04);
+  }
+  .btn-ghost:hover{background:#f8fafc;border-color:var(--brand)}
+
+  .hero-meta{
+    margin-top:48px;display:flex;gap:40px;justify-content:center;
+    color:var(--dim);font-size:13px;flex-wrap:wrap;
+  }
+  .hero-meta b{color:var(--fg);font-weight:600}
+
+  /* ---------- Pipeline Visual ---------- */
+  .pipeline{
+    margin:72px auto 0;max-width:980px;
+    background:#fff;
+    border:1px solid var(--border);border-radius:18px;
+    padding:32px;
+    box-shadow:0 30px 80px -30px rgba(15,23,42,.25),0 0 0 1px rgba(124,58,237,.05);
+    position:relative;overflow:hidden;
+  }
+  .pipeline::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(600px 200px at 50% 0%,rgba(124,58,237,.06),transparent 70%);
+    pointer-events:none;
+  }
+  .pipe-row{
+    display:grid;
+    grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;
+    gap:14px;align-items:center;
+    position:relative;z-index:1;
+  }
+  .pipe-step{
+    padding:18px 12px;border-radius:12px;
+    background:#fafbff;
+    border:1px solid var(--border);
+    text-align:center;font-size:12.5px;
+    transition:all .3s ease;
+  }
+  .pipe-step:hover{border-color:var(--brand);background:#f5f3ff;transform:translateY(-2px)}
+  .pipe-step .ico{font-size:22px;margin-bottom:8px;display:block}
+  .pipe-step .lbl{font-weight:600;color:var(--fg)}
+  .pipe-step .sub2{color:var(--dim);font-size:11px;margin-top:2px}
+  .pipe-arrow{
+    color:var(--brand);font-size:22px;font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+    width:24px;
+  }
+  @media(max-width:760px){
+    .pipe-row{grid-template-columns:1fr 1fr}
+    .pipe-arrow{display:none}
+  }
+
+  /* ---------- Section shell ---------- */
+  section{padding:100px 0;position:relative}
+  .eyebrow{
+    display:inline-block;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--brand);margin-bottom:14px;
+  }
+  h2{
+    font-size:clamp(30px,4vw,46px);
+    letter-spacing:-0.025em;line-height:1.1;
+    font-weight:800;margin:0 0 16px;
+  }
+  .lead{color:var(--muted);font-size:17px;max-width:620px;margin:0 0 56px}
+  .section-head{text-align:center}
+  .section-head .lead{margin-left:auto;margin-right:auto}
+
+  /* ---------- Features grid ---------- */
+  .features{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  }
+  @media(max-width:900px){.features{grid-template-columns:1fr 1fr}}
+  @media(max-width:600px){.features{grid-template-columns:1fr}}
+  .feat{
+    padding:28px;border-radius:var(--radius);
+    background:#fff;
+    border:1px solid var(--border);
+    transition:all .3s ease;position:relative;overflow:hidden;
+    box-shadow:0 2px 12px rgba(15,23,42,.04);
+  }
+  .feat::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--brand),var(--brand-2),var(--brand-3));
+    opacity:0;transition:opacity .3s;
+  }
+  .feat:hover{border-color:var(--brand);transform:translateY(-3px);box-shadow:0 20px 40px -20px rgba(124,58,237,.25)}
+  .feat:hover::before{opacity:1}
+  .feat .ic{
+    width:44px;height:44px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(37,99,235,.1));
+    border:1px solid rgba(124,58,237,.2);font-size:20px;margin-bottom:18px;
+  }
+  .feat h3{font-size:17px;margin:0 0 8px;font-weight:700}
+  .feat p{margin:0;color:var(--muted);font-size:14px;line-height:1.65}
+
+  /* ---------- Architecture ---------- */
+  .arch-wrap{
+    display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;
+  }
+  @media(max-width:860px){.arch-wrap{grid-template-columns:1fr}}
+  .phase-list{display:flex;flex-direction:column;gap:14px}
+  .phase{
+    display:flex;gap:16px;align-items:flex-start;
+    padding:18px 20px;border-radius:12px;
+    background:#fff;border:1px solid var(--border);
+    transition:all .25s;box-shadow:0 2px 8px rgba(15,23,42,.03);
+  }
+  .phase:hover{border-color:var(--brand);transform:translateX(4px)}
+  .phase-num{
+    flex:0 0 34px;height:34px;border-radius:9px;
+    display:grid;place-items:center;font-weight:700;font-size:13px;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    color:#fff;
+  }
+  .phase h4{margin:0 0 4px;font-size:15px;font-weight:700}
+  .phase p{margin:0;color:var(--muted);font-size:13.5px}
+  .phase code{color:var(--accent);font-size:12px}
+
+  .terminal{
+    border-radius:14px;overflow:hidden;
+    border:1px solid #1e293b;
+    background:#0f172a;
+    box-shadow:0 30px 80px -20px rgba(15,23,42,.35),0 0 0 1px rgba(124,58,237,.12);
+  }
+  .term-bar{
+    display:flex;align-items:center;gap:8px;
+    padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);
+    background:#1e293b;
+  }
+  .term-bar .dot{width:12px;height:12px;border-radius:50%}
+  .d1{background:#ff5f57}.d2{background:#febc2e}.d3{background:#28c840}
+  .term-title{margin-left:12px;font-size:12px;color:#94a3b8}
+  .term-body{padding:22px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.85;color:#e2e8f0}
+  .term-body .prompt{color:#34d399}
+  .term-body .flag{color:#c4b5fd}
+  .term-body .str{color:#fbbf24}
+  .term-body .cmt{color:#64748b}
+  .term-body .out{color:#94a3b8}
+  .term-body .ok{color:#34d399}
+
+  /* ---------- Stack ---------- */
+  .stack{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  }
+  @media(max-width:860px){.stack{grid-template-columns:1fr 1fr}}
+  .stack-item{
+    padding:22px;border-radius:12px;text-align:center;
+    background:#fff;border:1px solid var(--border);
+    transition:all .25s;box-shadow:0 2px 8px rgba(15,23,42,.03);
+  }
+  .stack-item:hover{border-color:var(--brand);transform:translateY(-3px);box-shadow:0 12px 24px -12px rgba(124,58,237,.25)}
+  .stack-item .name{font-weight:700;font-size:14px;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+  .stack-item .role{color:var(--muted);font-size:12.5px}
+
+  /* ---------- CTA ---------- */
+  .cta-box{
+    margin-top:40px;padding:56px 32px;border-radius:20px;text-align:center;
+    background:
+      radial-gradient(600px 300px at 50% 0%,rgba(124,58,237,.1),transparent 70%),
+      linear-gradient(180deg,#ffffff,#f8fafc);
+    border:1px solid var(--border-strong);
+    box-shadow:0 30px 80px -30px rgba(124,58,237,.2);
+    position:relative;overflow:hidden;
+  }
+  .cta-box h2{margin-bottom:14px}
+  .cta-box p{color:var(--muted);max-width:520px;margin:0 auto 28px}
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:48px 0 36px;border-top:1px solid var(--border);
+    color:var(--dim);font-size:13px;
+  }
+  .foot-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+
+  /* ---------- Animations ---------- */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .hero>*{animation:fadeUp .7s ease both}
+  .hero .badge{animation-delay:.05s}
+  .hero h1{animation-delay:.1s}
+  .hero .sub{animation-delay:.2s}
+  .hero .hero-cta{animation-delay:.3s}
+  .hero .hero-meta{animation-delay:.4s}
+  .pipeline{animation:fadeUp .9s ease .5s both}
+</style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <nav>
+    <div class="container nav-inner">
+      <div class="logo">
+        <div class="logo-mark">✦</div>
+        SlidesGen
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#stack">Stack</a>
+        <a href="#quickstart">Quick Start</a>
+      </div>
+      <a class="nav-cta" href="#quickstart">Get Started →</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="badge"><span class="dot"></span> Multi-Agent · LangGraph · v1.0</div>
+      <h1>
+        Turn research papers<br/>
+        into <span class="grad">beautiful slides</span>,<br/>
+        automatically.
+      </h1>
+      <p class="sub">
+        SlidesGen is an AI-powered multi-agent system that transforms academic PDFs
+        into polished, fully-editable PowerPoint presentations — slides that look
+        <em>designed</em>, not generated.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#quickstart">⚡ Generate your first deck</a>
+        <a class="btn btn-ghost" href="#architecture">View architecture →</a>
+      </div>
+      <div class="hero-meta">
+        <div>🎯 <b>Parallel</b> slide generation</div>
+        <div>🔁 <b>Self-correcting</b> loops</div>
+        <div>👤 <b>Human-in-the-loop</b></div>
+        <div>💾 <b>Resumable</b> sessions</div>
+      </div>
+
+      <div class="pipeline">
+        <div class="pipe-row">
+          <div class="pipe-step"><span class="ico">📄</span><div class="lbl">PDF Input</div><div class="sub2">Marker parse</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step"><span class="ico">🎨</span><div class="lbl">Style Analysis</div><div class="sub2">Vision LLM</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step"><span class="ico">🧠</span><div class="lbl">Plan & Expand</div><div class="sub2">Multi-agent</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step"><span class="ico">✏️</span><div class="lbl">SVG Generate</div><div class="sub2">CRAP optimize</div></div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step"><span class="ico">📊</span><div class="lbl">Editable PPTX</div><div class="sub2">DrawingML</div></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="features">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Features</span>
+        <h2>Everything you need, out of the box</h2>
+        <p class="lead">From raw PDF to pixel-perfect slides — each step powered by agents that reason, critique, and retry.</p>
+      </div>
+      <div class="features">
+        <div class="feat">
+          <div class="ic">📄</div>
+          <h3>Deep PDF understanding</h3>
+          <p>Layout, OCR, equations, and tables extracted via Marker — so figures and formulas survive the journey.</p>
+        </div>
+        <div class="feat">
+          <div class="ic">🎨</div>
+          <h3>Visual style transfer</h3>
+          <p>Drop in any reference image. The style analyst agent distills it into a reusable protocol applied across every slide.</p>
+        </div>
+        <div class="feat">
+          <div class="ic">🧠</div>
+          <h3>Multi-agent planning</h3>
+          <p>Outline → per-slide layout → SVG code. Each phase is a specialized agent with its own prompts and critic.</p>
+        </div>
+        <div class="feat">
+          <div class="ic">🔁</div>
+          <h3>Self-correcting loops</h3>
+          <p>Unified retry budget covers style protocol, SVG validation, and CRAP design critique. Failures trigger rewrites, not crashes.</p>
+        </div>
+        <div class="feat">
+          <div class="ic">⚡</div>
+          <h3>Parallel generation</h3>
+          <p>Every slide runs as an independent LangGraph subgraph. A 20-slide deck finishes in the time of one.</p>
+        </div>
+        <div class="feat">
+          <div class="ic">👤</div>
+          <h3>Human-in-the-loop</h3>
+          <p>Two interrupt checkpoints let you approve the outline and the final deck — local edits or full regen, your call.</p>
+        </div>
+        <div class="feat">
+          <div class="ic">💾</div>
+          <h3>Resumable sessions</h3>
+          <p>SQLite-checkpointed via AsyncSqliteSaver. Kill the process, resume tomorrow from the exact same state.</p>
+        </div>
+        <div class="feat">
+          <div class="ic">🎯</div>
+          <h3>Multi-model routing</h3>
+          <p>Pick a vision model for style, a strong coder for SVG, and a fast text model for planning — each stage independently.</p>
+        </div>
+        <div class="feat">
+          <div class="ic">📊</div>
+          <h3>Truly editable PPTX</h3>
+          <p>Deterministic SVG → DrawingML conversion produces native PowerPoint shapes you can still move, recolor, and rewrite.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture" style="background:linear-gradient(180deg,transparent,rgba(124,58,237,.04),transparent)">
+    <div class="container">
+      <span class="eyebrow">Architecture</span>
+      <h2>Two pipelines. One graph.</h2>
+      <p class="lead">Style analysis and content extraction run in parallel, then converge on a fan-out slide generator. Each slide is its own subgraph.</p>
+      <div class="arch-wrap">
+        <div class="phase-list">
+          <div class="phase">
+            <div class="phase-num">01</div>
+            <div><h4>👁 Perception</h4><p>PDF parsing via <code>marker-pdf</code> + visual style analysis from a reference image.</p></div>
+          </div>
+          <div class="phase">
+            <div class="phase-num">02</div>
+            <div><h4>📋 Planning</h4><p>Outline generation, then per-slide layout expansion with detailed structural hints.</p></div>
+          </div>
+          <div class="phase">
+            <div class="phase-num">03</div>
+            <div><h4>🎨 Execution</h4><p>SVG generation → CRAP optimization → design critique, with a shared retry budget.</p></div>
+          </div>
+          <div class="phase">
+            <div class="phase-num">04</div>
+            <div><h4>📤 Delivery</h4><p>Feedback analyzer classifies user edits as <code>local</code>, <code>global_style</code>, or <code>global_plan</code>.</p></div>
+          </div>
+          <div class="phase">
+            <div class="phase-num">05</div>
+            <div><h4>🔧 Pipeline</h4><p>SVG validation, finalization, and deterministic SVG → DrawingML conversion.</p></div>
+          </div>
+        </div>
+
+        <div class="terminal">
+          <div class="term-bar">
+            <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+            <div class="term-title">slides-gen · zsh</div>
+          </div>
+          <div class="term-body">
+<span class="cmt"># Generate slides from any paper</span><br/>
+<span class="prompt">$</span> python main.py \<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="flag">--pdf_path</span> <span class="str">paper.pdf</span> \<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="flag">--style_image_path</span> <span class="str">style.png</span> \<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="flag">--svg_model</span> <span class="str">claude-opus-4-6</span><br/><br/>
+<span class="out">[perception]</span> extracting PDF... <span class="ok">✓</span><br/>
+<span class="out">[perception]</span> analyzing style... <span class="ok">✓</span><br/>
+<span class="out">[planning]&nbsp;&nbsp;</span> 12 slides planned <span class="ok">✓</span><br/>
+<span class="out">[execution]&nbsp;</span> generating slides in parallel...<br/>
+<span class="out">[execution]&nbsp;</span> slide_01 ✓  slide_02 ✓  slide_03 ✓<br/>
+<span class="out">[delivery]&nbsp;&nbsp;</span> Final_Presentation.pptx <span class="ok">✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Tech Stack</span>
+        <h2>Built on proven foundations</h2>
+        <p class="lead">Best-in-class libraries wired together with careful async orchestration.</p>
+      </div>
+      <div class="stack">
+        <div class="stack-item"><div class="name">langgraph</div><div class="role">Multi-agent orchestration</div></div>
+        <div class="stack-item"><div class="name">langchain_openai</div><div class="role">LLM interface</div></div>
+        <div class="stack-item"><div class="name">marker-pdf</div><div class="role">PDF parsing & OCR</div></div>
+        <div class="stack-item"><div class="name">python-pptx</div><div class="role">PowerPoint generation</div></div>
+        <div class="stack-item"><div class="name">pdf2image</div><div class="role">Slide rendering</div></div>
+        <div class="stack-item"><div class="name">tenacity</div><div class="role">Resilient retries</div></div>
+        <div class="stack-item"><div class="name">AsyncSqliteSaver</div><div class="role">Checkpoint storage</div></div>
+        <div class="stack-item"><div class="name">Poppler</div><div class="role">PDF rendering</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="quickstart">
+    <div class="container">
+      <div class="cta-box">
+        <span class="eyebrow">Quick Start</span>
+        <h2>Ready in three commands.</h2>
+        <p>Python 3.11+, a PDF, a style image, and you're off. SlidesGen handles the rest.</p>
+        <div class="terminal" style="max-width:640px;margin:0 auto;text-align:left">
+          <div class="term-bar">
+            <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+            <div class="term-title">install</div>
+          </div>
+          <div class="term-body">
+<span class="prompt">$</span> conda create -n slides-gen python=3.11<br/>
+<span class="prompt">$</span> pip install -r requirements.txt<br/>
+<span class="prompt">$</span> python main.py <span class="flag">--pdf_path</span> <span class="str">paper.pdf</span> \<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="flag">--style_image_path</span> <span class="str">style.png</span>
+          </div>
+        </div>
+        <div style="margin-top:32px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+          <a class="btn btn-primary" href="https://github.com/YanchaoJian/SlidesGen">⭐ Star on GitHub</a>
+          <a class="btn btn-ghost" href="https://github.com/YanchaoJian/SlidesGen/blob/master/README.md">📖 Read the docs</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container foot-inner">
+      <div class="logo"><div class="logo-mark">✦</div> SlidesGen</div>
+      <div>MIT © SlidesGen contributors · Built with LangGraph · Powered by LLMs</div>
+    </div>
+  </footer>
+</body>
+</html>

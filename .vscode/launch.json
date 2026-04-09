@@ -17,10 +17,10 @@
                 // [Optional] Root output directory (default: output/)
                 "--output_dir", "output/",
                 // [Optional] Default LLM model, fallback for all stages (default: gpt-4o)
-                "--model_name", "gpt-4o-mini",
+                "--model_name", "gpt-5-mini",
                 // [Optional] Per-stage model overrides (default: use --model_name)
                 // "--vision_model", "Qwen/Qwen3-VL-8B-Instruct",
-                // "--svg_model", "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+                "--svg_model", "gpt-5-codex",
                 // "--text_model", "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
                 // [Optional] Path to local Marker model for PDF parsing (default: models/marker)
                 "--marker_path", "models/marker",
