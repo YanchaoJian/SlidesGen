@@ -25,7 +25,7 @@ from agents.delivery.feedback_analyzer import analyze_feedback
 from pipeline.pptx_merger import merge_svgs_to_pptx
 from utils.llm import LLMConfig, create_llm
 from workflow.state import OverallState, SlideState
-from eval.instrumentation import time_node
+from utils.instrumentation import time_node
 
 logger = logging.getLogger(__name__)
 

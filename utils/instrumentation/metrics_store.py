@@ -13,7 +13,7 @@ import logging
 import threading
 from typing import Any, Dict, Optional
 
-from eval.instrumentation.pricing import calc_cost, is_known
+from utils.instrumentation.pricing import calc_cost, is_known
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +100,7 @@ class MetricsStore:
                     cls._warnings.append(msg)
                     logger.warning(
                         f"[MetricsStore] {msg} — cost_usd will be 0. "
-                        f"Add it to eval/instrumentation/pricing.py."
+                        f"Add it to utils/instrumentation/pricing.py."
                     )
 
     @classmethod

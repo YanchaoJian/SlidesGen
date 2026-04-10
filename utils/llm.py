@@ -103,7 +103,7 @@ def create_llm(
 
     # 挂载 token 计数 callback（失败不影响主流程）
     try:
-        from eval.instrumentation.token_callback import TokenCountingCallback
+        from utils.instrumentation.token_callback import TokenCountingCallback
         llm = llm.with_config(
             {"callbacks": [TokenCountingCallback(stage=llm_config.get("stage"))]}
         )

@@ -10,7 +10,7 @@ import functools
 import time
 from typing import Callable, Optional
 
-from eval.instrumentation.metrics_store import MetricsStore
+from utils.instrumentation.metrics_store import MetricsStore
 
 
 def time_node(name: Optional[str] = None) -> Callable:

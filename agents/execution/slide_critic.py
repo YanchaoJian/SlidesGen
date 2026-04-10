@@ -8,7 +8,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 
 from agents.execution.prompts import VISUAL_CRITIQUE_SYSTEM_PROMPT, VISUAL_CRITIQUE_USER_PROMPT
 from pipeline.pptx_merger import merge_svgs_to_pptx
-from utils.pptx_imaging import pptx_to_images
+from pipeline.pptx_imaging import pptx_to_images
 from utils.llm import LLMConfig, create_llm, encode_image_to_base64, parse_json_response, raise_if_fatal_llm_error
 
 logger = logging.getLogger(__name__)

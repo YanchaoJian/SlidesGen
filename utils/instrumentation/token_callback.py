@@ -10,7 +10,7 @@ from typing import Any, Optional
 
 from langchain_core.callbacks import AsyncCallbackHandler
 
-from eval.instrumentation.metrics_store import MetricsStore
+from utils.instrumentation.metrics_store import MetricsStore
 
 logger = logging.getLogger(__name__)
 
@@ -70,5 +70,5 @@ class TokenCountingCallback(AsyncCallbackHandler):
                 completion=completion,
                 stage=self.stage,
             )
-        except Exception as e:  # 绝不让 eval 层影响主流程
+        except Exception as e:  # 绝不让 instrumentation 层影响主流程
             logger.debug(f"TokenCountingCallback record failed: {e}")
