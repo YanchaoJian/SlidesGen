@@ -5,6 +5,8 @@ import sys
 import argparse
 import logging
 import asyncio
+import time
+from typing import Optional
 
 
 class _Tee:
@@ -60,6 +62,8 @@ from langgraph.types import Command
 load_dotenv()
 from workflow.state import initialize_overall_state
 from workflow.graph import build_graph
+from eval.instrumentation import MetricsStore
+from eval.instrumentation.slide_metrics import compute_slide_metrics
 
 def setup_logging(verbose=False, session_dir=None):
     level = logging.DEBUG if verbose else logging.INFO
@@ -229,12 +233,76 @@ async def main():
     os.makedirs(checkpoint_dir, exist_ok=True)
     checkpoint_db = os.path.join(checkpoint_dir, "checkpoints.sqlite")
     
+    # 端到端计时：从进入图执行前到工作流结束（含 HITL 等待时间）
+    MetricsStore.reset()
+    t_start = time.perf_counter()
+    wall_start = datetime.now().isoformat(timespec="seconds")
+    run_status = "success"
+    run_error: Optional[str] = None
+
     async with AsyncSqliteSaver.from_conn_string(checkpoint_db) as checkpointer:
         # 4. 编译图
         graph = build_graph(checkpointer=checkpointer)
-        
+
         # 5. 启动工作流
-        await run_workflow(graph, initial_state, config)
+        try:
+            await run_workflow(graph, initial_state, config)
+        except BaseException as e:
+            run_status = "failed"
+            run_error = f"{type(e).__name__}: {e}"
+            raise
+        finally:
+            # 6. 写入端到端统计（无论成功/失败/中断都写一次）
+            elapsed = time.perf_counter() - t_start
+            final_pptx_path: Optional[str] = None
+            try:
+                snap = await graph.aget_state(config)
+                final_pptx_path = (snap.values or {}).get("final_pptx_path")
+            except Exception:
+                pass
+
+            node_stats = MetricsStore.nodes_snapshot()
+            token_stats = MetricsStore.tokens_snapshot()
+
+            # slide_reports 质量统计
+            slide_metrics = {}
+            try:
+                snap_values = (snap.values or {}) if snap else {}
+                slide_reports = snap_values.get("slide_reports") or {}
+                plan = snap_values.get("presentation_plan") or []
+                slide_metrics = compute_slide_metrics(slide_reports, plan)
+            except Exception:
+                pass
+
+            stats = {
+                "session_id": thread_id,
+                "wall_start": wall_start,
+                "wall_end": datetime.now().isoformat(timespec="seconds"),
+                "end_to_end_sec": round(elapsed, 3),
+                "status": run_status,
+                "error": run_error,
+                "final_pptx_path": final_pptx_path,
+                "is_resumed": is_resuming,
+                "models": {
+                    "model_name": default_model,
+                    "vision_model": args.vision_model or default_model,
+                    "svg_model": args.svg_model or default_model,
+                    "text_model": args.text_model or default_model,
+                },
+                "per_node_sec": node_stats,
+                "tokens_by_model": token_stats["by_model"],
+                "tokens_total": token_stats["total"],
+                "tokens_by_stage": token_stats["by_stage"],
+                "slide_metrics": slide_metrics,
+                "warnings": MetricsStore.warnings(),
+            }
+            stats_path = os.path.join(session_dir, "run_stats.json")
+            try:
+                with open(stats_path, "w", encoding="utf-8") as sf:
+                    json.dump(stats, sf, indent=2, ensure_ascii=False)
+                logging.info(f"⏱️  End-to-end: {elapsed:.1f}s  →  {stats_path}")
+            except Exception as e:
+                logging.warning(f"Failed to write run_stats.json: {e}")
 
 if __name__ == "__main__":
     try:

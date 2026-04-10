@@ -77,6 +77,7 @@ class LLMConfig(TypedDict, total=False):
     api_key: str
     base_url: Optional[str]
     max_retries: int  # 可选；create_llm 会优先使用该字段
+    stage: Optional[str]  # 可选；"vision"/"svg"/"text"，供 token 计数 per-stage 聚合
 
 
 def create_llm(
@@ -91,7 +92,7 @@ def create_llm(
     实现"全局重试次数从 CLI 一处控制"。
     """
     effective_retries = llm_config.get("max_retries", max_retries)
-    return ChatOpenAI(
+    llm = ChatOpenAI(
         model=llm_config["model_name"],
         api_key=llm_config["api_key"],
         base_url=llm_config["base_url"],
@@ -99,6 +100,17 @@ def create_llm(
         timeout=timeout,
         max_retries=effective_retries,
     )
+
+    # 挂载 token 计数 callback（失败不影响主流程）
+    try:
+        from eval.instrumentation.token_callback import TokenCountingCallback
+        llm = llm.with_config(
+            {"callbacks": [TokenCountingCallback(stage=llm_config.get("stage"))]}
+        )
+    except Exception as _e:
+        logger.debug(f"TokenCountingCallback not attached: {_e}")
+
+    return llm
 
 
 def encode_image_to_base64(image_path: str, max_dim: int = 2048) -> str:

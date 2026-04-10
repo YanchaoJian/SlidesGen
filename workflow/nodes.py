@@ -2,10 +2,18 @@ import os
 import logging
 from typing import Any, Dict
 
+from dotenv import load_dotenv
 from langchain_core.runnables import RunnableConfig
 from langgraph.types import interrupt
 
 from agents.perception.pdf_parser.extractor import extract_pdf
+
+load_dotenv()
+
+
+def _ablation(flag_name: str) -> bool:
+    """读取 .env 中的消融开关，返回 True 表示该模块被禁用。"""
+    return os.getenv(flag_name, "false").strip().lower() in ("true", "1", "yes")
 from agents.perception.style_analyst.analyzer import analyze_style
 from agents.perception.style_analyst.critic import critique_style_protocol
 from agents.planning.ppt_planner import plan_presentation
@@ -17,6 +25,7 @@ from agents.delivery.feedback_analyzer import analyze_feedback
 from pipeline.pptx_merger import merge_svgs_to_pptx
 from utils.llm import LLMConfig, create_llm
 from workflow.state import OverallState, SlideState
+from eval.instrumentation import time_node
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +53,7 @@ def _get_llm_config(configurable: Dict[str, Any], stage: str = "text") -> LLMCon
         api_key=configurable["api_key"],
         base_url=configurable["base_url"],
         max_retries=int(configurable.get("llm_max_retries", 3)),
+        stage=stage,
     )
 
 
@@ -51,6 +61,7 @@ def _get_llm_config(configurable: Dict[str, Any], stage: str = "text") -> LLMCon
 # Phase 1: 感知与反思 (Perception & Reflection)
 # ==============================================================================
 
+@time_node("extract_pdf")
 def extract_content_from_pdf_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 提取 PDF 基础内容"""
     logger.info("--- NODE: ExtractContentFromPDF ---")
@@ -73,6 +84,7 @@ def extract_content_from_pdf_node(state: OverallState, config: RunnableConfig) -
     return {"content": base_content}
 
 
+@time_node("analyze_image_style")
 def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 分析参考图,提取自然语言形式的主题风格描述"""
     logger.info("--- NODE: AnalyzeImageStyle ---")
@@ -95,6 +107,7 @@ def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dic
 
     return {"style_protocol": style_data, "style_review": {**review, "verified": False}}
 
+@time_node("check_style_protocol")
 def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 风格自查 (StyleCritic),对比风格描述与原图,决定是否需要修正"""
     logger.info("--- NODE: CheckStyleProtocol ---")
@@ -124,6 +137,7 @@ def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Di
 # ==============================================================================
 # Phase 2: 规划与交互 (Planning & HITL 1)
 # ==============================================================================
+@time_node("generate_presentation_plan")
 def generate_presentation_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 根据解析后的 PDF 内容,生成演示大纲"""
     logger.info("--- NODE: GeneratePresentationPlan ---")
@@ -151,6 +165,7 @@ def generate_presentation_plan_node(state: OverallState, config: RunnableConfig)
         "plan_review": {**review, "verified": False},
     }
 
+@time_node("review_plan")
 def review_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] HITL 1: Plan Review - 使用 interrupt() 暂停图执行，等待用户反馈"""
     logger.info("--- NODE: ReviewPlan (HITL) ---")
@@ -182,11 +197,16 @@ def review_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, A
 # Phase 3: 执行 (Execution - Single Slide Generation)
 # ==============================================================================
 
+@time_node("expand_slide_plan")
 def expand_slide_plan_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 将简要大纲扩展为详细的单页描述"""
     config = config["configurable"]
     slide_page = state["slide_page"]
     logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): ExpandSlidePlan ---")
+
+    if _ablation("ABLATION_NO_SLIDE_EXPAND"):
+        logger.info(f"   -> [Slide {slide_page}] Ablation: slide expansion disabled, using original plan.")
+        return {"slide_detail": None}
 
     slide_detail = expand_slide_plan(
         slide_plan=state["slide_plan"],
@@ -210,6 +230,7 @@ def expand_slide_plan_node(state: SlideState, config: RunnableConfig) -> Dict[st
     return {"slide_detail": slide_detail}
 
 
+@time_node("generate_slide_svg")
 def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 调用 LLM 生成单张 slide 的 SVG 源码"""
     config = config["configurable"]
@@ -258,6 +279,7 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
         "error_log": None,
     }
 
+@time_node("optimize_svg_crap")
 def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 验证 SVG → CRAP 优化 → 后处理 → 写入文件"""
     config = config["configurable"]
@@ -294,22 +316,25 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
         }
 
     # 2. CRAP 优化
-    optimized_svg = optimize_svg_crap(
-        svg_code=svg_code,
-        llm_config=_get_llm_config(config, stage="svg"),
-    )
-
     final_svg = svg_code
-    if optimized_svg:
-        # 验证优化后的 SVG
-        opt_valid, opt_error = validate_svg(optimized_svg)
-        if opt_valid:
-            final_svg = optimized_svg
-            logger.info(f"   -> [Slide {slide_page}] CRAP optimization applied.")
-        else:
-            logger.warning(f"   -> [Slide {slide_page}] CRAP-optimized SVG failed validation: {opt_error}. Keeping original.")
+    if _ablation("ABLATION_NO_CRAP"):
+        logger.info(f"   -> [Slide {slide_page}] Ablation: CRAP optimization disabled, keeping validated SVG.")
     else:
-        logger.info(f"   -> [Slide {slide_page}] CRAP optimization returned no result. Keeping original.")
+        optimized_svg = optimize_svg_crap(
+            svg_code=svg_code,
+            llm_config=_get_llm_config(config, stage="svg"),
+        )
+
+        if optimized_svg:
+            # 验证优化后的 SVG
+            opt_valid, opt_error = validate_svg(optimized_svg)
+            if opt_valid:
+                final_svg = optimized_svg
+                logger.info(f"   -> [Slide {slide_page}] CRAP optimization applied.")
+            else:
+                logger.warning(f"   -> [Slide {slide_page}] CRAP-optimized SVG failed validation: {opt_error}. Keeping original.")
+        else:
+            logger.info(f"   -> [Slide {slide_page}] CRAP optimization returned no result. Keeping original.")
 
     # 3. 写入文件 + 后处理
     slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
@@ -343,11 +368,30 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
     }
 
 
+@time_node("check_slide_design")
 def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 检查单张 slide 的视觉质量"""
     config = config["configurable"]
     slide_page = state["slide_page"]
     logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): CheckSlideDesign ---")
+
+    if _ablation("ABLATION_NO_SVG_SELFHEAL"):
+        logger.info(f"   -> [Slide {slide_page}] Ablation: visual self-heal disabled, auto-approving.")
+        svg_review = state.get("svg_review", {})
+        auto_design_review = {"verified": True, "retry_count": 0, "critique": None}
+        return {
+            "design_review": auto_design_review,
+            "slide_reports": {
+                slide_page: {
+                    "slide_page": slide_page,
+                    "svg_review": svg_review,
+                    "design_review": auto_design_review,
+                    "slide_detail": state.get("slide_detail"),
+                    "svg_path": state.get("svg_path"),
+                    "error_log": state.get("error_log"),
+                }
+            },
+        }
 
     critique_feedback = evaluate_and_critique_slide(
         slide_code=state["svg_code"],
@@ -359,23 +403,50 @@ def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[s
     design_review = state.get("design_review", {})
     retry_count = design_review.get("retry_count", 0)
 
+    svg_review = state.get("svg_review", {})
+
     if critique_feedback is None:
         logger.info(f"   -> ✅ [Success] Slide {slide_page:02d} passed visual critique.")
         logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): CheckSlideDesign completed.")
+        final_design_review = {"verified": True, "retry_count": retry_count, "critique": None}
         return {
-            "design_review": {"verified": True, "retry_count": retry_count, "critique": None},
+            "design_review": final_design_review,
+            # 子图终态冒泡到主图，供 final_snapshot.json / 实验后处理使用
+            "slide_reports": {
+                slide_page: {
+                    "slide_page": slide_page,
+                    "svg_review": svg_review,
+                    "design_review": final_design_review,
+                    "slide_detail": state.get("slide_detail"),
+                    "svg_path": state.get("svg_path"),
+                    "error_log": state.get("error_log"),
+                }
+            },
         }
     else:
         logger.warning(f"   -> ⚠️ Visual critique suggested revisions for slide {slide_page} (Attempt {retry_count + 1}).")
         logger.info(f"✅ SUBGRAPH NODE (Slide {slide_page}): CheckSlideDesign completed (with revisions needed).")
+        failing_design_review = {"verified": False, "retry_count": retry_count + 1, "critique": critique_feedback}
         return {
-            "design_review": {"verified": False, "retry_count": retry_count + 1, "critique": critique_feedback},
+            "design_review": failing_design_review,
+            # 即便未通过也写一份报告；若后续重试成功，reducer 会用最新版本覆盖。
+            "slide_reports": {
+                slide_page: {
+                    "slide_page": slide_page,
+                    "svg_review": svg_review,
+                    "design_review": failing_design_review,
+                    "slide_detail": state.get("slide_detail"),
+                    "svg_path": state.get("svg_path"),
+                    "error_log": state.get("error_log"),
+                }
+            },
         }
 
 # ==============================================================================
 # Phase 4: 交付与修缮 (Delivery & Refinement)
 # ==============================================================================
 
+@time_node("merge_slides")
 def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 合并所有成功生成的单页 PPTX 文件"""
     config = config["configurable"]
@@ -412,6 +483,7 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
         logger.error("   -> ❌ SVG to PPTX merge failed.")
         return {"final_pptx_path": None}
 
+@time_node("review_pptx_design")
 def review_pptx_design_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] HITL 2: Final Inspection - 使用 interrupt() 暂停图执行，等待用户反馈"""
     logger.info("--- NODE: ReviewPPTXDesign (HITL) ---")

@@ -12,6 +12,19 @@ def _merge_slide_paths(left: Dict[int, str], right: Dict[int, str]) -> Dict[int,
     return merged
 
 
+def _merge_slide_reports(
+    left: Dict[int, "SlideReport"], right: Dict[int, "SlideReport"]
+) -> Dict[int, "SlideReport"]:
+    """Reducer：按 slide_page 合并子图审查报告，后写入覆盖先写入。
+
+    用于 slide_reports：把每页子图的 svg_review / design_review 等关键字段
+    冒泡到主图，便于 final_snapshot.json 一次性保存完整实验数据。
+    """
+    merged = dict(left or {})
+    merged.update(right or {})
+    return merged
+
+
 # ==============================================================================
 # 通用审查循环结构
 # ==============================================================================
@@ -25,6 +38,19 @@ class ReviewCycle(TypedDict):
 
 def _default_review_cycle() -> ReviewCycle:
     return {"verified": False, "retry_count": 0, "critique": None}
+
+
+class SlideReport(TypedDict):
+    """单页子图的终态快照，用于从子图冒泡到主图 OverallState.slide_reports。
+
+    仅包含实验评估/调试所需的关键字段，不存 svg_code 正文（避免快照文件爆炸）。
+    """
+    slide_page: int
+    svg_review: ReviewCycle
+    design_review: ReviewCycle
+    slide_detail: Optional[str]
+    svg_path: Optional[str]
+    error_log: Optional[str]
 
 
 # ==============================================================================
@@ -52,6 +78,10 @@ class OverallState(TypedDict):
     # 存储各 slide 的最终 SVG 路径，key 为 slide_page。后写覆盖先写，
     # 局部重生成 / 恢复执行时不会留下过期条目。
     generated_slide_paths: Annotated[Dict[int, str], _merge_slide_paths]
+
+    # 每页子图的终态报告 {slide_page: SlideReport}，由 check_slide_design_node
+    # 写入后通过 reducer 冒泡到主图，供 final_snapshot.json 和实验后处理脚本使用。
+    slide_reports: Annotated[Dict[int, SlideReport], _merge_slide_reports]
 
     # --- 交付层产物 ---
     final_pptx_path: Optional[str]
@@ -91,6 +121,8 @@ class SlideState(TypedDict):
 
     # --- 输出 ---
     generated_slide_paths: Dict[int, str]
+    # 子图冒泡到主图的审查报告；键是 slide_page，reducer 在 OverallState 定义。
+    slide_reports: Dict[int, SlideReport]
 
 
 # ==============================================================================
@@ -106,6 +138,7 @@ def initialize_overall_state() -> OverallState:
         "presentation_plan": None,
         "plan_review": _default_review_cycle(),
         "generated_slide_paths": {},
+        "slide_reports": {},
         "final_pptx_path": None,
         "pptx_review": _default_review_cycle(),
         "pptx_feedback_scope": None,
@@ -131,4 +164,5 @@ def initialize_slide_state(
         "svg_review": _default_review_cycle(),
         "design_review": _default_review_cycle(),
         "generated_slide_paths": {},
+        "slide_reports": {},
     }
