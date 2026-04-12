@@ -21,6 +21,15 @@ class TokenCountingCallback(AsyncCallbackHandler):
     def __init__(self, stage: Optional[str] = None):
         self.stage = stage
 
+    # LangChain base 默认 on_chat_model_start 会 raise NotImplementedError 来触发
+    # fallback，但回调调度器会把它当作异常记到日志（"Error in callback coroutine"）。
+    # 我们在 start 阶段本来就不做任何事，实现成 no-op 即可静默警告。
+    async def on_chat_model_start(self, *args: Any, **kwargs: Any) -> None:
+        pass
+
+    async def on_llm_start(self, *args: Any, **kwargs: Any) -> None:
+        pass
+
     # ChatOpenAI 走 on_llm_end（non-chat 路径）或 on_chat_model_end（chat 路径）。
     # 两个都实现，指向同一处理逻辑，保证不同 langchain 版本都能命中。
     async def on_llm_end(self, response: Any, **kwargs: Any) -> None:

@@ -188,7 +188,9 @@ def build_graph(checkpointer: BaseCheckpointSaver):
     workflow.add_node("generate_presentation_plan", generate_presentation_plan_node)
     workflow.add_node("review_plan", review_plan_node)
 
-    workflow.add_node("dispatch_slide_tasks", lambda state: {})
+    # defer=True：确保 dispatch 等到两条前驱分支（check_style_protocol / review_plan）
+    # 都收敛后再 fan-out 一次，避免 slide 子图被各分支触发两遍（token 成本×2）。
+    workflow.add_node("dispatch_slide_tasks", lambda state: {}, defer=True)
     slide_subgraph = build_slide_subgraph() 
     workflow.add_node("generate_single_slide", slide_subgraph)
     workflow.add_node("merge_slides_to_deck", merge_slides_to_deck_node, defer=True)

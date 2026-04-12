@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <!-- Background -->  
+  
+  <!-- Top accent bar -->
+  <rect x="0" y="100" width="1280" height="3" fill="#0A3D8F"/>
+  
+  <!-- Book icon -->
+  <g transform="translate(60, 52)">
+    <path d="M5 8 L5 42 L25 38 L45 42 L45 8 L25 12 Z" fill="none" stroke="#0A3D8F" stroke-width="2.5"/>
+    <path d="M25 12 L25 38" stroke="#0A3D8F" stroke-width="2"/>
+    <path d="M5 8 Q25 14 45 8" fill="none" stroke="#0A3D8F" stroke-width="2.5"/>
+    <path d="M5 42 Q25 36 45 42" fill="none" stroke="#0A3D8F" stroke-width="2.5"/>
+    <line x1="10" y1="18" x2="22" y2="16" stroke="#0A3D8F" stroke-width="1.5"/>
+    <line x1="10" y1="24" x2="22" y2="22" stroke="#0A3D8F" stroke-width="1.5"/>
+    <line x1="10" y1="30" x2="20" y2="28" stroke="#0A3D8F" stroke-width="1.5"/>
+    <line x1="28" y1="16" x2="40" y2="18" stroke="#0A3D8F" stroke-width="1.5"/>
+    <line x1="28" y1="22" x2="40" y2="24" stroke="#0A3D8F" stroke-width="1.5"/>
+    <line x1="28" y1="28" x2="38" y2="30" stroke="#0A3D8F" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="120" y="85" font-size="44" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Key Result: New State-of-the-Art in Translation</text>
+  
+  <!-- Takeaway Box -->
+  <rect x="40" y="95" width="1200" height="45" rx="0" fill="#0A3D8F" fill-opacity="0.08"/>
+  <text x="640" y="123" text-anchor="middle" font-size="15" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Transformer big sets new SOTA BLEU scores with a fraction of the training cost (FLOPs) of prior best ensembles.</text>
+  
+  <!-- Main Table Card -->
+  <rect x="40" y="155" width="1200" height="425" rx="0" fill="#FFFFFF" stroke="#0A3D8F" stroke-width="2"/>
+  
+  <!-- Card Header -->
+  <rect x="40" y="155" width="1200" height="55" rx="0" fill="#0A3D8F"/>
+  <text x="640" y="190" text-anchor="middle" font-size="22" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">BLEU Score &amp; Training Cost Comparison</text>
+  
+  <!-- Table Header Row -->
+  <rect x="40" y="210" width="1200" height="45" fill="#0A3D8F"/>
+  <text x="70" y="240" font-size="15" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Model</text>
+  <text x="370" y="240" text-anchor="middle" font-size="15" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">EN-DE</text>
+  <text x="520" y="240" text-anchor="middle" font-size="15" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">EN-FR</text>
+  <text x="700" y="240" text-anchor="middle" font-size="15" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">EN-DE FLOPs</text>
+  <text x="950" y="240" text-anchor="middle" font-size="15" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">EN-FR FLOPs</text>
+  
+  <!-- Column Headers (sub) -->
+  <text x="370" y="255" text-anchor="middle" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">BLEU</text>
+  <text x="520" y="255" text-anchor="middle" font-size="11" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">BLEU</text>
+  
+  <!-- Table Data Rows -->
+  <!-- Row 1: ByteNet -->
+  <rect x="40" y="255" width="1200" height="32" fill="#F8F9FA"/>
+  <text x="70" y="276" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">ByteNet [18]</text>
+  <text x="370" y="276" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">23.75</text>
+  <text x="520" y="276" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">—</text>
+  <text x="700" y="276" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">—</text>
+  <text x="950" y="276" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">—</text>
+  
+  <!-- Row 2: Deep-Att + PosUnk -->
+  <rect x="40" y="287" width="1200" height="32" fill="#FFFFFF"/>
+  <text x="70" y="308" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Deep-Att + PosUnk [39]</text>
+  <text x="370" y="308" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">—</text>
+  <text x="520" y="308" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">39.2</text>
+  <text x="700" y="308" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">—</text>
+  <text x="950" y="308" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">1.0·10²⁰</text>
+  
+  <!-- Row 3: GNMT + RL -->
+  <rect x="40" y="319" width="1200" height="32" fill="#F8F9FA"/>
+  <text x="70" y="340" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">GNMT + RL [38]</text>
+  <text x="370" y="340" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">24.6</text>
+  <text x="520" y="340" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">39.92</text>
+  <text x="700" y="340" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">2.3·10¹⁹</text>
+  <text x="950" y="340" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">1.4·10²⁰</text>
+  
+  <!-- Row 4: ConvS2S -->
+  <rect x="40" y="351" width="1200" height="32" fill="#FFFFFF"/>
+  <text x="70" y="372" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">ConvS2S [9]</text>
+  <text x="370" y="372" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">25.16</text>
+  <text x="520" y="372" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">40.46</text>
+  <text x="700" y="372" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">9.6·10¹⁸</text>
+  <text x="950" y="372" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">1.5·10²⁰</text>
+  
+  <!-- Row 5: MoE -->
+  <rect x="40" y="383" width="1200" height="32" fill="#F8F9FA"/>
+  <text x="70" y="404" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">MoE [32]</text>
+  <text x="370" y="404" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">26.03</text>
+  <text x="520" y="404" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">40.56</text>
+  <text x="700" y="404" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">2.0·10¹⁹</text>
+  <text x="950" y="404" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">1.2·10²⁰</text>
+  
+  <!-- Row 6: Deep-Att + PosUnk Ensemble -->
+  <rect x="40" y="415" width="1200" height="32" fill="#FFFFFF"/>
+  <text x="70" y="436" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Deep-Att + PosUnk Ensemble [39]</text>
+  <text x="370" y="436" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">—</text>
+  <text x="520" y="436" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">40.4</text>
+  <text x="700" y="436" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">—</text>
+  <text x="950" y="436" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">8.0·10²⁰</text>
+  
+  <!-- Row 7: GNMT + RL Ensemble -->
+  <rect x="40" y="447" width="1200" height="32" fill="#F8F9FA"/>
+  <text x="70" y="468" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">GNMT + RL Ensemble [38]</text>
+  <text x="370" y="468" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">26.30</text>
+  <text x="520" y="468" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">41.16</text>
+  <text x="700" y="468" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">1.8·10²⁰</text>
+  <text x="950" y="468" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">1.1·10²¹</text>
+  
+  <!-- Row 8: ConvS2S Ensemble -->
+  <rect x="40" y="479" width="1200" height="32" fill="#FFFFFF"/>
+  <text x="70" y="500" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">ConvS2S Ensemble [9]</text>
+  <text x="370" y="500" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">26.36</text>
+  <text x="520" y="500" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">41.29</text>
+  <text x="700" y="500" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">7.7·10¹⁹</text>
+  <text x="950" y="500" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">1.2·10²¹</text>
+  
+  <!-- Row 9: Transformer (base model) - highlighted -->
+  <rect x="40" y="511" width="1200" height="32" fill="#E8F5E9"/>
+  <text x="70" y="532" font-size="13" font-weight="bold" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Transformer (base model)</text>
+  <text x="370" y="532" text-anchor="middle" font-size="13" font-weight="bold" fill="#81C784" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">27.3</text>
+  <text x="520" y="532" text-anchor="middle" font-size="13" font-weight="bold" fill="#81C784" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">38.1</text>
+  <text x="700" y="532" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">—</text>
+  <text x="950" y="532" text-anchor="middle" font-size="13" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">3.3·10¹⁸</text>
+  
+  <!-- Row 10: Transformer (big) - HERO ROW -->
+  <rect x="40" y="543" width="1200" height="37" fill="#E8F5E9"/>
+  <text x="70" y="567" font-size="14" font-weight="bold" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Transformer (big)</text>
+  <text x="370" y="567" text-anchor="middle" font-size="14" font-weight="bold" fill="#2E7D32" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">28.4</text>
+  <text x="520" y="567" text-anchor="middle" font-size="14" font-weight="bold" fill="#2E7D32" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">41.8</text>
+  <text x="700" y="567" text-anchor="middle" font-size="14" font-weight="bold" fill="#2E7D32" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">—</text>
+  <text x="950" y="567" text-anchor="middle" font-size="14" font-weight="bold" fill="#2E7D32" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">2.3·10¹⁹</text>
+  
+  <!-- Insight Card 1: EN-DE Performance Lead -->
+  <g transform="translate(40, 595)">
+    <!-- White offset layer for depth -->
+    <polygon points="8,8 388,8 388,108 8,108" fill="#FFFFFF"/>
+    <!-- Blue parallelogram card -->
+    <polygon points="0,0 380,0 380,100 0,100" fill="#0A3D8F"/>
+    <!-- Header -->
+    <text x="190" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">EN-DE: Performance Lead</text>
+    <!-- Body -->
+    <text x="25" y="52" font-size="13" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Transformer (big) scores 28.4</text>
+    <text x="25" y="70" font-size="13" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">BLEU, beating prior best by</text>
+    <text x="25" y="88" font-size="13" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">+2.04 points.</text>
+  </g>
+  
+  <!-- Insight Card 2: EN-FR Efficiency Breakthrough -->
+  <g transform="translate(450, 595)">
+    <!-- White offset layer for depth -->
+    <polygon points="8,8 388,8 388,108 8,108" fill="#FFFFFF"/>
+    <!-- Blue parallelogram card -->
+    <polygon points="0,0 380,0 380,100 0,100" fill="#0A3D8F"/>
+    <!-- Header -->
+    <text x="190" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">EN-FR: Efficiency Breakthrough</text>
+    <!-- Body -->
+    <text x="25" y="52" font-size="13" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Achieves SOTA (41.8 BLEU)</text>
+    <text x="25" y="70" font-size="13" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">with ~1/35th the FLOPs of</text>
+    <text x="25" y="88" font-size="13" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">best previous ensemble.</text>
+  </g>
+  
+  <!-- Insight Card 3: Conclusion (Success color) -->
+  <g transform="translate(860, 595)">
+    <!-- White offset layer for depth -->
+    <polygon points="8,8 388,8 388,108 8,108" fill="#FFFFFF"/>
+    <!-- Green parallelogram card -->
+    <polygon points="0,0 380,0 380,100 0,100" fill="#2E7D32"/>
+    <!-- Header -->
+    <text x="190" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Conclusion</text>
+    <!-- Body -->
+    <text x="25" y="52" font-size="13" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Not just better, but vastly</text>
+    <text x="25" y="70" font-size="13" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">more efficient. A new</text>
+    <text x="25" y="88" font-size="13" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">paradigm for NMT.</text>
+  </g>
+  
+  <!-- Data source -->
+  <text x="40" y="695" font-size="11" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Source: Vaswani et al., 'Attention Is All You Need' (2017), Table 2</text>
+  
+  <!-- Page number -->
+  <text x="1240" y="695" text-anchor="end" font-size="12" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">9</text>
+  
+  <!-- Institutional motto (calligraphic style) -->
+  <text x="60" y="680" font-size="14" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">海纳百川</text>
+  
+  <!-- Date -->
+  <text x="1180" y="680" text-anchor="end" font-size="12" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">2023.10</text>
+</svg>

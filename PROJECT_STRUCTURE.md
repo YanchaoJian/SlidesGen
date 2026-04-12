@@ -20,9 +20,10 @@ SlidesGen/
 ├── .env                       # OPENAI_BASE_URL / OPENAI_API_KEY 等密钥
 │
 ├── agents/                    # 各阶段的 LLM 智能体（按 phase 分组）
-├── pipeline/                  # 非 LLM 的 SVG 处理与 PPTX 转换流水线
+├── pipeline/                  # 非 LLM 的 SVG 处理、PPTX 合并与渲染流水线
 ├── workflow/                  # LangGraph 状态机：节点、状态、图编排
-├── utils/                     # 通用工具（LLM 封装、PPTX 渲染等）
+├── utils/                     # 通用工具（LLM 封装、日志、运行时指标采集）
+├── eval/                      # 运行后处理：slide 质量指标与日志聚合
 ├── scripts/                   # 辅助脚本
 ├── test/                      # 单元/集成测试
 ├── assets/                    # 示例 PDF、参考样式图、工作流图
@@ -99,10 +100,11 @@ SlidesGen/
 | 文件 | 功能 |
 |------|------|
 | `pipeline/svg_validator.py` | XML 良构性校验 + 15 项禁用特性检查（`clipPath`、`mask`、`<style>`、`class`、`foreignObject` 等）+ 几何检测；提供 `validate_svg()` 与 `finalize_single_svg()` 入口。 |
-| `pipeline/clean_svg.py` | 通用 SVG 清理工具（去除多余空白、规范属性等）。 |
-| `pipeline/finalize_svg.py` | 将单页 SVG 收尾流程包装为可独立调用的脚本。 |
+| `pipeline/clean_svg.py` | 临时性 SVG 清理实验脚本（不在主流程中使用）。 |
+| `pipeline/finalize_svg.py` | 将 `svg_finalize/` 收尾流程包装为可对整目录批量离线后处理的 CLI。 |
 | `pipeline/pptx_merger.py` | 把多张已转换的 SVG 单页合并为一个 `Final_Presentation.pptx`。 |
-| `pipeline/svg_to_pptx_runner.py` | SVG→PPTX 流程的 runner 包装。 |
+| `pipeline/pptx_imaging.py` | 通过 LibreOffice (`soffice`) + pdf2image 把 PPTX 渲染为图像，供视觉评审使用。 |
+| `pipeline/svg_to_pptx_runner.py` | SVG→PPTX 流程的 runner 包装，向后兼容的 CLI 入口。 |
 
 ### 4.1 `pipeline/svg_finalize/` —— SVG 收尾五步
 
@@ -139,12 +141,26 @@ SlidesGen/
 
 | 文件 | 功能 |
 |------|------|
-| `utils/llm.py` | LLM 封装：`LLMConfig` 数据类与 `create_llm()` 工厂；统一处理 base_url / api_key / temperature / 重试。 |
-| `utils/pptx_imaging.py` | 通过 LibreOffice (`soffice`) + pdf2image 把 PPTX 渲染为图像，供视觉评审使用。 |
+| `utils/llm.py` | LLM 封装：`LLMConfig` 数据类与 `create_llm()` 工厂；统一处理 base_url / api_key / temperature / 重试；自动挂载 `TokenCountingCallback` 采集 token 计数。 |
+| `utils/logging.py` | 日志基础设施：`_Tee` 双写流（控制台 + 会话日志文件，兼容 tqdm 的 `\r` 进度条）与 `setup_logging()` 会话级日志配置（含 `sys.excepthook` 兜底）。 |
+| `utils/instrumentation/__init__.py` | 运行时指标采集包入口，导出 `MetricsStore` 与 `time_node` 装饰器。 |
+| `utils/instrumentation/metrics_store.py` | 线程安全的单例累加器：记录每个节点耗时、分模型 token 用量、分 stage token 用量、未知模型警告等。 |
+| `utils/instrumentation/node_timer.py` | `@time_node(name)` 装饰器，将节点函数耗时写入 `MetricsStore`。 |
+| `utils/instrumentation/token_callback.py` | LangChain 异步回调：从 LLM 响应中提取 token 计数并写入 `MetricsStore`。 |
+| `utils/instrumentation/pricing.py` | 模型单价表与 `calc_cost()` / `is_known()` 计算函数。 |
 
 ---
 
-## 六、`scripts/` 与 `test/`
+## 六、`eval/` —— 运行后处理
+
+| 文件 | 功能 |
+|------|------|
+| `eval/slide_metrics.py` | `compute_slide_metrics()`：基于 `slide_reports` 与 plan 聚合单页质量指标，写入 `run_stats.json` 的 `slide_metrics` 字段。 |
+| `eval/parse_logs.py` | 读取 `run_stats.json` 输出 Markdown 报告的 CLI 脚本，用于事后查看。 |
+
+---
+
+## 七、`scripts/` 与 `test/`
 
 | 文件 | 功能 |
 |------|------|
@@ -155,7 +171,7 @@ SlidesGen/
 
 ---
 
-## 七、`assets/` 与 `models/`
+## 八、`assets/` 与 `models/`
 
 | 路径 | 用途 |
 |------|------|
@@ -167,7 +183,7 @@ SlidesGen/
 
 ---
 
-## 八、`output/` 运行产物
+## 九、`output/` 运行产物
 
 每次运行生成 `output/{MMDD_HHMM_{model}}/`：
 
@@ -186,15 +202,17 @@ output/{session_id}/
 │   └── Final_Presentation.pptx # 合并后的最终 PPTX
 ├── checkpoints/                # LangGraph SQLite 检查点（用于 --thread_id 恢复）
 ├── final_snapshot.json
+├── run_stats.json              # 端到端耗时、分节点耗时、分模型 token、slide 质量指标
 └── log.txt
 ```
 
 ---
 
-## 九、关键约定速查
+## 十、关键约定速查
 
 - **Prompt / 代码分离**：`prompts.py` 仅含字符串；模板拼装函数留在 agent 模块中。
 - **多模型路由**：节点通过 `_get_llm_config(cfg, stage)` 选择 `vision` / `svg` / `text` 三类模型，未配置时回退到 `model_name`。
-- **重试上限**：风格协议 ≤2，SVG 校验 ≤3，设计审查 ≤5。
+- **重试上限**：风格协议 / SVG 校验 / 设计审查等所有 LLM 相关重试循环共享同一个上限 `--llm_max_retries`（默认 3）。
 - **HITL 中断点**：`review_plan_node`（大纲审查）与 `review_pptx_design_node`（最终 PPTX 审查）通过 `interrupt()` 暂停等待用户反馈。
 - **会话恢复**：`--thread_id` 必须传完整目录名（含模型后缀），`initial_state` 传 `None`，由 SQLite 检查点续跑。
+- **运行时指标 vs 后处理**：`utils/instrumentation/` 负责运行时采集（节点耗时 / token / cost），`eval/` 负责运行后聚合与报告。

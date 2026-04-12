@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  
+  
+  
+  
+  <defs>
+    
+    <g id="bookIcon">
+      <path d="M25 5 L25 45 Q25 42 22 40 L5 30 Q2 28 5 26 L22 16 Q25 14 25 11 Z" fill="#0A3D8F" />
+      <path d="M25 5 L25 45 Q25 42 28 40 L45 30 Q48 28 45 26 L28 16 Q25 14 25 11 Z" fill="#0A3D8F" fill-opacity="0.7" />
+      <line x1="25" y1="5" x2="25" y2="45" stroke="#FFFFFF" stroke-width="1" />
+    </g>
+  </defs>
+  
+  
+  <rect x="0" y="100" width="1280" height="3" fill="#0A3D8F" />
+  
+  
+  <polygon points="468,148 868,148 468,588 68,588" fill="#FFFFFF" />
+  
+  
+  <polygon points="460,140 860,140 460,580 60,580" fill="#0A3D8F" />
+  
+  
+  <use href="#bookIcon" x="60" y="50" width="50" height="50" />
+  
+  
+  <text x="120" y="85" font-size="56" font-weight="bold" fill="#0A3D8F" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Attention Is All You Need</text>
+  
+  
+  <line x1="120" y1="100" x2="1160" y2="100" stroke="#0A3D8F" stroke-width="3" />
+  
+  
+  <text x="900" y="215" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit,</text>
+  <text x="900" y="255" font-size="24" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</text>
+  
+  
+  <text x="900" y="310" font-size="20" fill="#E2E8F0" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Google Brain; Google Research; University of Toronto;</text>
+  <text x="900" y="340" font-size="20" fill="#E2E8F0" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Independent (work performed while at Google Research)</text>
+  
+  
+  <text x="900" y="385" font-size="18" fill="#E2E8F0" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">31st Conference on Neural Information Processing Systems (NeurIPS 2017)</text>
+  
+  
+  <path fill="#0A3D8F" d="M908,440 H1212 A8,8 0 0 1 1220,448 V577 A8,8 0 0 1 1212,585 H908 A8,8 0 0 1 900,577 V448 A8,8 0 0 1 908,440 Z" />
+  <text x="920" y="475" font-size="20" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">A new simple network architecture,</text>
+  <text x="920" y="505" font-size="20" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">the Transformer, based solely on</text>
+  <text x="920" y="535" font-size="20" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">attention mechanisms, dispensing with</text>
+  <text x="920" y="565" font-size="20" font-weight="bold" fill="#FFFFFF" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">recurrence and convolutions entirely.</text>
+  
+  
+  <circle cx="1160" cy="60" r="40" fill="#0A3D8F" />
+  <text x="1160" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFFFFF">DUT</text>
+  <text x="1160" y="75" text-anchor="middle" font-size="8" fill="#FFFFFF">Academic</text>
+  
+  
+  <text x="60" y="660" font-size="20" fill="#1A1A1A" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif" style="font-family: 'KaiTi', 'STKaiti', serif;">自强不息 知行合一</text>
+  
+  
+  <text x="1100" y="660" font-size="16" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">Academic Presentation</text>
+  
+  
+  <text x="1240" y="700" text-anchor="end" font-size="14" fill="#718096" font-family="Microsoft YaHei, PingFang SC, Hiragino Sans GB, Noto Sans CJK SC, sans-serif">1</text>
+</svg>
