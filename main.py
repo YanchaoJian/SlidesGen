@@ -17,7 +17,6 @@ from workflow.state import initialize_overall_state
 from workflow.graph import build_graph
 from utils.instrumentation import MetricsStore
 from utils.logging import setup_logging
-from eval.slide_metrics import compute_slide_metrics
 
 def parse_args():
     """解析命令行参数"""
@@ -185,16 +184,6 @@ async def main():
             node_stats = MetricsStore.nodes_snapshot()
             token_stats = MetricsStore.tokens_snapshot()
 
-            # slide_reports 质量统计
-            slide_metrics = {}
-            try:
-                snap_values = (snap.values or {}) if snap else {}
-                slide_reports = snap_values.get("slide_reports") or {}
-                plan = snap_values.get("presentation_plan") or []
-                slide_metrics = compute_slide_metrics(slide_reports, plan)
-            except Exception:
-                pass
-
             stats = {
                 "session_id": thread_id,
                 "wall_start": wall_start,
@@ -214,7 +203,6 @@ async def main():
                 "tokens_by_model": token_stats["by_model"],
                 "tokens_total": token_stats["total"],
                 "tokens_by_stage": token_stats["by_stage"],
-                "slide_metrics": slide_metrics,
                 "warnings": MetricsStore.warnings(),
             }
             stats_path = os.path.join(session_dir, "run_stats.json")

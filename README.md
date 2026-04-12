@@ -146,6 +146,28 @@ python test/test_pdf_parser.py
 python test/test_soffice.py
 ```
 
+## 📊 Evaluation
+
+SlidesGen includes a built-in LLM-as-Judge evaluation framework (`eval/`) that scores generated presentations on three dimensions (0-5 each):
+
+| Dimension | What it measures |
+|-----------|-----------------|
+| **Content** | Information accuracy, completeness, logical coherence, density |
+| **Design** | Color/contrast, typography, layout/alignment, visual richness |
+| **Style Transfer** | Faithfulness to the reference style image (color, typography, layout, decorations) |
+
+Plus an objective metric: **HSV color histogram similarity** (no LLM needed).
+
+```bash
+# Evaluate from Python
+from metrics import evaluate_pptx
+from utils.llm import LLMConfig
+result = await evaluate_pptx("output/.../result/Final_Presentation.pptx", llm_config, style_image_path="style.png")
+
+# Analyze run stats
+python metrics/parse_logs.py --session_id 0407_1126_gpt-4o
+```
+
 ## 🛠️ Utility Scripts
 
 ```bash
@@ -167,7 +189,10 @@ python scripts/visualize_workflow.py   # Render the LangGraph workflow as PNG
 | `marker-pdf`         | PDF parsing (layout, OCR, equations)       |
 | `python-pptx`        | PowerPoint generation                      |
 | `pdf2image` + Poppler| PPTX → image rendering for visual review   |
+| `opencv-python-headless` | Color histogram similarity for evaluation |
+| `pydantic`           | Data validation and structured output      |
 | `tenacity`           | Retry logic for external tool calls        |
+| `torch`              | Deep learning backend (marker-pdf / surya) |
 
 ## 📜 License
 

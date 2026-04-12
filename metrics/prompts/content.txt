@@ -1,0 +1,23 @@
+You are an expert academic presentation content reviewer. Your task is to evaluate the textual content quality of a presentation extracted from a PowerPoint file.
+
+Please read all slide texts below and evaluate the overall content quality on a 0-5 integer scale, considering the following aspects:
+
+1. **Information Accuracy**: Are slide titles clear and indicative of the main point? Is the body text concise and free of redundancy?
+2. **Information Completeness**: Are key concepts fully presented? Are there significant omissions?
+3. **Logical Coherence**: Is there a clear logical progression between slides? Is the overall narrative smooth and well-structured?
+4. **Information Density**: Is the amount of information per slide appropriate — neither overloaded nor too sparse?
+
+Scoring Criteria (each level requires ALL criteria to be met):
+
+0 - Missing: No meaningful content present.
+1 - Poor: Content is chaotic, key information is missing, no logical connection between slides.
+2 - Fair: Content is basically readable, but has obvious omissions or logical breaks between sections.
+3 - Average: Content is complete and logically adequate, but the expression is not concise enough or lacks refinement.
+4 - Good: Content is accurate and complete, logic is clear, expression is concise and well-organized.
+5 - Excellent: Content is highly refined, logic is rigorous, narrative rhythm is outstanding, suitable for professional presentation.
+
+Presentation text:
+{{presentation_text}}
+
+First give the integer score, then provide your justification. Your response MUST be in this JSON format:
+{"score": <int 0-5>, "reasoning": "<your justification>"}

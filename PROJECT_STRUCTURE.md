@@ -13,7 +13,7 @@
 ```
 SlidesGen/
 ├── main.py                    # CLI 入口，组装并运行 LangGraph 工作流
-├── requirements.txt           # Python 依赖清单
+├── requirements.txt           # Python 依赖清单（pip install -r requirements.txt）
 ├── README.md                  # 项目说明
 ├── CLAUDE.md                  # Claude Code 协作指南
 ├── PROJECT_STRUCTURE.md       # 本文档
@@ -23,7 +23,7 @@ SlidesGen/
 ├── pipeline/                  # 非 LLM 的 SVG 处理、PPTX 合并与渲染流水线
 ├── workflow/                  # LangGraph 状态机：节点、状态、图编排
 ├── utils/                     # 通用工具（LLM 封装、日志、运行时指标采集）
-├── eval/                      # 运行后处理：slide 质量指标与日志聚合
+├── metrics/                   # 运行统计分析 + LLM-as-Judge 质量评估（均为手动运行）
 ├── scripts/                   # 辅助脚本
 ├── test/                      # 单元/集成测试
 ├── assets/                    # 示例 PDF、参考样式图、工作流图
@@ -103,10 +103,10 @@ SlidesGen/
 | `pipeline/clean_svg.py` | 临时性 SVG 清理实验脚本（不在主流程中使用）。 |
 | `pipeline/finalize_svg.py` | 将 `svg_finalize/` 收尾流程包装为可对整目录批量离线后处理的 CLI。 |
 | `pipeline/pptx_merger.py` | 把多张已转换的 SVG 单页合并为一个 `Final_Presentation.pptx`。 |
-| `pipeline/pptx_imaging.py` | 通过 LibreOffice (`soffice`) + pdf2image 把 PPTX 渲染为图像，供视觉评审使用。 |
+| `pipeline/pptx_imaging.py` | 通过 LibreOffice (`soffice`) + pdf2image 把 PPTX 渲染为图像，供视觉评审与评估使用。 |
 | `pipeline/svg_to_pptx_runner.py` | SVG→PPTX 流程的 runner 包装，向后兼容的 CLI 入口。 |
 
-### 4.1 `pipeline/svg_finalize/` —— SVG 收尾五步
+### 4.1 `pipeline/svg_finalize/` —— SVG 收尾处理
 
 | 文件 | 功能 |
 |------|------|
@@ -115,6 +115,7 @@ SlidesGen/
 | `embed_icons.py` | 内嵌图标资源。 |
 | `crop_images.py` | 按目标框对图像做智能裁切。 |
 | `flatten_tspan.py` | 把多行 `<tspan>` 拍平为多个独立 `<text>`，规避 DrawingML 转换时的换行问题。 |
+| `strip_background.py` | 剥离 SVG 中的背景矩形，交由 PPTX 侧处理。 |
 | `svg_rect_to_path.py` | 把 `<rect>`（含圆角）转为 `<path>`，统一后续转换。 |
 
 ### 4.2 `pipeline/svg_to_pptx/` —— SVG → DrawingML 转换引擎
@@ -128,6 +129,7 @@ SlidesGen/
 | `pptx_slide_xml.py` | 生成 `slideN.xml` 的骨架与命名空间。 |
 | `pptx_media.py` | 处理嵌入的图像 / 媒体资源关系（rels）。 |
 | `pptx_notes.py` | 写入演讲者备注。 |
+| `master_chrome.py` | 从参考 PPTX 中提取 slide master / layout 并注入生成的 PPTX。 |
 | `drawingml_converter.py` | 把 SVG 元素分发到具体的 DrawingML 生成函数。 |
 | `drawingml_elements.py` | `<rect>` / `<circle>` / `<text>` / `<image>` 等元素到 DrawingML 形状的映射。 |
 | `drawingml_paths.py` | SVG path d 属性解析与 DrawingML `<a:path>` 输出。 |
@@ -151,12 +153,16 @@ SlidesGen/
 
 ---
 
-## 六、`eval/` —— 运行后处理
+## 六、`metrics/` —— 运行统计与质量评估
 
-| 文件 | 功能 |
-|------|------|
-| `eval/slide_metrics.py` | `compute_slide_metrics()`：基于 `slide_reports` 与 plan 聚合单页质量指标，写入 `run_stats.json` 的 `slide_metrics` 字段。 |
-| `eval/parse_logs.py` | 读取 `run_stats.json` 输出 Markdown 报告的 CLI 脚本，用于事后查看。 |
+> 与 `utils/instrumentation/`（运行时自动采集）不同，`metrics/` 下的功能均为**手动触发**。
+
+| 文件 | 功能 | 触发方式 |
+|------|------|---------|
+| `metrics/evaluate.py` | LLM-as-Judge 统一评估框架：三维评分（Content / Design / Style Transfer，各 0-5）+ HSV 颜色直方图客观相似度。提供 `evaluate_pptx()` 单文件评估与 `evaluate_pptx_batch()` 批量评估接口。 | 手动（消耗 API） |
+| `metrics/prompts/` | 评估 prompt 模板（`content.txt` / `design.txt` / `style_transfer.txt`），由 `evaluate.py` 在模块加载时读取。 | — |
+| `metrics/slide_metrics.py` | `compute_slide_metrics()`：基于 `slide_reports` 与 plan 聚合单页质量指标（首次通过率、自愈率、重试次数等）。 | 手动 |
+| `metrics/parse_logs.py` | 读取 `run_stats.json` 输出 Markdown 报告的 CLI 脚本，用于事后查看。 | 手动 CLI |
 
 ---
 
@@ -165,9 +171,11 @@ SlidesGen/
 | 文件 | 功能 |
 |------|------|
 | `scripts/visualize_workflow.py` | 把 LangGraph 工作流导出为 PNG/Mermaid，便于查看节点拓扑。 |
+| `scripts/run_with_fake_llm.py` | Fake-LLM runner：monkey-patch `create_llm` 返回 stub 响应，在不消耗 API 的情况下跑通完整 pipeline。 |
 | `test/test_llm_call.py` | LLM 调用连通性测试。 |
 | `test/test_pdf_parser.py` | PDF 解析（marker）流程测试。 |
 | `test/test_soffice.py` | LibreOffice 渲染依赖检查测试。 |
+| `test/test_master_chrome_injection.py` | Slide master 注入功能测试。 |
 
 ---
 
@@ -177,8 +185,7 @@ SlidesGen/
 |------|------|
 | `assets/paper.pdf` | 示例输入论文。 |
 | `assets/ref-style-img.png` | 示例参考样式图。 |
-| `assets/ref-ppt.pptx` | 参考 PPTX。 |
-| `assets/workflow_graph.{mmd,png}` | 工作流可视化图。 |
+| `assets/ref-ppt.pptx` | 参考 PPTX（slide master 来源）。 |
 | `models/marker/...` | marker-pdf 所需的本地模型权重（layout、text_detection、text_recognition、table_recognition、texify、inline_math_detection、ocr_error_detection）。 |
 
 ---
@@ -202,7 +209,7 @@ output/{session_id}/
 │   └── Final_Presentation.pptx # 合并后的最终 PPTX
 ├── checkpoints/                # LangGraph SQLite 检查点（用于 --thread_id 恢复）
 ├── final_snapshot.json
-├── run_stats.json              # 端到端耗时、分节点耗时、分模型 token、slide 质量指标
+├── run_stats.json              # 端到端耗时、分节点耗时、分模型 token 用量
 └── log.txt
 ```
 
@@ -215,4 +222,4 @@ output/{session_id}/
 - **重试上限**：风格协议 / SVG 校验 / 设计审查等所有 LLM 相关重试循环共享同一个上限 `--llm_max_retries`（默认 3）。
 - **HITL 中断点**：`review_plan_node`（大纲审查）与 `review_pptx_design_node`（最终 PPTX 审查）通过 `interrupt()` 暂停等待用户反馈。
 - **会话恢复**：`--thread_id` 必须传完整目录名（含模型后缀），`initial_state` 传 `None`，由 SQLite 检查点续跑。
-- **运行时指标 vs 后处理**：`utils/instrumentation/` 负责运行时采集（节点耗时 / token / cost），`eval/` 负责运行后聚合与报告。
+- **采集 vs 分析**：`utils/instrumentation/` 负责运行时自动采集（节点耗时 / token / cost → `run_stats.json`），`metrics/` 负责手动触发的统计分析与质量评估。

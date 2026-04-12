@@ -3,8 +3,8 @@
 从 run_stats.json 提取实验数据并打印 Markdown 报告。
 
 用法:
-    python eval/parse_logs.py --session_id 0408_1155_MS
-    python eval/parse_logs.py --session_id 0408_1155_MS --output_dir output
+    python metrics/parse_logs.py --session_id 0408_1155_MS
+    python metrics/parse_logs.py --session_id 0408_1155_MS --output_dir output
 """
 
 import argparse

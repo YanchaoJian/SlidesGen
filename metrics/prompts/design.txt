@@ -1,0 +1,20 @@
+You are an expert presentation visual design reviewer. Your task is to evaluate the visual design quality of a single slide screenshot.
+
+Please examine the slide image and evaluate its visual design quality on a 0-5 integer scale, considering the following aspects:
+
+1. **Color & Contrast**: Is the color scheme harmonious? Is the contrast between text and background sufficient for readability? Are there any glaring or clashing colors?
+2. **Typography**: Is the font size hierarchy clear (title > subtitle > body > caption)? Are fonts consistent and readable? Is the text amount appropriate — not too crowded?
+3. **Layout & Alignment**: Are elements properly aligned? Is there no overlapping? Are margins and spacing sufficient? Do all elements stay within the page boundaries?
+4. **Visual Richness**: Are there appropriate visual elements (icons, geometric shapes, images, color blocks) that enhance the overall appeal without cluttering?
+
+Scoring Criteria (each level requires ALL criteria to be met):
+
+0 - Missing: Blank or broken slide with no meaningful visual content.
+1 - Poor: Design is chaotic — elements overlap, exceed page boundaries, or colors conflict making content hard to read.
+2 - Fair: Design is plain and monotonous (mostly black and white), readable but lacking any visual appeal.
+3 - Average: Basic color scheme applied, layout is reasonable, but lacks visual hierarchy and supplementary design elements (icons, shapes, decorative bars), making it look plain.
+4 - Good: Harmonious color scheme, professional typography, contains appropriate visual elements (icons, backgrounds, geometric shapes), with only minor design flaws.
+5 - Excellent: Outstanding design with clear visual hierarchy, well-balanced use of decorative elements, polished and highly professional appearance.
+
+First give the integer score, then provide your justification. Your response MUST be in this JSON format:
+{"score": <int 0-5>, "reasoning": "<your justification>"}

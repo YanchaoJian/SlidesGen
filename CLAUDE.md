@@ -123,11 +123,12 @@ SVG processing pipeline under `pipeline/`:
 | Module | Purpose |
 |--------|---------|
 | `pipeline/svg_validator.py` | XML validation + banned feature checks + geometry detection + `finalize_single_svg` entry |
-| `pipeline/svg_finalize/` | SVG post-processing steps: `fix_image_aspect`, `crop_images`, `embed_images`, `embed_icons`, `flatten_tspan`, `svg_rect_to_path` |
+| `pipeline/svg_finalize/` | SVG post-processing steps: `fix_image_aspect`, `crop_images`, `embed_images`, `embed_icons`, `flatten_tspan`, `strip_background`, `svg_rect_to_path` |
 | `pipeline/finalize_svg.py` | Standalone CLI entry point that runs the `svg_finalize/` pipeline over a folder of SVGs (used for offline batch post-processing) |
-| `pipeline/svg_to_pptx/` | SVG → DrawingML conversion engine (drawingml_* converters + pptx_* builders) |
+| `pipeline/svg_to_pptx/` | SVG → DrawingML conversion engine (drawingml_* converters + pptx_* builders + `master_chrome` slide-master injection) |
 | `pipeline/svg_to_pptx_runner.py` | Thin CLI wrapper that delegates to `svg_to_pptx/` for backward-compatible command-line use |
 | `pipeline/pptx_merger.py` | Merge multiple post-processed SVG slides into one editable PPTX |
+| `pipeline/pptx_imaging.py` | PPTX → image rendering via LibreOffice + pdf2image (for visual review / evaluation) |
 | `pipeline/clean_svg.py` | Ad-hoc utility script for one-off SVG cleanup experiments (not part of the main workflow) |
 
 ### SVG Pipeline
@@ -135,7 +136,7 @@ SVG processing pipeline under `pipeline/`:
 1. **Generation** (`agents/execution/svg_generator.py`): LLM generates SVG from expanded plan + style protocol
 2. **Validation** (`pipeline/svg_validator.py:validate_svg`): Checks XML well-formedness + 15 banned features (clipPath, mask, `<style>`, class, foreignObject, etc.)
 3. **CRAP Optimization** (`agents/execution/svg_optimizer.py`): Runs geometry checks → feeds issues + SVG to LLM for design improvement
-4. **Finalize** (`pipeline/svg_validator.py:finalize_single_svg`): post-processing chain from `pipeline/svg_finalize/` — `fix_image_aspect` → `crop_images` → `embed_images` → `embed_icons` → `flatten_tspan` → `svg_rect_to_path`
+4. **Finalize** (`pipeline/svg_validator.py:finalize_single_svg`): post-processing chain from `pipeline/svg_finalize/` — `fix_image_aspect` → `crop_images` → `embed_images` → `embed_icons` → `flatten_tspan` → `strip_background` → `svg_rect_to_path`
 5. **SVG→PPTX** (`pipeline/svg_to_pptx/`): Converts SVG elements to native DrawingML XML
 
 ### Node Configuration
@@ -214,4 +215,7 @@ Core libraries (see `requirements.txt`):
 - **marker-pdf**: PDF parsing (layout, OCR, equations, tables)
 - **langchain_openai**: LLM interface
 - **pdf2image + Poppler**: PPTX→image for visual review
+- **opencv-python-headless**: Color histogram similarity for evaluation
+- **pydantic**: Data validation and structured output parsing
 - **tenacity**: Retry logic for external tool calls
+- **torch**: Deep learning backend for marker-pdf / surya models

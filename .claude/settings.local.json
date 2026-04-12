@@ -19,7 +19,9 @@
       "Glob",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:api.github.com)"
+      "WebFetch(domain:api.github.com)",
+      "WebSearch",
+      "WebFetch(domain:arxiv.org)"
     ]
   },
   "initialPermissionMode": "acceptEdits"

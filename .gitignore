@@ -1,19 +1,64 @@
+# ========================
 # Python
-**/__pycache__/
-*.pyc
-*.pyo
+# ========================
+__pycache__/
+*.py[cod]
 *.egg-info/
+*.egg
 dist/
 build/
+*.whl
 
-# Environment
+# ========================
+# Environment & Secrets
+# ========================
 .env
+.env.*
 .venv/
+env/
+venv/
 
-# Project-specific
-models/
-output/*/checkpoints/
-*.sqlite
-
+# ========================
 # IDE
+# ========================
 .vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ========================
+# OS
+# ========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================
+# Project: ML Models
+# ========================
+models/
+
+# ========================
+# Project: Runtime Output
+# ========================
+output/
+test/output/
+
+# ========================
+# Project: Databases
+# ========================
+*.sqlite
+*.sqlite3
+*.db
+
+# ========================
+# Project: Logs
+# ========================
+*.log
+
+# ========================
+# Misc
+# ========================
+*.tmp
+*.bak
