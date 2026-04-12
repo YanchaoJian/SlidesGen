@@ -469,3 +469,46 @@ def _print_summary(result: dict) -> None:
         print(f"  Style Transfer: {result['style_transfer']['score']}")
     if result.get("color_histogram_similarity") is not None:
         print(f"  Color Histogram: {result['color_histogram_similarity']:.4f}")
+
+
+# ==============================================================================
+# CLI 入口
+# ==============================================================================
+
+
+def main():
+    """命令行入口：对单个 PPTX 执行三维评估。"""
+    import argparse
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    parser = argparse.ArgumentParser(
+        description="Evaluate a PPTX presentation (Content / Design / Style Transfer)."
+    )
+    parser.add_argument("--pptx_path", required=True, help="Path to the PPTX file to evaluate.")
+    parser.add_argument("--style_image_path", default=None, help="Path to the reference style image (enables D3 style transfer scoring).")
+    parser.add_argument("--model_name", default="gpt-4o", help="Vision model for evaluation (default: gpt-4o).")
+    parser.add_argument("--output_dir", default=None, help="Directory to save evaluation results. Default: <session>/metrics/eval/")
+    parser.add_argument("--dpi", type=int, default=200, help="DPI for PPTX slide rendering (default: 200).")
+    args = parser.parse_args()
+
+    llm_config = LLMConfig(
+        model_name=args.model_name,
+        api_key=os.getenv("OPENAI_API_KEY", ""),
+        base_url=os.getenv("OPENAI_BASE_URL", ""),
+    )
+
+    asyncio.run(
+        evaluate_pptx(
+            pptx_path=args.pptx_path,
+            llm_config=llm_config,
+            style_image_path=args.style_image_path,
+            output_dir=args.output_dir,
+            dpi=args.dpi,
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()

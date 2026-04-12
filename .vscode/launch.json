@@ -35,6 +35,51 @@
                 // [Optional] Resume an interrupted session by specifying its thread ID
                 // "--thread_id", "0408_1155_MS",
             ]
+        },
+        {
+            "name": "Evaluate PPTX (LLM-as-Judge)",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "program": "metrics/evaluate.py",
+            "args": [
+                // [Required] Path to the PPTX file to evaluate
+                "--pptx_path", "output/SESSION_ID/result/Final_Presentation.pptx",
+                // [Optional] Reference style image (enables D3 style transfer scoring)
+                "--style_image_path", "assets/ref-style-img.png",
+                // [Optional] Vision model for evaluation (default: gpt-4o)
+                "--model_name", "gpt-4o",
+                // [Optional] DPI for slide rendering (default: 200)
+                "--dpi", "200",
+                // [Optional] Custom output directory for eval results
+                // "--output_dir", "output/SESSION_ID/metrics/eval",
+            ]
+        },
+        {
+            "name": "Parse Run Stats (Markdown Report)",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "program": "metrics/parse_logs.py",
+            "args": [
+                // [Required] Session ID (output subdirectory name)
+                "--session_id", "SESSION_ID",
+                // [Optional] Output root directory (default: output)
+                "--output_dir", "output"
+            ]
+        },
+        {
+            "name": "Visualize Workflow Graph",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal",
+            "program": "scripts/visualize_workflow.py"
         }
     ]
 }

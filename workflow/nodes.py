@@ -473,8 +473,29 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
         logger.warning("   -> No SVG slides were generated to merge.")
         return {"final_pptx_path": None}
 
+    # 从 presentation_plan 中提取每页的演讲者备注，构建 {svg_stem: notes_text} 映射。
+    # SVG 文件名格式为 slide_v{version}.svg，stem 为 slide_v{version}；
+    # 按 slide_page 将 notes 关联到对应 SVG 的最新版本。
+    notes_dict: Dict[str, str] = {}
+    if plan:
+        notes_by_page: Dict[int, str] = {}
+        for slide_plan in plan:
+            page = slide_plan.get("slide_page")
+            pnotes = slide_plan.get("presenter_notes", "")
+            if page is not None and pnotes:
+                notes_by_page[int(page)] = pnotes
+
+        for page_num in sorted(paths_by_page.keys()):
+            svg_file = paths_by_page[page_num]
+            stem = os.path.splitext(os.path.basename(svg_file))[0]
+            if page_num in notes_by_page:
+                notes_dict[stem] = notes_by_page[page_num]
+
+    if notes_dict:
+        logger.info(f"   -> Speaker notes prepared for {len(notes_dict)} slide(s).")
+
     final_path = os.path.join(config["output_dir"], "result", "Final_Presentation.pptx").replace(os.sep, "/")
-    result = merge_svgs_to_pptx(svg_paths, final_path, style_protocol=state.get("style_protocol"))
+    result = merge_svgs_to_pptx(svg_paths, final_path, style_protocol=state.get("style_protocol"), notes=notes_dict)
 
     if result:
         logger.info(f"   -> ✅ Merged {len(svg_paths)} SVG(s) into {final_path}")
