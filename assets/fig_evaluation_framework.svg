@@ -47,8 +47,8 @@
   <!-- ================================================================== -->
   <!-- D1: 内容质量 -->
   <!-- ================================================================== -->
-  <line x1="485" y1="125" x2="560" y2="125" stroke="#475569" stroke-width="1.5"/>
-  <line x1="560" y1="125" x2="560" y2="134" stroke="#475569" stroke-width="1.5"/>
+  <line x1="485" y1="130" x2="560" y2="130" stroke="#475569" stroke-width="1.5"/>
+  <line x1="560" y1="130" x2="560" y2="66" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <rect x="490" y="70" width="240" height="64" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" filter="url(#shadow)"/>
   <rect x="490" y="70" width="54" height="64" rx="10" fill="#3B82F6"/>
