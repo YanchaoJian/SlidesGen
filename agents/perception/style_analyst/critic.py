@@ -77,7 +77,7 @@ def critique_style_protocol(
         logger.info(f"   -> Critic LLM call successful. Result: {status}")
 
         # 保存审查结果到历史记录文件
-        _save_critique_history(output_dir, critique_result, )
+        _save_critique_history(output_dir, critique_result)
 
         return critique_result.is_approved, critique_result.critique
         

@@ -1,3 +1,4 @@
+import glob
 import os
 import logging
 from typing import Any, Dict
@@ -7,6 +8,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.types import interrupt
 
 from agents.perception.pdf_parser.extractor import extract_pdf
+from pipeline.svg_validator import validate_svg, finalize_single_svg
 
 load_dotenv()
 
@@ -65,15 +67,15 @@ def _get_llm_config(configurable: Dict[str, Any], stage: str = "text") -> LLMCon
 def extract_content_from_pdf_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 提取 PDF 基础内容"""
     logger.info("--- NODE: ExtractContentFromPDF ---")
-    config = config["configurable"]
-    
-    vision_config = _get_llm_config(config, stage="vision")
+    cfg = config["configurable"]
+
+    vision_config = _get_llm_config(cfg, stage="vision")
     base_content, _, _ = extract_pdf(
-        pdf_path=config["pdf_path"],
-        marker_path=config["marker_path"],
-        output_dir=config["output_dir"],
-        api_key=config.get("api_key"),
-        base_url=config.get("base_url"),
+        pdf_path=cfg["pdf_path"],
+        marker_path=cfg["marker_path"],
+        output_dir=cfg["output_dir"],
+        api_key=cfg.get("api_key"),
+        base_url=cfg.get("base_url"),
         model_name=vision_config["model_name"],
     )
     
@@ -88,7 +90,7 @@ def extract_content_from_pdf_node(state: OverallState, config: RunnableConfig) -
 def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 分析参考图,提取自然语言形式的主题风格描述"""
     logger.info("--- NODE: AnalyzeImageStyle ---")
-    config = config["configurable"]
+    cfg = config["configurable"]
     review = state.get("style_review", {})
 
     style_data = analyze_style(
@@ -96,9 +98,9 @@ def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dic
         previous_protocol_critique=review.get("critique"),
         style_protocol_retry_count=review.get("retry_count", 0),
         style_protocol_verified=review.get("verified", False),
-        style_image_path=config["style_image_path"],
-        output_dir=config['output_dir'],
-        llm_config=_get_llm_config(config, stage="vision"),
+        style_image_path=cfg["style_image_path"],
+        output_dir=cfg['output_dir'],
+        llm_config=_get_llm_config(cfg, stage="vision"),
     )
 
     if not style_data:
@@ -111,10 +113,10 @@ def analyze_image_style_node(state: OverallState, config: RunnableConfig) -> Dic
 def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 风格自查 (StyleCritic),对比风格描述与原图,决定是否需要修正"""
     logger.info("--- NODE: CheckStyleProtocol ---")
-    config = config["configurable"]
+    cfg = config["configurable"]
     review = state.get("style_review", {})
     retry_count = review.get("retry_count", 0)
-    max_retries = int(config.get("llm_max_retries", 3))
+    max_retries = int(cfg.get("llm_max_retries", 3))
 
     if retry_count >= max_retries:
         logger.warning(f"   -> ⚠️ Style check retry limit ({retry_count}/{max_retries}) reached. Forcing approval to avoid infinite loop.")
@@ -122,9 +124,9 @@ def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Di
 
     verified, critique = critique_style_protocol(
         style_protocol=state["style_protocol"],
-        output_dir=config["output_dir"],
-        image_path=config["style_image_path"],
-        llm_config=_get_llm_config(config, stage="vision"),
+        output_dir=cfg["output_dir"],
+        image_path=cfg["style_image_path"],
+        llm_config=_get_llm_config(cfg, stage="vision"),
     )
 
     if verified:
@@ -141,7 +143,7 @@ def check_style_protocol_node(state: OverallState, config: RunnableConfig) -> Di
 def generate_presentation_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 根据解析后的 PDF 内容,生成演示大纲"""
     logger.info("--- NODE: GeneratePresentationPlan ---")
-    config = config["configurable"]
+    cfg = config["configurable"]
     review = state.get("plan_review", {})
 
     paper_main_content, presentation_plan = plan_presentation(
@@ -151,8 +153,8 @@ def generate_presentation_plan_node(state: OverallState, config: RunnableConfig)
         presentation_plan_verified=review.get("verified", False),
         content=state["content"],
         presentation_plan_retry_count=review.get("retry_count", 0),
-        output_dir=config["output_dir"],
-        llm_config=_get_llm_config(config, stage="text"),
+        output_dir=cfg["output_dir"],
+        llm_config=_get_llm_config(cfg, stage="text"),
     )
 
     if not presentation_plan:
@@ -200,7 +202,7 @@ def review_plan_node(state: OverallState, config: RunnableConfig) -> Dict[str, A
 @time_node("expand_slide_plan")
 def expand_slide_plan_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 将简要大纲扩展为详细的单页描述"""
-    config = config["configurable"]
+    cfg = config["configurable"]
     slide_page = state["slide_page"]
     logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): ExpandSlidePlan ---")
 
@@ -211,13 +213,13 @@ def expand_slide_plan_node(state: SlideState, config: RunnableConfig) -> Dict[st
     slide_detail = expand_slide_plan(
         slide_plan=state["slide_plan"],
         style_protocol=state["slide_style_protocol"],
-        llm_config=_get_llm_config(config, stage="text"),
+        llm_config=_get_llm_config(cfg, stage="text"),
     )
 
     if not slide_detail:
         logger.warning(f"⚠️ [Slide {slide_page}] Slide plan expansion failed. SVG generator will use the original plan.")
     else:
-        slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
+        slide_dir = os.path.join(cfg["output_dir"], "result", f"slide_{slide_page:02d}")
         os.makedirs(slide_dir, exist_ok=True)
         detail_path = os.path.join(slide_dir, "slide_detail.md")
         try:
@@ -233,7 +235,7 @@ def expand_slide_plan_node(state: SlideState, config: RunnableConfig) -> Dict[st
 @time_node("generate_slide_svg")
 def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 调用 LLM 生成单张 slide 的 SVG 源码"""
-    config = config["configurable"]
+    cfg = config["configurable"]
     slide_page = state["slide_page"]
     logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): GenerateSlideSVG ---")
 
@@ -243,7 +245,7 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
     svg_code = generate_slide_svg(
         slide_plan=state["slide_plan"],
         style_protocol=state["slide_style_protocol"],
-        llm_config=_get_llm_config(config, stage="svg"),
+        llm_config=_get_llm_config(cfg, stage="svg"),
         total_pages=state.get("total_pages", 10),
         slide_detail=state.get("slide_detail"),
         failed_svg=state.get("svg_code"),
@@ -282,7 +284,7 @@ def generate_slide_svg_node(state: SlideState, config: RunnableConfig) -> Dict[s
 @time_node("optimize_svg_crap")
 def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 验证 SVG → CRAP 优化 → 后处理 → 写入文件"""
-    config = config["configurable"]
+    cfg = config["configurable"]
     slide_page = state["slide_page"]
     logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): OptimizeSVGCRAP ---")
 
@@ -302,8 +304,6 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
         }
 
     # 1. 基础验证（XML 合法性 + 禁用特性）
-    from pipeline.svg_validator import validate_svg, finalize_single_svg
-
     is_valid, error = validate_svg(svg_code)
     svg_review = state.get("svg_review", {})
     retry_count = svg_review.get("retry_count", 0)
@@ -322,7 +322,7 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
     else:
         optimized_svg = optimize_svg_crap(
             svg_code=svg_code,
-            llm_config=_get_llm_config(config, stage="svg"),
+            llm_config=_get_llm_config(cfg, stage="svg"),
         )
 
         if optimized_svg:
@@ -337,11 +337,10 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
             logger.info(f"   -> [Slide {slide_page}] CRAP optimization returned no result. Keeping original.")
 
     # 3. 写入文件 + 后处理
-    slide_dir = os.path.join(config["output_dir"], "result", f"slide_{slide_page:02d}")
+    slide_dir = os.path.join(cfg["output_dir"], "result", f"slide_{slide_page:02d}")
     os.makedirs(slide_dir, exist_ok=True)
     # 版本号按目录中已存在的 slide_v*.svg 数量单调递增，避免 design_review
     # 重试时（svg_review.retry_count 不变）覆盖之前的版本，从而保留完整历史。
-    import glob
     existing_versions = glob.glob(os.path.join(slide_dir, "slide_v*.svg"))
     version = len(existing_versions)
     # 用 posix 风格统一斜杠，避免快照里出现 "output/xx\\result\\..." 这种混合路径。
@@ -371,7 +370,7 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
 @time_node("check_slide_design")
 def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 检查单张 slide 的视觉质量"""
-    config = config["configurable"]
+    cfg = config["configurable"]
     slide_page = state["slide_page"]
     logger.info(f"--- SUBGRAPH NODE (Slide {slide_page}): CheckSlideDesign ---")
 
@@ -397,7 +396,7 @@ def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[s
         slide_code=state["svg_code"],
         svg_path=state.get("svg_path"),
         slide_style_protocol=state["slide_style_protocol"],
-        llm_config=_get_llm_config(config, stage="vision"),
+        llm_config=_get_llm_config(cfg, stage="vision"),
     )
 
     design_review = state.get("design_review", {})
@@ -449,7 +448,7 @@ def check_slide_design_node(state: SlideState, config: RunnableConfig) -> Dict[s
 @time_node("merge_slides")
 def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Dict[str, Any]:
     """[Node] 合并所有成功生成的单页 PPTX 文件"""
-    config = config["configurable"]
+    cfg = config["configurable"]
     logger.info("--- NODE: MergeSlidesToDeck ---")
 
     # generated_slide_paths 现在是 {slide_page: path}，由自定义 reducer 合并；
@@ -494,7 +493,7 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
     if notes_dict:
         logger.info(f"   -> Speaker notes prepared for {len(notes_dict)} slide(s).")
 
-    final_path = os.path.join(config["output_dir"], "result", "Final_Presentation.pptx").replace(os.sep, "/")
+    final_path = os.path.join(cfg["output_dir"], "result", "Final_Presentation.pptx").replace(os.sep, "/")
     result = merge_svgs_to_pptx(svg_paths, final_path, style_protocol=state.get("style_protocol"), notes=notes_dict)
 
     if result:

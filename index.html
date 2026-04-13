@@ -328,7 +328,7 @@
 
   <header class="hero">
     <div class="container">
-      <div class="badge"><span class="dot"></span> Multi-Agent · LangGraph · v1.0</div>
+      <div class="badge"><span class="dot"></span> Multi-Agent · LangGraph · Evaluation · v1.0</div>
       <h1>
         Turn research papers<br/>
         into <span class="grad">beautiful slides</span>,<br/>
@@ -348,6 +348,7 @@
         <div>🔁 <b>Self-correcting</b> loops</div>
         <div>👤 <b>Human-in-the-loop</b></div>
         <div>💾 <b>Resumable</b> sessions</div>
+        <div>📊 <b>Built-in</b> evaluation</div>
       </div>
 
       <div class="pipeline">
@@ -419,6 +420,16 @@
           <h3>Truly editable PPTX</h3>
           <p>Deterministic SVG → DrawingML conversion produces native PowerPoint shapes you can still move, recolor, and rewrite.</p>
         </div>
+        <div class="feat">
+          <div class="ic">📝</div>
+          <h3>Auto speaker notes</h3>
+          <p>Each slide gets presenter notes generated from the paper content — ready for rehearsal right out of the box.</p>
+        </div>
+        <div class="feat">
+          <div class="ic">🔬</div>
+          <h3>Built-in evaluation</h3>
+          <p>LLM-as-Judge scores on content, design, and style transfer (0-5) plus HSV histogram similarity — all from the CLI.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -468,7 +479,12 @@
 <span class="out">[planning]&nbsp;&nbsp;</span> 12 slides planned <span class="ok">✓</span><br/>
 <span class="out">[execution]&nbsp;</span> generating slides in parallel...<br/>
 <span class="out">[execution]&nbsp;</span> slide_01 ✓  slide_02 ✓  slide_03 ✓<br/>
-<span class="out">[delivery]&nbsp;&nbsp;</span> Final_Presentation.pptx <span class="ok">✓</span>
+<span class="out">[delivery]&nbsp;&nbsp;</span> Final_Presentation.pptx <span class="ok">✓</span><br/><br/>
+<span class="cmt"># Evaluate the result</span><br/>
+<span class="prompt">$</span> python -m metrics.evaluate \<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="flag">--pptx_path</span> <span class="str">output/.../Final_Presentation.pptx</span> \<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="flag">--style_image_path</span> <span class="str">style.png</span><br/>
+<span class="out">[eval]</span> D1=4.2 D2=3.8 D3=3.5 HSV=0.82 <span class="ok">✓</span>
           </div>
         </div>
       </div>
@@ -484,13 +500,13 @@
       </div>
       <div class="stack">
         <div class="stack-item"><div class="name">langgraph</div><div class="role">Multi-agent orchestration</div></div>
-        <div class="stack-item"><div cla s="name">langchain_openai</div><div class="role">LLM interface</div></div>
+        <div class="stack-item"><div class="name">langchain_openai</div><div class="role">LLM interface</div></div>
         <div class="stack-item"><div class="name">marker-pdf</div><div class="role">PDF parsing & OCR</div></div>
         <div class="stack-item"><div class="name">python-pptx</div><div class="role">PowerPoint generation</div></div>
         <div class="stack-item"><div class="name">pdf2image</div><div class="role">Slide rendering</div></div>
         <div class="stack-item"><div class="name">tenacity</div><div class="role">Resilient retries</div></div>
         <div class="stack-item"><div class="name">AsyncSqliteSaver</div><div class="role">Checkpoint storage</div></div>
-        <div class="stack-item"><div class="name">Poppler</div><div class="role">PDF rendering</div></div>
+        <div class="stack-item"><div class="name">opencv</div><div class="role">Color histogram evaluation</div></div>
       </div>
     </div>
   </section>

@@ -229,11 +229,11 @@
   <!-- ================================================================== -->
   <!-- 回到风格层 -->
   <path d="M 777,610 Q 777,590 850,580 Q 1100,560 1100,261 Q 1100,200 516,261" fill="none" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
-  <text x="1120" y="410" font-size="9" fill="#EF4444" transform="rotate(90,1120,410)">global_style</text>
+  <text x="1112" y="410" font-size="9" fill="#EF4444" transform="rotate(90,1112,410)">global_style</text>
 
   <!-- 回到规划层 -->
-  <path d="M 777,610 Q 777,590 870,580 Q 1140,555 1140,151 Q 1140,120 644,151" fill="none" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
-  <text x="1158" y="360" font-size="9" fill="#EF4444" transform="rotate(90,1158,360)">global_plan</text>
+  <path d="M 777,610 Q 777,590 870,580 Q 1160,555 1160,151 Q 1160,120 644,151" fill="none" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="1172" y="360" font-size="9" fill="#EF4444" transform="rotate(90,1172,360)">global_plan</text>
 
   <!-- 回到分发 (local) -->
   <path d="M 777,610 Q 810,590 830,555 Q 850,500 830,445 Q 810,425 770,407" fill="none" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>

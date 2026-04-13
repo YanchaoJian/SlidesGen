@@ -154,10 +154,11 @@
   <text x="70" y="578" font-size="11" fill="#475569" font-family="Consolas, monospace">python main.py --model_name gpt-4o \</text>
   <text x="70" y="594" font-size="11" fill="#475569" font-family="Consolas, monospace">    --vision_model gpt-4o  --svg_model gpt-5-mini  --text_model deepseek-ai/DeepSeek-R1-Distill-Qwen-7B</text>
 
-  <!-- 配色标记 -->
-  <rect x="387" y="568" width="78" height="14" rx="3" fill="#DBEAFE" opacity="0.5"/>
-  <rect x="480" y="584" width="92" height="14" rx="3" fill="#D1FAE5" opacity="0.5"/>
-  <rect x="588" y="584" width="310" height="14" rx="3" fill="#EDE9FE" opacity="0.5"/>
+  <!-- 配色标记 — 与文本基线对齐 (baseline - 10 ~ baseline + 3) -->
+  <rect x="282" y="568" width="52" height="14" rx="3" fill="#DBEAFE" opacity="0.5"/>
+  <rect x="180" y="584" width="52" height="14" rx="3" fill="#DBEAFE" opacity="0.5"/>
+  <rect x="336" y="584" width="88" height="14" rx="3" fill="#D1FAE5" opacity="0.5"/>
+  <rect x="468" y="584" width="310" height="14" rx="3" fill="#EDE9FE" opacity="0.5"/>
 
   <!-- ================================================================== -->
   <!-- 右上角：LLMConfig 结构 -->

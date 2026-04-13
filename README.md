@@ -36,6 +36,8 @@ Editable PPTX  ◄─  SVG → DrawingML  ◄─  Design Review  ◄─  SVG Gen
 - 👤 **Human-in-the-loop** — Approve/revise the plan and the final deck
 - 💾 **Resumable** — SQLite-checkpointed; resume any interrupted session
 - 🎯 **Multi-model** — Different LLMs for vision, SVG, and text stages
+- 📝 **Speaker notes** — Auto-generated presenter notes from paper content
+- 📊 **Built-in evaluation** — LLM-as-Judge scoring (D1/D2/D3) + HSV histogram, runnable from CLI
 
 ## 📦 Installation
 
@@ -70,10 +72,10 @@ python main.py \
 python main.py \
     --pdf_path paper.pdf \
     --style_image_path style.png \
-    --model_name gpt-4o \
-    --vision_model gpt-4o \
-    --svg_model claude-opus-4-6 \
-    --text_model gpt-4o \
+    --model_name gpt-5.4 \
+    --vision_model gemini-3.1-pro-preview \
+    --svg_model glm-5 \
+    --text_model claude-sonnet-4-6 \
     --verbose
 ```
 
@@ -83,7 +85,7 @@ python main.py \
 python main.py \
     --pdf_path paper.pdf \
     --style_image_path style.png \
-    --thread_id 0407_1126_gpt-4o
+    --thread_id 0407_1126_gpt-5-4
 ```
 
 > Session IDs are formatted as `MMDD_HHMM_{model_name}` (slashes in model names are sanitized to `_`).
@@ -95,16 +97,16 @@ SlidesGen is built on **LangGraph** with two parallel pipelines that converge on
 ```
                 ┌─ analyze_image_style ─► check_style_protocol ─┐
    START ──────►│                                                ├─► dispatch ─► merge ─► review
-                └─ extract_pdf ─► plan ─► review ────────────────┘    (parallel)     ▲
-                                                                                     │
-                                                                            Human-in-the-loop
+                └─ extract_pdf ─► plan ─► review ────────────────┘   (parallel)    ▲
+                                                                                   │
+                                                                           Human-in-the-loop
 ```
 
 Each slide runs as an independent **subgraph**:
 
 ```
 expand_plan → generate_svg → optimize_svg_crap → check_design → ✓
-                  ▲                  │                  │
+                  ▲                 │                  │
                   └── retry ────────┘                  │
                   └────── retry ───────────────────────┘
        (both loops share the unified --llm_max_retries budget)
@@ -133,39 +135,48 @@ output/0407_1126_gpt-4o/
 │   └── Final_Presentation.pptx
 ├── checkpoints/             # LangGraph SQLite checkpoint
 └── final_snapshot.json
-```
-
-## 🧪 Testing
-
-```bash
-python -m pytest test/
-
-# Or run individual probes
-python test/test_llm_call.py
-python test/test_pdf_parser.py
-python test/test_soffice.py
+└── run_stats.json
 ```
 
 ## 📊 Evaluation
 
-SlidesGen includes a built-in LLM-as-Judge evaluation framework (`eval/`) that scores generated presentations on three dimensions (0-5 each):
+SlidesGen includes a built-in LLM-as-Judge evaluation framework (`metrics/`) that scores generated presentations on three dimensions (0-5 each):
 
 | Dimension | What it measures |
 |-----------|-----------------|
-| **Content** | Information accuracy, completeness, logical coherence, density |
-| **Design** | Color/contrast, typography, layout/alignment, visual richness |
-| **Style Transfer** | Faithfulness to the reference style image (color, typography, layout, decorations) |
+| **D1 Content** | Information accuracy, completeness, logical coherence, density |
+| **D2 Design** | Color/contrast, typography, layout/alignment, visual richness |
+| **D3 Style Transfer** | Faithfulness to the reference style image (color, typography, layout, decorations) |
 
-Plus an objective metric: **HSV color histogram similarity** (no LLM needed).
+Plus an objective metric: **HSV color histogram similarity** (OpenCV, no LLM needed).
+
+### CLI evaluation
 
 ```bash
-# Evaluate from Python
+# Evaluate a generated PPTX directly from the command line
+python -m metrics.evaluate \
+    --pptx_path output/.../result/Final_Presentation.pptx \
+    --style_image_path style.png \
+    --model_name gpt-4o \
+    --dpi 200
+
+# Analyze run stats (token usage, latency, retry counts)
+python metrics/parse_logs.py --session_id 0407_1126_gpt-4o
+```
+
+### Python API
+
+```python
 from metrics import evaluate_pptx
 from utils.llm import LLMConfig
-result = await evaluate_pptx("output/.../result/Final_Presentation.pptx", llm_config, style_image_path="style.png")
 
-# Analyze run stats
-python metrics/parse_logs.py --session_id 0407_1126_gpt-4o
+llm_config = LLMConfig(model_name="gpt-4o", api_key="...", base_url="...")
+result = await evaluate_pptx(
+    "output/.../result/Final_Presentation.pptx",
+    llm_config,
+    style_image_path="style.png",
+)
+# result contains per-slide and aggregated scores for D1, D2, D3, and HSV similarity
 ```
 
 ## 🛠️ Utility Scripts
@@ -173,12 +184,6 @@ python metrics/parse_logs.py --session_id 0407_1126_gpt-4o
 ```bash
 python scripts/visualize_workflow.py   # Render the LangGraph workflow as PNG
 ```
-
-## 🧩 Key Conventions
-
-- **Prompt/code separation** — `prompts.py` files contain only string constants. Logic that builds prompts lives in the agent module.
-- **Stage-specific models** — `vision` / `svg` / `text` stages each pick from `--vision_model` / `--svg_model` / `--text_model`, falling back to `--model_name`.
-- **Async-first** — `asyncio.run()` entry, `AsyncSqliteSaver` checkpointing, `astream()` for live updates.
 
 ## 📚 Tech Stack
 

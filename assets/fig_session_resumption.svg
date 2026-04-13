@@ -84,8 +84,8 @@
   <!-- ================================================================== -->
   <!-- 下半部分：恢复执行流程 -->
   <!-- ================================================================== -->
-  <rect x="40" y="282" width="1120" height="220" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="60" y="306" font-size="14" font-weight="700" fill="#065F46">场景 B: 恢复执行 (断点续跑)</text>
+  <rect x="40" y="296" width="1120" height="210" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="60" y="318" font-size="14" font-weight="700" fill="#065F46">场景 B: 恢复执行 (断点续跑)</text>
 
   <!-- 用户恢复 -->
   <rect x="60" y="322" width="200" height="58" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1.3"/>
