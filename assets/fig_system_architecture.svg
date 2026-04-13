@@ -1,0 +1,251 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <!-- 阴影 -->
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <!-- 箭头 -->
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" fill="#64748B">
+      <polygon points="0 0, 10 3.5, 0 7"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" fill="#2563EB">
+      <polygon points="0 0, 10 3.5, 0 7"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" fill="#059669">
+      <polygon points="0 0, 10 3.5, 0 7"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" fill="#D97706">
+      <polygon points="0 0, 10 3.5, 0 7"/>
+    </marker>
+    <!-- 圆角矩形渐变 -->
+    <linearGradient id="grad-perception" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#DBEAFE"/>
+      <stop offset="100%" stop-color="#BFDBFE"/>
+    </linearGradient>
+    <linearGradient id="grad-planning" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EDE9FE"/>
+      <stop offset="100%" stop-color="#DDD6FE"/>
+    </linearGradient>
+    <linearGradient id="grad-execution" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D1FAE5"/>
+      <stop offset="100%" stop-color="#A7F3D0"/>
+    </linearGradient>
+    <linearGradient id="grad-delivery" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#FDE68A"/>
+    </linearGradient>
+    <linearGradient id="grad-input" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F1F5F9"/>
+      <stop offset="100%" stop-color="#E2E8F0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="1280" height="720" fill="#FAFBFE" rx="8"/>
+
+  <!-- 标题 -->
+  <text x="640" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#1E293B">SlidesGen 系统架构总览</text>
+  <text x="640" y="58" text-anchor="middle" font-size="13" fill="#64748B">System Architecture Overview</text>
+
+  <!-- ================================================================== -->
+  <!-- 阶段标签栏 (顶部图例) -->
+  <!-- ================================================================== -->
+  <rect x="180" y="72" width="16" height="16" rx="3" fill="#3B82F6"/>
+  <text x="202" y="85" font-size="12" fill="#475569">感知层 Perception</text>
+  <rect x="340" y="72" width="16" height="16" rx="3" fill="#7C3AED"/>
+  <text x="362" y="85" font-size="12" fill="#475569">规划层 Planning</text>
+  <rect x="500" y="72" width="16" height="16" rx="3" fill="#059669"/>
+  <text x="522" y="85" font-size="12" fill="#475569">执行层 Execution</text>
+  <rect x="670" y="72" width="16" height="16" rx="3" fill="#D97706"/>
+  <text x="692" y="85" font-size="12" fill="#475569">交付层 Delivery</text>
+  <rect x="840" y="72" width="16" height="16" rx="3" fill="#EF4444"/>
+  <text x="862" y="85" font-size="12" fill="#475569">人机交互 HITL</text>
+  <rect x="1000" y="72" width="16" height="16" rx="3" fill="#94A3B8"/>
+  <text x="1022" y="85" font-size="12" fill="#475569">输入/输出</text>
+
+  <!-- ================================================================== -->
+  <!-- Pipeline A: 内容流水线 (上方) -->
+  <!-- ================================================================== -->
+  <text x="44" y="142" font-size="13" font-weight="600" fill="#3B82F6">Pipeline A</text>
+  <text x="44" y="158" font-size="11" fill="#64748B">内容流水线</text>
+
+  <!-- 输入：学术论文 PDF -->
+  <rect x="110" y="125" width="110" height="52" rx="8" fill="url(#grad-input)" stroke="#94A3B8" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="165" y="148" text-anchor="middle" font-size="12" font-weight="600" fill="#334155">学术论文</text>
+  <text x="165" y="164" text-anchor="middle" font-size="11" fill="#64748B">PDF Input</text>
+
+  <!-- 箭头 -->
+  <line x1="220" y1="151" x2="244" y2="151" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- PDF 解析 -->
+  <rect x="248" y="125" width="120" height="52" rx="8" fill="url(#grad-perception)" stroke="#3B82F6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="308" y="146" text-anchor="middle" font-size="12" font-weight="600" fill="#1E40AF">PDF 内容提取</text>
+  <text x="308" y="162" text-anchor="middle" font-size="10" fill="#3B82F6">Marker + OCR</text>
+
+  <line x1="368" y1="151" x2="392" y2="151" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 大纲规划 -->
+  <rect x="396" y="125" width="120" height="52" rx="8" fill="url(#grad-planning)" stroke="#7C3AED" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="456" y="146" text-anchor="middle" font-size="12" font-weight="600" fill="#5B21B6">大纲规划</text>
+  <text x="456" y="162" text-anchor="middle" font-size="10" fill="#7C3AED">PPT Planner</text>
+
+  <line x1="516" y1="151" x2="540" y2="151" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- HITL: 大纲审查 -->
+  <rect x="544" y="121" width="100" height="60" rx="26" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.8" stroke-dasharray="5,3" filter="url(#shadow)"/>
+  <text x="594" y="147" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626">大纲审查</text>
+  <text x="594" y="163" text-anchor="middle" font-size="10" fill="#EF4444">Plan Review</text>
+
+  <!-- ================================================================== -->
+  <!-- Pipeline B: 风格流水线 (下方) -->
+  <!-- ================================================================== -->
+  <text x="44" y="252" font-size="13" font-weight="600" fill="#3B82F6">Pipeline B</text>
+  <text x="44" y="268" font-size="11" fill="#64748B">风格流水线</text>
+
+  <!-- 输入：参考风格图 -->
+  <rect x="110" y="235" width="110" height="52" rx="8" fill="url(#grad-input)" stroke="#94A3B8" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="165" y="258" text-anchor="middle" font-size="12" font-weight="600" fill="#334155">参考风格图</text>
+  <text x="165" y="274" text-anchor="middle" font-size="11" fill="#64748B">Style Image</text>
+
+  <line x1="220" y1="261" x2="244" y2="261" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 风格分析 -->
+  <rect x="248" y="235" width="120" height="52" rx="8" fill="url(#grad-perception)" stroke="#3B82F6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="308" y="256" text-anchor="middle" font-size="12" font-weight="600" fill="#1E40AF">风格分析</text>
+  <text x="308" y="272" text-anchor="middle" font-size="10" fill="#3B82F6">Style Analyst</text>
+
+  <line x1="368" y1="261" x2="392" y2="261" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 风格自查 -->
+  <rect x="396" y="235" width="120" height="52" rx="8" fill="url(#grad-perception)" stroke="#3B82F6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="456" y="256" text-anchor="middle" font-size="12" font-weight="600" fill="#1E40AF">风格协议自查</text>
+  <text x="456" y="272" text-anchor="middle" font-size="10" fill="#3B82F6">Style Critic</text>
+
+  <!-- 风格自查重试箭头 -->
+  <path d="M 416,235 Q 416,215 340,215 Q 268,215 268,235" fill="none" stroke="#3B82F6" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow-blue)"/>
+  <text x="342" y="210" text-anchor="middle" font-size="9" fill="#3B82F6">未通过 / retry</text>
+
+  <!-- ================================================================== -->
+  <!-- 汇合点: dispatch_slide_tasks -->
+  <!-- ================================================================== -->
+
+  <!-- Pipeline A 向下汇合 -->
+  <line x1="644" y1="151" x2="680" y2="151" stroke="#64748B" stroke-width="1.5"/>
+  <line x1="680" y1="151" x2="680" y2="320" stroke="#64748B" stroke-width="1.5"/>
+  <line x1="680" y1="320" x2="700" y2="340" stroke="#64748B" stroke-width="1.5"/>
+
+  <!-- Pipeline B 向下汇合 -->
+  <line x1="516" y1="261" x2="650" y2="261" stroke="#64748B" stroke-width="1.5"/>
+  <line x1="650" y1="261" x2="650" y2="320" stroke="#64748B" stroke-width="1.5"/>
+  <line x1="650" y1="320" x2="700" y2="340" stroke="#64748B" stroke-width="1.5"/>
+
+  <!-- 汇合菱形 -->
+  <polygon points="720,320 740,340 720,360 700,340" fill="#F8FAFC" stroke="#64748B" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="720" y="344" text-anchor="middle" font-size="10" font-weight="600" fill="#475569">汇合</text>
+
+  <!-- ================================================================== -->
+  <!-- 执行层：并行 Slide 生成 -->
+  <!-- ================================================================== -->
+  <text x="42" y="395" font-size="13" font-weight="600" fill="#059669">执行层</text>
+  <text x="42" y="411" font-size="11" fill="#64748B">并行生成</text>
+
+  <!-- 分发 -->
+  <line x1="720" y1="360" x2="720" y2="385" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Fan-out 标注 -->
+  <rect x="670" y="389" width="100" height="36" rx="6" fill="#F0FDF4" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="720" y="411" text-anchor="middle" font-size="11" font-weight="600" fill="#059669">任务分发</text>
+
+  <!-- Fan-out 线条 -->
+  <line x1="720" y1="425" x2="720" y2="445" stroke="#059669" stroke-width="1.5"/>
+  <!-- 左分支 -->
+  <line x1="720" y1="445" x2="120" y2="445" stroke="#059669" stroke-width="1"/>
+  <line x1="120" y1="445" x2="120" y2="465" stroke="#059669" stroke-width="1" marker-end="url(#arrow-green)"/>
+  <!-- 中分支 -->
+  <line x1="720" y1="445" x2="720" y2="465" stroke="#059669" stroke-width="1" marker-end="url(#arrow-green)"/>
+  <!-- 暗示更多分支 -->
+  <text x="420" y="458" text-anchor="middle" font-size="12" fill="#94A3B8">. . .</text>
+
+  <!-- Slide 1 子图 -->
+  <rect x="52" y="469" width="148" height="105" rx="10" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="52" y="469" width="148" height="24" rx="10" fill="#059669"/>
+  <rect x="52" y="483" width="148" height="2" fill="#059669"/>
+  <text x="126" y="486" text-anchor="middle" font-size="11" font-weight="600" fill="#FFFFFF">Slide 1 子图</text>
+
+  <text x="68" y="510" font-size="10" fill="#334155">1. 大纲扩展</text>
+  <text x="68" y="525" font-size="10" fill="#334155">2. SVG 生成</text>
+  <text x="68" y="540" font-size="10" fill="#334155">3. CRAP 优化</text>
+  <text x="68" y="555" font-size="10" fill="#334155">4. 设计质量检查</text>
+
+  <!-- Slide N 子图 -->
+  <rect x="652" y="469" width="148" height="105" rx="10" fill="#FFFFFF" stroke="#059669" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="652" y="469" width="148" height="24" rx="10" fill="#059669"/>
+  <rect x="652" y="483" width="148" height="2" fill="#059669"/>
+  <text x="726" y="486" text-anchor="middle" font-size="11" font-weight="600" fill="#FFFFFF">Slide N 子图</text>
+
+  <text x="668" y="510" font-size="10" fill="#334155">1. 大纲扩展</text>
+  <text x="668" y="525" font-size="10" fill="#334155">2. SVG 生成</text>
+  <text x="668" y="540" font-size="10" fill="#334155">3. CRAP 优化</text>
+  <text x="668" y="555" font-size="10" fill="#334155">4. 设计质量检查</text>
+
+  <!-- Fan-in -->
+  <line x1="126" y1="574" x2="126" y2="595" stroke="#059669" stroke-width="1"/>
+  <line x1="726" y1="574" x2="726" y2="595" stroke="#059669" stroke-width="1"/>
+  <line x1="126" y1="595" x2="726" y2="595" stroke="#059669" stroke-width="1"/>
+  <line x1="426" y1="595" x2="426" y2="610" stroke="#059669" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+  <!-- ================================================================== -->
+  <!-- 交付层 -->
+  <!-- ================================================================== -->
+
+  <!-- SVG 后处理 + 合并 -->
+  <rect x="350" y="614" width="150" height="44" rx="8" fill="url(#grad-execution)" stroke="#059669" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="425" y="633" text-anchor="middle" font-size="11" font-weight="600" fill="#065F46">SVG 后处理 + 合并</text>
+  <text x="425" y="648" text-anchor="middle" font-size="10" fill="#059669">Finalize → PPTX</text>
+
+  <line x1="500" y1="636" x2="538" y2="636" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- SVG→DrawingML -->
+  <rect x="542" y="614" width="140" height="44" rx="8" fill="url(#grad-delivery)" stroke="#D97706" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="612" y="633" text-anchor="middle" font-size="11" font-weight="600" fill="#92400E">SVG → DrawingML</text>
+  <text x="612" y="648" text-anchor="middle" font-size="10" fill="#D97706">原生形状转换</text>
+
+  <line x1="682" y1="636" x2="718" y2="636" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- HITL: PPTX 审查 -->
+  <rect x="722" y="610" width="110" height="52" rx="26" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.8" stroke-dasharray="5,3" filter="url(#shadow)"/>
+  <text x="777" y="633" text-anchor="middle" font-size="11" font-weight="600" fill="#DC2626">PPTX 审查</text>
+  <text x="777" y="649" text-anchor="middle" font-size="10" fill="#EF4444">Design Review</text>
+
+  <line x1="832" y1="636" x2="868" y2="636" stroke="#64748B" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- 输出：可编辑 PPTX -->
+  <rect x="872" y="610" width="130" height="52" rx="8" fill="url(#grad-input)" stroke="#94A3B8" stroke-width="1.2" filter="url(#shadow)"/>
+  <text x="937" y="631" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">可编辑 PPTX</text>
+  <text x="937" y="649" text-anchor="middle" font-size="11" fill="#64748B">Final Presentation</text>
+
+  <!-- ================================================================== -->
+  <!-- HITL 反馈回路 (PPTX 审查 → 各层) -->
+  <!-- ================================================================== -->
+  <!-- 回到风格层 -->
+  <path d="M 777,610 Q 777,590 850,580 Q 1100,560 1100,261 Q 1100,200 516,261" fill="none" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="1120" y="410" font-size="9" fill="#EF4444" transform="rotate(90,1120,410)">global_style</text>
+
+  <!-- 回到规划层 -->
+  <path d="M 777,610 Q 777,590 870,580 Q 1140,555 1140,151 Q 1140,120 644,151" fill="none" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="1158" y="360" font-size="9" fill="#EF4444" transform="rotate(90,1158,360)">global_plan</text>
+
+  <!-- 回到分发 (local) -->
+  <path d="M 777,610 Q 810,590 830,555 Q 850,500 830,445 Q 810,425 770,407" fill="none" stroke="#EF4444" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="852" y="510" font-size="9" fill="#EF4444">local</text>
+
+  <!-- ================================================================== -->
+  <!-- 右侧技术栈标注 -->
+  <!-- ================================================================== -->
+  <rect x="1040" y="615" width="210" height="90" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="1145" y="636" text-anchor="middle" font-size="12" font-weight="600" fill="#334155">核心技术栈</text>
+  <text x="1060" y="656" font-size="10" fill="#64748B">LangGraph  |  异步工作流编排</text>
+  <text x="1060" y="672" font-size="10" fill="#64748B">Marker-PDF  |  学术 PDF 解析</text>
+  <text x="1060" y="688" font-size="10" fill="#64748B">python-pptx  |  DrawingML 生成</text>
+  <text x="1060" y="704" font-size="10" fill="#64748B">OpenAI API  |  多模型 LLM 接口</text>
+</svg>

@@ -1,0 +1,308 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 780" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="780" fill="#FAFBFE" rx="6"/>
+
+  <!-- 标题 -->
+  <text x="640" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#1E293B">实验结果可视化模板</text>
+  <text x="640" y="54" text-anchor="middle" font-size="12" fill="#64748B">Experimental Results Template — 请替换为实际实验数据 (示例数据仅供参考)</text>
+
+  <!-- ================================================================== -->
+  <!-- 左上：雷达图 (模型对比) -->
+  <!-- ================================================================== -->
+  <rect x="40" y="72" width="580" height="340" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="330" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#1E293B">多模型评估分数雷达图</text>
+  <text x="330" y="112" text-anchor="middle" font-size="10" fill="#94A3B8">Radar Chart — 各模型在三个维度上的对比 (0-5)</text>
+
+  <!-- 雷达图网格 (五边形简化为正三角+两个维度) -->
+  <!-- 使用三角形雷达：D1(上), D2(左下), D3(右下) -->
+  <!-- 中心点: (280, 260), 半径: 110 -->
+  <!-- D1(Content): 上方 (280, 150) -->
+  <!-- D2(Design): 左下 (185, 315) -->
+  <!-- D3(Style): 右下 (375, 315) -->
+
+  <!-- 网格线 - 5级同心三角 -->
+  <!-- Level 1 (1/5) -->
+  <polygon points="280,238 261,249 299,249" fill="none" stroke="#E2E8F0" stroke-width="0.8"/>
+  <!-- Level 2 (2/5) -->
+  <polygon points="280,216 242,260 318,260" fill="none" stroke="#E2E8F0" stroke-width="0.8"/>
+  <!-- Level 3 (3/5) -->
+  <polygon points="280,194 223,271 337,271" fill="none" stroke="#E2E8F0" stroke-width="0.8"/>
+  <!-- Level 4 (4/5) -->
+  <polygon points="280,172 204,282 356,282" fill="none" stroke="#E2E8F0" stroke-width="0.8"/>
+  <!-- Level 5 (5/5) 外框 -->
+  <polygon points="280,150 185,293 375,293" fill="none" stroke="#CBD5E1" stroke-width="1.2"/>
+
+  <!-- 轴线 -->
+  <line x1="280" y1="260" x2="280" y2="150" stroke="#CBD5E1" stroke-width="0.8"/>
+  <line x1="280" y1="260" x2="185" y2="293" stroke="#CBD5E1" stroke-width="0.8"/>
+  <line x1="280" y1="260" x2="375" y2="293" stroke="#CBD5E1" stroke-width="0.8"/>
+
+  <!-- 维度标签 -->
+  <text x="280" y="140" text-anchor="middle" font-size="12" font-weight="600" fill="#1E40AF">D1 内容</text>
+  <text x="168" y="310" text-anchor="middle" font-size="12" font-weight="600" fill="#059669">D2 设计</text>
+  <text x="392" y="310" text-anchor="middle" font-size="12" font-weight="600" fill="#D97706">D3 风格</text>
+
+  <!-- 刻度标签 -->
+  <text x="268" y="240" font-size="8" fill="#94A3B8">1</text>
+  <text x="268" y="218" font-size="8" fill="#94A3B8">2</text>
+  <text x="268" y="196" font-size="8" fill="#94A3B8">3</text>
+  <text x="268" y="174" font-size="8" fill="#94A3B8">4</text>
+  <text x="268" y="152" font-size="8" fill="#94A3B8">5</text>
+
+  <!-- 模型 A 数据 (GPT-4o): D1=4.2, D2=3.8, D3=3.5 -->
+  <!-- D1: 4.2/5 * 110 = 92.4, y=260-92.4=167.6 -->
+  <!-- D2: 3.8/5 → (280-72.2, 260+41.8) = (207.8, 285.3) -->
+  <!-- D3: 3.5/5 → (280+66.5, 260+38.5) = (346.5, 283.1) -->
+  <polygon points="280,168 208,285 347,283" fill="#3B82F6" fill-opacity="0.15" stroke="#3B82F6" stroke-width="2"/>
+  <circle cx="280" cy="168" r="4" fill="#3B82F6"/>
+  <circle cx="208" cy="285" r="4" fill="#3B82F6"/>
+  <circle cx="347" cy="283" r="4" fill="#3B82F6"/>
+
+  <!-- 模型 B 数据 (GPT-5-mini): D1=4.5, D2=4.0, D3=3.8 -->
+  <polygon points="280,161 213,278 353,279" fill="#059669" fill-opacity="0.12" stroke="#059669" stroke-width="2"/>
+  <circle cx="280" cy="161" r="4" fill="#059669"/>
+  <circle cx="213" cy="278" r="4" fill="#059669"/>
+  <circle cx="353" cy="279" r="4" fill="#059669"/>
+
+  <!-- 模型 C 数据 (DeepSeek-R1): D1=3.6, D2=3.2, D3=2.8 -->
+  <polygon points="280,181 221,289 333,290" fill="#D97706" fill-opacity="0.12" stroke="#D97706" stroke-width="2" stroke-dasharray="5,3"/>
+  <circle cx="280" cy="181" r="4" fill="#D97706"/>
+  <circle cx="221" cy="289" r="4" fill="#D97706"/>
+  <circle cx="333" cy="290" r="4" fill="#D97706"/>
+
+  <!-- 图例 -->
+  <rect x="430" y="160" width="170" height="90" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+  <line x1="445" y1="182" x2="470" y2="182" stroke="#3B82F6" stroke-width="2"/>
+  <circle cx="458" cy="182" r="3" fill="#3B82F6"/>
+  <text x="478" y="186" font-size="10" fill="#334155">GPT-4o</text>
+
+  <line x1="445" y1="206" x2="470" y2="206" stroke="#059669" stroke-width="2"/>
+  <circle cx="458" cy="206" r="3" fill="#059669"/>
+  <text x="478" y="210" font-size="10" fill="#334155">GPT-5-mini</text>
+
+  <line x1="445" y1="230" x2="470" y2="230" stroke="#D97706" stroke-width="2" stroke-dasharray="5,3"/>
+  <circle cx="458" cy="230" r="3" fill="#D97706"/>
+  <text x="478" y="234" font-size="10" fill="#334155">DeepSeek-R1</text>
+
+  <!-- 数据表格 -->
+  <rect x="430" y="270" width="170" height="80" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="445" y="288" font-size="9" font-weight="600" fill="#334155">模型</text>
+  <text x="520" y="288" text-anchor="middle" font-size="9" font-weight="600" fill="#1E40AF">D1</text>
+  <text x="555" y="288" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">D2</text>
+  <text x="590" y="288" text-anchor="middle" font-size="9" font-weight="600" fill="#D97706">D3</text>
+  <line x1="440" y1="294" x2="592" y2="294" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="445" y="308" font-size="9" fill="#3B82F6">GPT-4o</text>
+  <text x="520" y="308" text-anchor="middle" font-size="9" fill="#475569">4.2</text>
+  <text x="555" y="308" text-anchor="middle" font-size="9" fill="#475569">3.8</text>
+  <text x="590" y="308" text-anchor="middle" font-size="9" fill="#475569">3.5</text>
+  <text x="445" y="324" font-size="9" fill="#059669">GPT-5-mini</text>
+  <text x="520" y="324" text-anchor="middle" font-size="9" fill="#475569">4.5</text>
+  <text x="555" y="324" text-anchor="middle" font-size="9" fill="#475569">4.0</text>
+  <text x="590" y="324" text-anchor="middle" font-size="9" fill="#475569">3.8</text>
+  <text x="445" y="340" font-size="9" fill="#D97706">DeepSeek-R1</text>
+  <text x="520" y="340" text-anchor="middle" font-size="9" fill="#475569">3.6</text>
+  <text x="555" y="340" text-anchor="middle" font-size="9" fill="#475569">3.2</text>
+  <text x="590" y="340" text-anchor="middle" font-size="9" fill="#475569">2.8</text>
+
+  <text x="330" y="400" text-anchor="middle" font-size="9" fill="#EF4444" font-style="italic">* 以上为示例数据，请替换为实际实验结果</text>
+
+  <!-- ================================================================== -->
+  <!-- 右上：柱状图 (分维度对比) -->
+  <!-- ================================================================== -->
+  <rect x="660" y="72" width="580" height="340" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="950" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#1E293B">分维度评估分数柱状图</text>
+  <text x="950" y="112" text-anchor="middle" font-size="10" fill="#94A3B8">Grouped Bar Chart — 0-5 scale</text>
+
+  <!-- Y轴 -->
+  <line x1="730" y1="130" x2="730" y2="370" stroke="#CBD5E1" stroke-width="1.5"/>
+  <!-- X轴 -->
+  <line x1="730" y1="370" x2="1190" y2="370" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <!-- Y轴刻度 -->
+  <text x="720" y="374" text-anchor="end" font-size="9" fill="#94A3B8">0</text>
+  <text x="720" y="326" text-anchor="end" font-size="9" fill="#94A3B8">1</text>
+  <text x="720" y="278" text-anchor="end" font-size="9" fill="#94A3B8">2</text>
+  <text x="720" y="230" text-anchor="end" font-size="9" fill="#94A3B8">3</text>
+  <text x="720" y="182" text-anchor="end" font-size="9" fill="#94A3B8">4</text>
+  <text x="720" y="134" text-anchor="end" font-size="9" fill="#94A3B8">5</text>
+
+  <!-- 网格线 -->
+  <line x1="730" y1="322" x2="1190" y2="322" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="730" y1="274" x2="1190" y2="274" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="730" y1="226" x2="1190" y2="226" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="730" y1="178" x2="1190" y2="178" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="730" y1="130" x2="1190" y2="130" stroke="#F1F5F9" stroke-width="1"/>
+
+  <!-- D1 Content 组 (中心 x=830) -->
+  <!-- GPT-4o: 4.2 → h=4.2*48=201.6, y=370-201.6=168.4 -->
+  <rect x="790" y="168" width="30" height="202" rx="3" fill="#3B82F6" opacity="0.85"/>
+  <text x="805" y="162" text-anchor="middle" font-size="8" fill="#3B82F6" font-weight="600">4.2</text>
+  <!-- GPT-5-mini: 4.5 → h=216, y=154 -->
+  <rect x="824" y="154" width="30" height="216" rx="3" fill="#059669" opacity="0.85"/>
+  <text x="839" y="148" text-anchor="middle" font-size="8" fill="#059669" font-weight="600">4.5</text>
+  <!-- DeepSeek-R1: 3.6 → h=172.8, y=197.2 -->
+  <rect x="858" y="197" width="30" height="173" rx="3" fill="#D97706" opacity="0.85"/>
+  <text x="873" y="191" text-anchor="middle" font-size="8" fill="#D97706" font-weight="600">3.6</text>
+
+  <text x="840" y="390" text-anchor="middle" font-size="11" font-weight="600" fill="#1E40AF">D1 内容</text>
+
+  <!-- D2 Design 组 (中心 x=980) -->
+  <!-- GPT-4o: 3.8 → h=182.4, y=187.6 -->
+  <rect x="940" y="188" width="30" height="182" rx="3" fill="#3B82F6" opacity="0.85"/>
+  <text x="955" y="182" text-anchor="middle" font-size="8" fill="#3B82F6" font-weight="600">3.8</text>
+  <!-- GPT-5-mini: 4.0 → h=192, y=178 -->
+  <rect x="974" y="178" width="30" height="192" rx="3" fill="#059669" opacity="0.85"/>
+  <text x="989" y="172" text-anchor="middle" font-size="8" fill="#059669" font-weight="600">4.0</text>
+  <!-- DeepSeek-R1: 3.2 → h=153.6, y=216.4 -->
+  <rect x="1008" y="216" width="30" height="154" rx="3" fill="#D97706" opacity="0.85"/>
+  <text x="1023" y="210" text-anchor="middle" font-size="8" fill="#D97706" font-weight="600">3.2</text>
+
+  <text x="990" y="390" text-anchor="middle" font-size="11" font-weight="600" fill="#059669">D2 设计</text>
+
+  <!-- D3 Style 组 (中心 x=1130) -->
+  <!-- GPT-4o: 3.5 → h=168, y=202 -->
+  <rect x="1090" y="202" width="30" height="168" rx="3" fill="#3B82F6" opacity="0.85"/>
+  <text x="1105" y="196" text-anchor="middle" font-size="8" fill="#3B82F6" font-weight="600">3.5</text>
+  <!-- GPT-5-mini: 3.8 → h=182.4, y=187.6 -->
+  <rect x="1124" y="188" width="30" height="182" rx="3" fill="#059669" opacity="0.85"/>
+  <text x="1139" y="182" text-anchor="middle" font-size="8" fill="#059669" font-weight="600">3.8</text>
+  <!-- DeepSeek-R1: 2.8 → h=134.4, y=235.6 -->
+  <rect x="1158" y="236" width="30" height="134" rx="3" fill="#D97706" opacity="0.85"/>
+  <text x="1173" y="230" text-anchor="middle" font-size="8" fill="#D97706" font-weight="600">2.8</text>
+
+  <text x="1140" y="390" text-anchor="middle" font-size="11" font-weight="600" fill="#D97706">D3 风格</text>
+
+  <!-- 图例 -->
+  <rect x="960" y="120" width="210" height="25" rx="4" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+  <rect x="970" y="128" width="12" height="10" rx="2" fill="#3B82F6"/>
+  <text x="988" y="138" font-size="9" fill="#334155">GPT-4o</text>
+  <rect x="1046" y="128" width="12" height="10" rx="2" fill="#059669"/>
+  <text x="1064" y="138" font-size="9" fill="#334155">GPT-5-mini</text>
+  <rect x="1128" y="128" width="12" height="10" rx="2" fill="#D97706"/>
+  <text x="1146" y="138" font-size="9" fill="#334155">DeepSeek</text>
+
+  <!-- ================================================================== -->
+  <!-- 左下：消融实验表格 -->
+  <!-- ================================================================== -->
+  <rect x="40" y="430" width="580" height="330" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="330" y="456" text-anchor="middle" font-size="14" font-weight="700" fill="#1E293B">消融实验结果 (Ablation Study)</text>
+  <text x="330" y="472" text-anchor="middle" font-size="10" fill="#94A3B8">验证各模块对最终质量的贡献</text>
+
+  <!-- 表格 -->
+  <!-- 表头 -->
+  <rect x="60" y="488" width="540" height="28" rx="4" fill="#1E293B"/>
+  <text x="170" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">实验配置</text>
+  <text x="340" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">D1 内容</text>
+  <text x="410" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">D2 设计</text>
+  <text x="480" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">D3 风格</text>
+  <text x="556" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">HSV Sim</text>
+
+  <!-- 行 1: Full pipeline -->
+  <rect x="60" y="518" width="540" height="30" fill="#F0FDF4"/>
+  <text x="76" y="538" font-size="10" font-weight="600" fill="#065F46">完整管线 (Full Pipeline)</text>
+  <text x="340" y="538" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46">4.5</text>
+  <text x="410" y="538" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46">4.0</text>
+  <text x="480" y="538" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46">3.8</text>
+  <text x="556" y="538" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46">0.85</text>
+
+  <!-- 行 2: w/o CRAP -->
+  <rect x="60" y="548" width="540" height="30" fill="#FFFFFF"/>
+  <text x="76" y="568" font-size="10" fill="#475569">w/o CRAP 优化</text>
+  <text x="340" y="568" text-anchor="middle" font-size="11" fill="#475569">4.4</text>
+  <text x="410" y="568" text-anchor="middle" font-size="11" fill="#DC2626">3.1</text>
+  <text x="480" y="568" text-anchor="middle" font-size="11" fill="#475569">3.6</text>
+  <text x="556" y="568" text-anchor="middle" font-size="11" fill="#475569">0.82</text>
+  <text x="416" y="568" font-size="8" fill="#DC2626">↓0.9</text>
+
+  <!-- 行 3: w/o Style Critic -->
+  <rect x="60" y="578" width="540" height="30" fill="#F8FAFC"/>
+  <text x="76" y="598" font-size="10" fill="#475569">w/o 风格自查 (Style Critic)</text>
+  <text x="340" y="598" text-anchor="middle" font-size="11" fill="#475569">4.3</text>
+  <text x="410" y="598" text-anchor="middle" font-size="11" fill="#475569">3.7</text>
+  <text x="480" y="598" text-anchor="middle" font-size="11" fill="#DC2626">2.9</text>
+  <text x="556" y="598" text-anchor="middle" font-size="11" fill="#DC2626">0.68</text>
+  <text x="486" y="598" font-size="8" fill="#DC2626">↓0.9</text>
+  <text x="564" y="598" font-size="8" fill="#DC2626">↓0.17</text>
+
+  <!-- 行 4: w/o Design Check -->
+  <rect x="60" y="608" width="540" height="30" fill="#FFFFFF"/>
+  <text x="76" y="628" font-size="10" fill="#475569">w/o 设计质量检查 (Slide Critic)</text>
+  <text x="340" y="628" text-anchor="middle" font-size="11" fill="#475569">4.4</text>
+  <text x="410" y="628" text-anchor="middle" font-size="11" fill="#DC2626">3.3</text>
+  <text x="480" y="628" text-anchor="middle" font-size="11" fill="#475569">3.5</text>
+  <text x="556" y="628" text-anchor="middle" font-size="11" fill="#475569">0.81</text>
+  <text x="416" y="628" font-size="8" fill="#DC2626">↓0.7</text>
+
+  <!-- 行 5: w/o Slide Expander -->
+  <rect x="60" y="638" width="540" height="30" fill="#F8FAFC"/>
+  <text x="76" y="658" font-size="10" fill="#475569">w/o 大纲扩展 (Slide Expander)</text>
+  <text x="340" y="658" text-anchor="middle" font-size="11" fill="#DC2626">3.5</text>
+  <text x="410" y="658" text-anchor="middle" font-size="11" fill="#475569">3.8</text>
+  <text x="480" y="658" text-anchor="middle" font-size="11" fill="#475569">3.6</text>
+  <text x="556" y="658" text-anchor="middle" font-size="11" fill="#475569">0.83</text>
+  <text x="346" y="658" font-size="8" fill="#DC2626">↓1.0</text>
+
+  <!-- 表格下方注释 -->
+  <rect x="60" y="670" width="540" height="28" rx="4" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <text x="76" y="688" font-size="9" fill="#92400E" font-weight="500">红色标注 = 相比完整管线下降显著的维度 · 箭头为差值 · 数据为示例</text>
+
+  <!-- 底部说明 -->
+  <text x="330" y="720" text-anchor="middle" font-size="9" fill="#EF4444" font-style="italic">* 所有数据均为示例，请替换为实际实验结果</text>
+
+  <!-- ================================================================== -->
+  <!-- 右下：HSV 颜色相似度对比 -->
+  <!-- ================================================================== -->
+  <rect x="660" y="430" width="580" height="330" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="950" y="456" text-anchor="middle" font-size="14" font-weight="700" fill="#1E293B">HSV 颜色直方图相似度</text>
+  <text x="950" y="472" text-anchor="middle" font-size="10" fill="#94A3B8">Color Histogram Similarity — 客观指标 (-1 ~ 1)</text>
+
+  <!-- 水平柱状图 -->
+  <!-- Y轴标签 -->
+  <text x="780" y="518" text-anchor="end" font-size="10" fill="#334155" font-weight="500">Full Pipeline</text>
+  <text x="780" y="556" text-anchor="end" font-size="10" fill="#334155">w/o Style Critic</text>
+  <text x="780" y="594" text-anchor="end" font-size="10" fill="#334155">w/o CRAP</text>
+  <text x="780" y="632" text-anchor="end" font-size="10" fill="#334155">w/o Expander</text>
+  <text x="780" y="670" text-anchor="end" font-size="10" fill="#334155">Random Baseline</text>
+
+  <!-- X轴 -->
+  <line x1="790" y1="690" x2="1200" y2="690" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="790" y="706" font-size="8" fill="#94A3B8">0.0</text>
+  <text x="892" y="706" font-size="8" fill="#94A3B8">0.2</text>
+  <text x="994" y="706" font-size="8" fill="#94A3B8">0.4</text>
+  <text x="1096" y="706" font-size="8" fill="#94A3B8">0.6</text>
+  <text x="1198" y="706" font-size="8" fill="#94A3B8">0.8</text>
+
+  <!-- 网格线 -->
+  <line x1="892" y1="496" x2="892" y2="690" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="994" y1="496" x2="994" y2="690" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="1096" y1="496" x2="1096" y2="690" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="1198" y1="496" x2="1198" y2="690" stroke="#F1F5F9" stroke-width="1"/>
+
+  <!-- 柱子 (0.0 → 790, 1.0 → 1300, 即 每0.1 = 51px) -->
+  <!-- Full Pipeline: 0.85 → 790 + 0.85*510 = 1223.5 -->
+  <rect x="790" y="504" width="434" height="22" rx="4" fill="#059669" opacity="0.8"/>
+  <text x="1230" y="519" font-size="10" font-weight="600" fill="#059669">0.85</text>
+
+  <!-- w/o Style Critic: 0.68 -->
+  <rect x="790" y="542" width="347" height="22" rx="4" fill="#D97706" opacity="0.8"/>
+  <text x="1143" y="557" font-size="10" font-weight="600" fill="#D97706">0.68</text>
+
+  <!-- w/o CRAP: 0.82 -->
+  <rect x="790" y="580" width="418" height="22" rx="4" fill="#3B82F6" opacity="0.8"/>
+  <text x="1214" y="595" font-size="10" font-weight="600" fill="#3B82F6">0.82</text>
+
+  <!-- w/o Expander: 0.83 -->
+  <rect x="790" y="618" width="423" height="22" rx="4" fill="#7C3AED" opacity="0.8"/>
+  <text x="1219" y="633" font-size="10" font-weight="600" fill="#7C3AED">0.83</text>
+
+  <!-- Random baseline: 0.35 -->
+  <rect x="790" y="656" width="179" height="22" rx="4" fill="#94A3B8" opacity="0.6"/>
+  <text x="975" y="671" font-size="10" font-weight="600" fill="#64748B">0.35</text>
+
+  <text x="950" y="730" text-anchor="middle" font-size="9" fill="#EF4444" font-style="italic">* 示例数据 · 风格自查 (Style Critic) 对颜色一致性贡献最大</text>
+</svg>

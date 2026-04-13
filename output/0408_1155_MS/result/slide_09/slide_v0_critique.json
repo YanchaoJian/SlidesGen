@@ -1,6 +1,0 @@
-[
-  {
-    "pass": false,
-    "critique": "FAIL: 1. **Critical Content Overflow - Bottom text truncated**: The institutional motto `<text x='60' y='680'>` and date `<text x='1180' y='680'>` at y=680 are positioned too low and appear partially cut off at the bottom edge of the slide. The safe zone ends at y=680, but these elements need padding. **Fix**: Move motto to `y='665'` and date to `y='665'`, or adjust the insight cards upward by reducing their y-position from 595 to 580 and reducing card height from 100 to 85. 2. **Table header sub-labels overlap**: The 'BLEU' sub-labels at `<text x='370' y='255'>` and `<text x='520' y='255'>` overlap with the data row starting at y=255. The header row ends at y=255, and data begins immediately. **Fix**: Remove these sub-labels entirely or move them to y=248 within the header row, or increase header row height to 55 and adjust data start to y=265. 3. **Insight cards too close to bottom edge**: Cards at `transform='translate(40, 595)'` extend to y=695 (595+100), leaving no margin. **Fix**: Change all three card transforms to `translate(40, 580)`, `translate(450, 580)`, `translate(860, 580)` and reduce card height from 100 to 90."
-  }
-]

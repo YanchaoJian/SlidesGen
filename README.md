@@ -23,7 +23,7 @@
 PDF  ─►  Content Extraction  ─►  Style Analysis  ─►  Plan  ─►  Expand
                                                                   │
                                                                   ▼
-   Editable PPTX  ◄─  SVG → DrawingML  ◄─  Design Review  ◄─  SVG Generation
+Editable PPTX  ◄─  SVG → DrawingML  ◄─  Design Review  ◄─  SVG Generation
 ```
 
 ## 🚀 Key Features

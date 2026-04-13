@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 620" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto" fill="#475569">
+      <polygon points="0 0, 9 3, 0 6"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto" fill="#2563EB">
+      <polygon points="0 0, 9 3, 0 6"/>
+    </marker>
+    <marker id="arr-green" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto" fill="#059669">
+      <polygon points="0 0, 9 3, 0 6"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto" fill="#7C3AED">
+      <polygon points="0 0, 9 3, 0 6"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="620" fill="#FAFBFE" rx="6"/>
+
+  <!-- 标题 -->
+  <text x="550" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#1E293B">多模型调度机制</text>
+  <text x="550" y="54" text-anchor="middle" font-size="12" fill="#64748B">Multi-Model Dispatch — _get_llm_config(configurable, stage) with per-stage override &amp; fallback</text>
+
+  <!-- ================================================================== -->
+  <!-- CLI 参数输入 -->
+  <!-- ================================================================== -->
+  <rect x="50" y="80" width="300" height="200" rx="12" fill="#FFFFFF" stroke="#1E293B" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="50" y="80" width="300" height="34" rx="12" fill="#1E293B"/>
+  <rect x="50" y="106" width="300" height="8" fill="#1E293B"/>
+  <text x="200" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">CLI 模型参数 (main.py)</text>
+
+  <!-- 默认模型 -->
+  <rect x="70" y="126" width="260" height="30" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="82" y="145" font-size="11" font-weight="600" fill="#334155" font-family="Consolas, monospace">--model_name</text>
+  <text x="230" y="145" font-size="10" fill="#64748B">全局默认 (fallback)</text>
+
+  <!-- 分隔线 -->
+  <line x1="70" y1="164" x2="330" y2="164" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="200" y="180" text-anchor="middle" font-size="10" fill="#94A3B8">Per-stage Overrides (可选)</text>
+
+  <!-- vision_model -->
+  <rect x="70" y="190" width="260" height="24" rx="4" fill="#DBEAFE" stroke="#93C5FD" stroke-width="1"/>
+  <text x="82" y="207" font-size="10" font-weight="600" fill="#1E40AF" font-family="Consolas, monospace">--vision_model</text>
+  <text x="230" y="207" font-size="10" fill="#3B82F6">视觉任务专用</text>
+
+  <!-- svg_model -->
+  <rect x="70" y="220" width="260" height="24" rx="4" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="82" y="237" font-size="10" font-weight="600" fill="#065F46" font-family="Consolas, monospace">--svg_model</text>
+  <text x="230" y="237" font-size="10" fill="#059669">SVG 代码生成专用</text>
+
+  <!-- text_model -->
+  <rect x="70" y="250" width="260" height="24" rx="4" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="1"/>
+  <text x="82" y="267" font-size="10" font-weight="600" fill="#5B21B6" font-family="Consolas, monospace">--text_model</text>
+  <text x="230" y="267" font-size="10" fill="#7C3AED">文本任务专用</text>
+
+  <!-- ================================================================== -->
+  <!-- 调度核心: _get_llm_config -->
+  <!-- ================================================================== -->
+  <line x1="350" y1="180" x2="410" y2="180" stroke="#475569" stroke-width="1.8" marker-end="url(#arr)"/>
+
+  <rect x="415" y="110" width="270" height="142" rx="12" fill="#FFFFFF" stroke="#D97706" stroke-width="2.5" filter="url(#shadow)"/>
+  <rect x="415" y="110" width="270" height="34" rx="12" fill="#D97706"/>
+  <rect x="415" y="136" width="270" height="8" fill="#D97706"/>
+  <text x="550" y="134" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">_get_llm_config()</text>
+
+  <text x="435" y="164" font-size="11" font-weight="600" fill="#92400E">调度逻辑 (伪代码):</text>
+  <text x="435" y="184" font-size="10" fill="#475569" font-family="Consolas, monospace">stage → model_key 映射</text>
+  <text x="435" y="200" font-size="10" fill="#475569" font-family="Consolas, monospace">  "vision" → vision_model</text>
+  <text x="435" y="216" font-size="10" fill="#475569" font-family="Consolas, monospace">  "svg"    → svg_model</text>
+  <text x="435" y="232" font-size="10" fill="#475569" font-family="Consolas, monospace">  "text"   → text_model</text>
+  <text x="435" y="248" font-size="10" fill="#D97706" font-family="Consolas, monospace">model = cfg[key] or cfg["model_name"]</text>
+
+  <!-- Fallback 标注 -->
+  <rect x="415" y="260" width="270" height="28" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <text x="550" y="279" text-anchor="middle" font-size="10" font-weight="600" fill="#92400E">Fallback: 未指定 stage 模型 → 使用 model_name</text>
+
+  <!-- ================================================================== -->
+  <!-- 三个 stage 通道 -->
+  <!-- ================================================================== -->
+
+  <!-- Vision 通道 -->
+  <line x1="685" y1="145" x2="765" y2="145" stroke="#2563EB" stroke-width="2" marker-end="url(#arr-blue)"/>
+  <text x="725" y="138" text-anchor="middle" font-size="9" fill="#2563EB" font-weight="500">stage="vision"</text>
+
+  <rect x="770" y="80" width="290" height="130" rx="12" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="770" y="80" width="290" height="30" rx="12" fill="#3B82F6"/>
+  <rect x="770" y="104" width="290" height="6" fill="#3B82F6"/>
+  <text x="915" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF">Vision 视觉任务</text>
+
+  <text x="790" y="128" font-size="10" fill="#475569">analyze_image_style</text>
+  <text x="790" y="128" font-size="10" fill="#64748B" dx="170">风格分析</text>
+
+  <text x="790" y="148" font-size="10" fill="#475569">check_style_protocol</text>
+  <text x="790" y="148" font-size="10" fill="#64748B" dx="170">风格自查</text>
+
+  <text x="790" y="168" font-size="10" fill="#475569">image_orientation</text>
+  <text x="790" y="168" font-size="10" fill="#64748B" dx="170">图片方向检测</text>
+
+  <text x="790" y="188" font-size="10" fill="#475569">check_slide_design</text>
+  <text x="790" y="188" font-size="10" fill="#64748B" dx="170">设计质量检查</text>
+
+  <text x="790" y="204" font-size="9" fill="#94A3B8" font-style="italic">需要图片理解能力 (VLM)</text>
+
+  <!-- SVG 通道 -->
+  <line x1="685" y1="195" x2="715" y2="195" stroke="#059669" stroke-width="2"/>
+  <line x1="715" y1="195" x2="715" y2="295" stroke="#059669" stroke-width="2"/>
+  <line x1="715" y1="295" x2="765" y2="295" stroke="#059669" stroke-width="2" marker-end="url(#arr-green)"/>
+  <text x="730" y="255" font-size="9" fill="#059669" font-weight="500">stage="svg"</text>
+
+  <rect x="770" y="230" width="290" height="130" rx="12" fill="#FFFFFF" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="770" y="230" width="290" height="30" rx="12" fill="#059669"/>
+  <rect x="770" y="254" width="290" height="6" fill="#059669"/>
+  <text x="915" y="250" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF">SVG 代码生成任务</text>
+
+  <text x="790" y="278" font-size="10" fill="#475569">generate_slide_svg</text>
+  <text x="790" y="278" font-size="10" fill="#64748B" dx="170">SVG 代码生成</text>
+
+  <text x="790" y="298" font-size="10" fill="#475569">optimize_svg_crap</text>
+  <text x="790" y="298" font-size="10" fill="#64748B" dx="170">CRAP 优化</text>
+
+  <text x="790" y="328" font-size="9" fill="#94A3B8" font-style="italic">需要强代码生成能力</text>
+  <text x="790" y="344" font-size="9" fill="#94A3B8" font-style="italic">可用专业代码模型降低成本</text>
+
+  <!-- Text 通道 -->
+  <line x1="685" y1="235" x2="740" y2="235" stroke="#7C3AED" stroke-width="2"/>
+  <line x1="740" y1="235" x2="740" y2="445" stroke="#7C3AED" stroke-width="2"/>
+  <line x1="740" y1="445" x2="765" y2="445" stroke="#7C3AED" stroke-width="2" marker-end="url(#arr-purple)"/>
+  <text x="752" y="400" font-size="9" fill="#7C3AED" font-weight="500">stage="text"</text>
+
+  <rect x="770" y="380" width="290" height="130" rx="12" fill="#FFFFFF" stroke="#7C3AED" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="770" y="380" width="290" height="30" rx="12" fill="#7C3AED"/>
+  <rect x="770" y="404" width="290" height="6" fill="#7C3AED"/>
+  <text x="915" y="400" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF">Text 文本任务 (默认)</text>
+
+  <text x="790" y="428" font-size="10" fill="#475569">generate_presentation_plan</text>
+  <text x="790" y="428" font-size="10" fill="#64748B" dx="195">大纲规划</text>
+
+  <text x="790" y="448" font-size="10" fill="#475569">expand_slide_plan</text>
+  <text x="790" y="448" font-size="10" fill="#64748B" dx="195">大纲扩展</text>
+
+  <text x="790" y="468" font-size="10" fill="#475569">analyze_feedback</text>
+  <text x="790" y="468" font-size="10" fill="#64748B" dx="195">反馈分类</text>
+
+  <text x="790" y="498" font-size="9" fill="#94A3B8" font-style="italic">纯文本推理 · 可用高性价比模型</text>
+
+  <!-- ================================================================== -->
+  <!-- 底部：配置示例 -->
+  <!-- ================================================================== -->
+  <rect x="50" y="530" width="1000" height="72" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="70" y="552" font-size="12" font-weight="600" fill="#334155">配置示例 — 混合模型部署 (降本增效)</text>
+  <line x1="65" y1="560" x2="1035" y2="560" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="70" y="578" font-size="11" fill="#475569" font-family="Consolas, monospace">python main.py --model_name gpt-4o \</text>
+  <text x="70" y="594" font-size="11" fill="#475569" font-family="Consolas, monospace">    --vision_model gpt-4o  --svg_model gpt-5-mini  --text_model deepseek-ai/DeepSeek-R1-Distill-Qwen-7B</text>
+
+  <!-- 配色标记 -->
+  <rect x="387" y="568" width="78" height="14" rx="3" fill="#DBEAFE" opacity="0.5"/>
+  <rect x="480" y="584" width="92" height="14" rx="3" fill="#D1FAE5" opacity="0.5"/>
+  <rect x="588" y="584" width="310" height="14" rx="3" fill="#EDE9FE" opacity="0.5"/>
+
+  <!-- ================================================================== -->
+  <!-- 右上角：LLMConfig 结构 -->
+  <!-- ================================================================== -->
+  <rect x="415" y="310" width="270" height="80" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="435" y="330" font-size="11" font-weight="600" fill="#334155">LLMConfig (返回值)</text>
+  <line x1="430" y1="337" x2="670" y2="337" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="435" y="355" font-size="10" fill="#475569" font-family="Consolas, monospace">model_name: str</text>
+  <text x="435" y="371" font-size="10" fill="#475569" font-family="Consolas, monospace">api_key: str</text>
+  <text x="570" y="371" font-size="10" fill="#475569" font-family="Consolas, monospace">base_url: str</text>
+  <text x="435" y="387" font-size="9" fill="#94A3B8">→ create_llm(config, temperature) 创建实例</text>
+</svg>
