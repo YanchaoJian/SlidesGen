@@ -13,11 +13,18 @@ import json
 import logging
 import os
 import re
+import sys
+from datetime import datetime
 from glob import glob
 from pathlib import Path
 
 from langchain_core.messages import HumanMessage
 from pptx import Presentation as PptxPresentation
+
+# 将项目根目录加入 sys.path 以便解析 pipeline 和 utils
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from pipeline.pptx_imaging import pptx_to_images
 from utils.llm import (
@@ -156,8 +163,10 @@ def _compute_color_histogram_similarity(
 
 async def _eval_content(llm, presentation_text: str) -> dict:
     """评估内容质量（单次文本 LLM 调用）。"""
+    logger.info("Starting D1 (Content) evaluation...")
     prompt = _CONTENT_PROMPT.replace("{{presentation_text}}", presentation_text)
     resp = await llm.ainvoke([HumanMessage(content=prompt)])
+    logger.info("Finished D1 (Content) evaluation.")
     return _parse_score(resp.content.strip())
 
 
@@ -168,6 +177,8 @@ async def _eval_content(llm, presentation_text: str) -> dict:
 
 async def _eval_design_single(vision_llm, image_path: str) -> dict:
     """评估单张 slide 截图的视觉设计质量。"""
+    filename = os.path.basename(image_path)
+    logger.info(f"Starting D2 (Design) evaluation for {filename}...")
     b64 = encode_image_to_base64(image_path)
     msg = HumanMessage(
         content=[
@@ -176,6 +187,7 @@ async def _eval_design_single(vision_llm, image_path: str) -> dict:
         ]
     )
     resp = await vision_llm.ainvoke([msg])
+    logger.info(f"Finished D2 (Design) evaluation for {filename}.")
     return _parse_score(resp.content.strip())
 
 
@@ -188,6 +200,8 @@ async def _eval_style_transfer_single(
     vision_llm, style_image_b64: str, slide_image_path: str
 ) -> dict:
     """评估单张 slide 截图与参考风格图的一致性。"""
+    filename = os.path.basename(slide_image_path)
+    logger.info(f"Starting D3 (Style Transfer) evaluation for {filename}...")
     slide_b64 = encode_image_to_base64(slide_image_path)
     msg = HumanMessage(
         content=[
@@ -203,6 +217,7 @@ async def _eval_style_transfer_single(
         ]
     )
     resp = await vision_llm.ainvoke([msg])
+    logger.info(f"Finished D3 (Style Transfer) evaluation for {filename}.")
     return _parse_score(resp.content.strip())
 
 
@@ -243,20 +258,10 @@ async def evaluate_pptx(
     # 推导输出目录
     if output_dir is None:
         session_dir = os.path.dirname(os.path.dirname(pptx_path))
-        output_dir = os.path.join(session_dir, "metrics", "eval")
+        output_dir = os.path.join(session_dir, "metrics")
     os.makedirs(output_dir, exist_ok=True)
 
     eval_file = os.path.join(output_dir, "eval_result.json")
-
-    # 缓存：如果已有完整结果直接返回
-    if os.path.exists(eval_file):
-        with open(eval_file, encoding="utf-8") as f:
-            existing = json.load(f)
-        has_style = style_image_path is not None
-        cached_has_style = existing.get("style_transfer") is not None
-        if has_style == cached_has_style:
-            logger.info(f"Loaded existing eval from {eval_file}")
-            return existing
 
     # 1. PPTX → slide 图片（只截一次）
     slide_folder = os.path.join(output_dir, "slide_images")
@@ -272,9 +277,11 @@ async def evaluate_pptx(
         raise RuntimeError(f"No slide images found in {slide_folder}")
 
     # 2. 提取全文
+    logger.info("Extracting text from PPTX...")
     presentation_text = _extract_pptx_text(pptx_path)
 
     # 3. 创建 LLM
+    logger.info("Initializing LLMs...")
     llm = create_llm(llm_config, temperature=0.0)
     vision_llm = create_llm(llm_config, temperature=0.0)
 
@@ -356,6 +363,7 @@ async def evaluate_pptx(
         style_avg_result = {"score": style_avg, "reasoning": "Average across all slides."}
 
         # 颜色直方图相似度（取所有页与参考图的均值）
+        logger.info("Computing color histogram similarity...")
         hist_sims = []
         for img in slide_images:
             sim = _compute_color_histogram_similarity(style_image_path, img)
@@ -364,25 +372,43 @@ async def evaluate_pptx(
         if hist_sims:
             color_hist_sim = round(sum(hist_sims) / len(hist_sims), 4)
 
-    # 6. 组装结果
-    eval_result = {
+    # 6. 组装单次结果
+    eval_result_item = {
+        "evaluate_time": datetime.now().isoformat(),
         "content": content_result,
         "design": {"score": design_avg, "reasoning": "Average across all slides."},
-        "design_per_slide": design_per_slide,
         "style_transfer": style_avg_result,
-        "style_transfer_per_slide": style_per_slide,
         "color_histogram_similarity": color_hist_sim,
+        "design_per_slide": design_per_slide,
+        "style_transfer_per_slide": style_per_slide,
     }
 
-    # 7. 持久化
+    # 7. 读取旧数据、追加并持久化 (不兼容历史单次记录格式)
+    history_data = {}
+    if os.path.exists(eval_file):
+        try:
+            with open(eval_file, encoding="utf-8") as f:
+                data = json.load(f)
+                # 简单校验：如果根层包含 "content" 或者 "evaluation_model" 则认为是旧格式直接抛弃
+                if isinstance(data, dict) and "content" not in data and "evaluation_model" not in data:
+                    history_data = data
+        except Exception:
+            pass
+            
+    model_key = llm_config["model_name"] if isinstance(llm_config, dict) else getattr(llm_config, "model_name", "unknown_model")
+    if model_key not in history_data:
+        history_data[model_key] = []
+    
+    history_data[model_key].append(eval_result_item)
+
     with open(eval_file, "w", encoding="utf-8") as f:
-        json.dump(eval_result, f, indent=2, ensure_ascii=False)
-    logger.info(f"Evaluation saved to {eval_file}")
+        json.dump(history_data, f, indent=2, ensure_ascii=False)
+    logger.info(f"Evaluation appended to {eval_file} under model '{model_key}'")
 
     # 8. 打印摘要
-    _print_summary(eval_result)
+    _print_summary(eval_result_item)
 
-    return eval_result
+    return eval_result_item
 
 
 async def evaluate_pptx_batch(
@@ -482,6 +508,7 @@ def main():
     from dotenv import load_dotenv
 
     load_dotenv()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     parser = argparse.ArgumentParser(
         description="Evaluate a PPTX presentation (Content / Design / Style Transfer)."
@@ -489,7 +516,7 @@ def main():
     parser.add_argument("--pptx_path", required=True, help="Path to the PPTX file to evaluate.")
     parser.add_argument("--style_image_path", default=None, help="Path to the reference style image (enables D3 style transfer scoring).")
     parser.add_argument("--model_name", default="gpt-4o", help="Vision model for evaluation (default: gpt-4o).")
-    parser.add_argument("--output_dir", default=None, help="Directory to save evaluation results. Default: <session>/metrics/eval/")
+    parser.add_argument("--output_dir", default=None, help="Directory to save evaluation results. Default: <session>/metrics/")
     parser.add_argument("--dpi", type=int, default=200, help="DPI for PPTX slide rendering (default: 200).")
     args = parser.parse_args()
 

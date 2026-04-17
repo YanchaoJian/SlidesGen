@@ -132,6 +132,7 @@ def main():
     parser = argparse.ArgumentParser(description="Parse SlidesGen run_stats.json and print report.")
     parser.add_argument("--session_id", required=True, help="Session ID (output subdirectory name)")
     parser.add_argument("--output_dir", default="output", help="Output root directory (default: output)")
+    parser.add_argument("--out_file", help="Optional path to save the Markdown report to a new file")
     args = parser.parse_args()
 
     stats_path = os.path.join(args.output_dir, args.session_id, "run_stats.json")
@@ -142,7 +143,16 @@ def main():
     with open(stats_path, "r", encoding="utf-8") as f:
         stats = json.load(f)
 
-    print_report(stats)
+    if args.out_file:
+        with open(args.out_file, "w", encoding="utf-8") as f:
+            old_stdout = sys.stdout
+            sys.stdout = f
+            try:
+                print_report(stats)
+            finally:
+                sys.stdout = old_stdout
+    else:
+        print_report(stats)
 
 
 if __name__ == "__main__":

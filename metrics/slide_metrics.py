@@ -1,4 +1,4 @@
-"""从 slide_reports 计算幻灯片质量统计指标。"""
+"""From slide_reports calculate slide quality metrics."""
 
 from typing import Any, Dict, List, Optional
 
@@ -8,30 +8,31 @@ def compute_slide_metrics(
     presentation_plan: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """
-    根据 slide_reports 计算质量指标。
+    Calculate quality metrics from slide reports.
 
     Args:
-        slide_reports: {slide_page: SlideReport} 字典。
-        presentation_plan: 计划列表（用于计算缺页）。
+        slide_reports: {slide_page: SlideReport} dictionary.
+        presentation_plan: List of dictionaries with slide plan.
 
     Returns:
-        slide_metrics 字典，可直接合并进 run_stats.json。
+        slide_metrics dictionary, can be directly merged into run_stats.json.
     """
     if not slide_reports:
         return {}
 
     planned = len(presentation_plan) if presentation_plan else 0
-    produced_pages = sorted(slide_reports.keys())
+    # Convert keys to int for consistent comparison
+    produced_pages = sorted(int(k) for k in slide_reports.keys())
     total = len(produced_pages)
 
-    # 缺页检测
+    # Missing pages detection
     if presentation_plan:
         expected = {int(s.get("slide_page")) for s in presentation_plan if s.get("slide_page") is not None}
         missing = sorted(expected - set(produced_pages))
     else:
         missing = []
 
-    # 逐页统计
+    # Page statistics
     svg_first_pass = 0
     design_first_pass = 0
     selfheal_attempted = 0
@@ -49,13 +50,13 @@ def compute_slide_metrics(
         svg_ok = svg_r.get("verified", False)
         design_ok = design_r.get("verified", False)
 
-        # 首次通过：retry_count == 0 且最终 verified
+        # First pass: retry_count == 0 and final verified
         if svg_retry == 0 and svg_ok:
             svg_first_pass += 1
         if design_retry == 0 and design_ok:
             design_first_pass += 1
 
-        # 自愈：有重试的页面中最终成功的比例
+        # Self-healing: success rate of pages with retries
         had_retry = svg_retry > 0 or design_retry > 0
         if had_retry:
             selfheal_attempted += 1
@@ -84,3 +85,38 @@ def compute_slide_metrics(
         "slide_completion_rate": round(total / planned, 3) if planned else None,
         "per_slide": per_slide,
     }
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+    import os
+
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Calculate slide metrics from final_snapshot.json and save to a new JSON file")
+    parser.add_argument("--snapshot_path", required=True, help="Path to the final_snapshot.json file")
+    parser.add_argument("--output_path", required=True, help="Path to the target output JSON file (e.g., metrics/slide_metrics.json)")
+    args = parser.parse_args()
+
+    if not os.path.exists(args.snapshot_path):
+        print(f"Error: Snapshot file not found at {args.snapshot_path}")
+        exit(1)
+
+    # Read the original JSON
+    print(f"Reading snapshot: {args.snapshot_path}")
+    with open(args.snapshot_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    # Extract needed data for statistics
+    slide_reports = data.get("slide_reports", {})
+    presentation_plan = data.get("presentation_plan", [])
+    metrics_result = compute_slide_metrics(slide_reports, presentation_plan)
+
+    # Ensure the target path directory exists
+    os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
+
+    # Write metrics locally to the new JSON file
+    with open(args.output_path, 'w', encoding='utf-8') as f:
+        json.dump(metrics_result, f, indent=2, ensure_ascii=False)
+        
+    print(f"Metrics successfully calculated and saved to {args.output_path}.")
