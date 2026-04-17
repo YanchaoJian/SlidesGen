@@ -64,6 +64,7 @@ use those sizes, fonts, and weights instead of the defaults above.
 - Use `text-anchor="middle"` for centered text (x = center point).
 - Use `text-anchor="start"` for left-aligned text (x = left edge).
 - Line breaks: use `<tspan x="..." dy="...">` inside `<text>`. Never use `<foreignObject>`.
+  - **When using `dy`, always use absolute pixel values (e.g., `dy="25"`). Do NOT use `em` units (e.g., never write `dy="1.4em"`).**
 - Long text: split into multiple `<tspan>` elements with appropriate `dy` spacing.
 - CJK text line height: dy="1.6em" to "1.8em". Latin text: dy="1.4em".
 
@@ -279,8 +280,7 @@ Professional slides are **not colorful** — color is reserved for meaning, not 
 
 - **Whitespace is a feature, not a bug.** Target content fill ~40-70% of canvas. Bare backgrounds with < 30% fill look unfinished; crowding > 80% fails readability.
 - Alternate a data-dense page with a "breathing" page (large quote / single chart / hero image) so the audience can absorb.
-- Repeat the same visual grammar (card style, card spacing, typography rhythm) across all pages. Consistency IS the design.
-- **Header / footer / logo / page number / full-canvas background are rendered by the slide master** and MUST NOT appear inside your SVG. Start directly with per-slide content elements.
+- Repeat the same visual grammar (card style, header strip height, footer, page number) across all pages. Consistency IS the design.
 
 ---
 
@@ -487,7 +487,7 @@ spacing), use those values for page structure instead of the defaults above.
 ## Geometry & Spacing Rules (CRITICAL — violations cause rejection)
 
 ### Safe Zone
-All visible content **must** stay within the **safe content bbox declared in section IV-bis of the Design Specification** (the region not covered by master chrome). If the spec gives no bbox, default to **x: 40–1240, y: 40–680**.
+All visible content **must** stay within the safe zone: **x: 40–1240, y: 40–680**.
 Elements outside this range will be clipped or overflow the slide.
 
 ### Minimum Spacing
@@ -519,13 +519,12 @@ Before outputting SVG, verify:
 
 1. Output **only** the raw SVG source code — no markdown fences, no explanation.
 2. The SVG must be **well-formed XML** (all tags closed, attributes quoted).
-3. **Do NOT output a full-canvas background `<rect>` (width="1280" height="720"). The slide master owns the background.** Your SVG must start directly with per-slide content elements inside the safe content bbox.
+3. First child element must be a full-canvas background `<rect>`.
 4. All `<defs>` (gradients, filters) must come before elements that reference them.
-5. Z-order: decorations → content cards → text → foreground accents.
-6. **Do NOT draw a page number** — page numbers are rendered by the slide master and auto-increment.
+5. Z-order: background → decorations → content cards → text → foreground accents.
+6. Include a page number in the bottom-right corner (e.g., `01 / 10`).
 7. **Title must be copied verbatim from the layout spec's Title field** (which mirrors the original slide plan): ≤ 8 words / ≤ 50 characters, single line, never overflow the title bar. The one-sentence conclusion goes in the **Takeaway Box** directly beneath the title — not in the title. Cover / closing pages have no Takeaway Box.
-8. **Data source attribution**: for data/chart/table/KPI pages, draw the source line **inside the safe content bbox** (typically just above the bottom edge of the content area). Never place it into the master's footer region.
-11. **No chrome inside slides**: do NOT draw any header bar, footer line, logo, school/institution name, motto, or page number. The slide master owns all of these. Any chrome elements in the slide SVG will collide with the master and be rejected.
+8. **Every data / chart / table / KPI page must include a data source footer** (Component 10) at the bottom-left.
 9. **Every displayed metric must be contextualized** — a bare number without comparison reference and interpretation is a quality failure.
 10. **Color restraint**: do not exceed 3 primary colors; data series must use same-hue opacity variations, not rainbow palettes.
 """
@@ -702,8 +701,7 @@ You must scan in the following priority order. If you find a P0 error, directly 
 *   **Takeaway Box**: On content pages, is there a one-sentence takeaway directly under the title? Missing takeaway = FAIL.
 *   **Data contextualization**: Does every headline number carry (a) a comparison reference and (b) an interpretation? Bare isolated numbers = FAIL.
 *   **Color restraint**: Does the page use ≤3 primary colors with semantic intent, or is it a rainbow? Accidental color variety = FAIL.
-*   **Data source attribution**: For data/chart/table pages, is there a source line drawn inside the safe content bbox (NOT in the master's footer area)? Missing source on a data page = FAIL.
-*   **Chrome leakage**: The slide MUST NOT contain a full-canvas background `<rect>`, header bar, footer line, logo, school/institution name, motto, or page number — these are owned by the slide master. Any chrome element found in the slide SVG = FAIL.
+*   **Data source footer**: Does every data/chart/table page include a bottom-left source attribution? Missing source on a data page = FAIL.
 
 ---
 

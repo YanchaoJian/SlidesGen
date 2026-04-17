@@ -7,7 +7,7 @@ from typing import Tuple
 from pydantic import BaseModel, Field
 
 from agents.perception.style_analyst.prompts import STYLE_CRITIC_SYSTEM_PROMPT, STYLE_CRITIC_USER_PROMPT
-from utils.llm import LLMConfig, create_llm, encode_image_to_base64, raise_if_fatal_llm_error
+from utils.llm import LLMConfig, create_llm, encode_image_to_base64, raise_if_fatal_llm_error, parse_json_response
 
 # 初始化日志记录器
 logger = logging.getLogger(__name__)
@@ -52,7 +52,6 @@ def critique_style_protocol(
     # --- 步骤 2: 初始化支持结构化输出的 LangChain LLM 实例 ---
     try:
         llm = create_llm(llm_config, temperature=0.1)
-        structured_llm = llm.with_structured_output(StyleCritique)
     except Exception as e:
         logger.error(f"❌ Failed to initialize ChatOpenAI for critic: {e}")
         return False, f"Failed to initialize the critic model: {e}"
@@ -71,8 +70,10 @@ def critique_style_protocol(
     ]
 
     try:
-        critique_result = structured_llm.invoke(messages)
-        
+        response = llm.invoke(messages)
+        critique_result = parse_json_response(response.content)
+        critique_result = StyleCritique(**critique_result)  # 验证并转换为 Pydantic 模型实例    
+
         status = "APPROVED" if critique_result.is_approved else "REJECTED"
         logger.info(f"   -> Critic LLM call successful. Result: {status}")
 

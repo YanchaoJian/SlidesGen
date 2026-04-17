@@ -339,12 +339,11 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
     # 3. 写入文件 + 后处理
     slide_dir = os.path.join(cfg["output_dir"], "result", f"slide_{slide_page:02d}")
     os.makedirs(slide_dir, exist_ok=True)
-    # 版本号按目录中已存在的 slide_v*.svg 数量单调递增，避免 design_review
-    # 重试时（svg_review.retry_count 不变）覆盖之前的版本，从而保留完整历史。
-    existing_versions = glob.glob(os.path.join(slide_dir, "slide_v*.svg"))
+    # 修复通配符，确保只统计带页码的
+    existing_versions = glob.glob(os.path.join(slide_dir, f"slide_{slide_page:02d}_v*.svg"))
     version = len(existing_versions)
-    # 用 posix 风格统一斜杠，避免快照里出现 "output/xx\\result\\..." 这种混合路径。
-    svg_path = os.path.join(slide_dir, f"slide_v{version}.svg").replace(os.sep, "/")
+    # 将文件名中加入页码以保证 stem 全局唯一
+    svg_path = os.path.join(slide_dir, f"slide_{slide_page:02d}_v{version}.svg").replace(os.sep, "/")
 
     with open(svg_path, "w", encoding="utf-8") as f:
         f.write(final_svg)

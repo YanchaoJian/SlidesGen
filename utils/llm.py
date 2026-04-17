@@ -165,26 +165,30 @@ def extract_json_string(response_text: str) -> Optional[str]:
     if not response_text:
         return None
 
+    # 匹配 <think>...</think> 及其变体
+    cleaned_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL)
+    # 匹配其他可能的推理标记
+    cleaned_text = re.sub(r'\[thinking\].*?\[/thinking\]', '', cleaned_text, flags=re.DOTALL)
+    
     json_str = None
 
     # 策略 1: ```json ... ```
-    match = re.search(r'```json\s*(.*?)\s*```', response_text, re.DOTALL)
+    match = re.search(r'```json\s*(.*?)\s*```', cleaned_text, re.DOTALL)
     if match:
         json_str = match.group(1).strip()
 
     # 策略 2: ``` ... ```
     if json_str is None:
-        match = re.search(r'```\s*(.*?)\s*```', response_text, re.DOTALL)
+        match = re.search(r'```\s*(.*?)\s*```', cleaned_text, re.DOTALL)
         if match:
             json_str = match.group(1).strip()
 
     # 策略 3: 第一个 '{' 到最后一个 '}' (或 '[' 到 ']')
     if json_str is None:
-        start_obj = response_text.find('{')
-        end_obj = response_text.rfind('}')
-        start_arr = response_text.find('[')
-        end_arr = response_text.rfind(']')
-
+        start_obj = cleaned_text.find('{')
+        end_obj = cleaned_text.rfind('}')
+        start_arr = cleaned_text.find('[')
+        end_arr = cleaned_text.rfind(']')
         # 取更靠前的那个起始符
         candidates = []
         if start_obj != -1 and end_obj > start_obj:
@@ -194,11 +198,11 @@ def extract_json_string(response_text: str) -> Optional[str]:
 
         if candidates:
             start, end = min(candidates, key=lambda c: c[0])
-            json_str = response_text[start:end]
+            json_str = cleaned_text[start:end]
 
     # 策略 4: 直接使用原文
     if json_str is None:
-        json_str = response_text.strip()
+        json_str = cleaned_text.strip()
 
     # 清理 BOM 字符
     json_str = json_str.lstrip('\ufeff')

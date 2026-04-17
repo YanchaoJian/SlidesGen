@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arr" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto" fill="#475569">
+      <polygon points="0 0, 9 3, 0 6"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto" fill="#2563EB">
+      <polygon points="0 0, 9 3, 0 6"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="420" fill="#FAFBFE" rx="6"/>
+
+  <!-- 标题 -->
+  <text x="480" y="28" text-anchor="middle" font-size="20" font-weight="700" fill="#1E293B">评估框架 (Evaluation Framework)</text>
+  <text x="480" y="46" text-anchor="middle" font-size="12" fill="#64748B">LLM-as-Judge 三维主观评估 + 颜色直方图客观指标 · 0-5 分量表</text>
+
+  <!-- ================================================================== -->
+  <!-- 输入区 -->
+  <!-- ================================================================== -->
+  <rect x="30" y="140" width="120" height="100" rx="10" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="90" y="162" text-anchor="middle" font-size="12" font-weight="600" fill="#334155">输入</text>
+  <line x1="45" y1="170" x2="135" y2="170" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="90" y="188" text-anchor="middle" font-size="10" fill="#64748B">PPTX 文件</text>
+  <text x="90" y="203" text-anchor="middle" font-size="10" fill="#64748B">参考风格图 (可选)</text>
+  <text x="90" y="218" text-anchor="middle" font-size="10" fill="#64748B">Vision LLM 配置</text>
+  <text x="90" y="233" text-anchor="middle" font-size="10" fill="#64748B">渲染 DPI</text>
+
+  <!-- 预处理 -->
+  <line x1="150" y1="190" x2="170" y2="190" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="175" y="140" width="140" height="100" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="245" y="162" text-anchor="middle" font-size="11" font-weight="600" fill="#1E40AF">预处理</text>
+  <line x1="190" y1="170" x2="300" y2="170" stroke="#93C5FD" stroke-width="1"/>
+  <text x="245" y="188" text-anchor="middle" font-size="10" fill="#3B82F6">PPTX → Slide 图片</text>
+  <text x="245" y="203" text-anchor="middle" font-size="9" fill="#64748B">LibreOffice + pdf2image</text>
+  <text x="245" y="218" text-anchor="middle" font-size="10" fill="#3B82F6">PPTX → 全文文本</text>
+
+  <!-- 到分叉点 -->
+  <line x1="315" y1="190" x2="340" y2="190" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <circle cx="345" cy="190" r="4" fill="#475569"/>
+
+  <!-- ================================================================== -->
+  <!-- D1: 内容质量 -->
+  <!-- ================================================================== -->
+  <line x1="345" y1="190" x2="345" y2="90" stroke="#475569" stroke-width="1.5"/>
+  <line x1="345" y1="90" x2="360" y2="90" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="360" y="65" width="200" height="50" rx="10" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="360" y="65" width="45" height="50" rx="10" fill="#3B82F6"/>
+  <rect x="400" y="65" width="5" height="50" fill="#3B82F6"/>
+  <text x="382" y="84" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">D1</text>
+  <text x="382" y="100" text-anchor="middle" font-size="10" font-weight="600" fill="#DBEAFE">内容</text>
+  <text x="470" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="#1E40AF">内容质量评估</text>
+  <text x="470" y="95" text-anchor="middle" font-size="9" fill="#3B82F6">Content Quality</text>
+  <text x="470" y="108" text-anchor="middle" font-size="9" fill="#64748B">单次文本 LLM · 全文输入</text>
+
+  <!-- D1 评估维度 -->
+  <rect x="570" y="65" width="160" height="50" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="580" y="78" font-size="10" fill="#334155" font-weight="500">评估维度:</text>
+  <text x="580" y="88" font-size="9" fill="#64748B">• 信息准确性 (Accuracy)</text>
+  <text x="580" y="98" font-size="9" fill="#64748B">• 完整性与逻辑连贯</text>
+  <text x="580" y="108" font-size="9" fill="#64748B">• 信息密度 (Density)</text>
+
+  <!-- ================================================================== -->
+  <!-- D2: 视觉设计 -->
+  <!-- ================================================================== -->
+  <line x1="345" y1="190" x2="345" y2="150" stroke="#475569" stroke-width="1.5"/>
+  <line x1="345" y1="150" x2="360" y2="150" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="360" y="125" width="200" height="50" rx="10" fill="#D1FAE5" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="360" y="125" width="45" height="50" rx="10" fill="#059669"/>
+  <rect x="400" y="125" width="5" height="50" fill="#059669"/>
+  <text x="382" y="144" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">D2</text>
+  <text x="382" y="160" text-anchor="middle" font-size="10" font-weight="600" fill="#D1FAE5">设计</text>
+  <text x="470" y="142" text-anchor="middle" font-size="12" font-weight="700" fill="#065F46">视觉设计评估</text>
+  <text x="470" y="155" text-anchor="middle" font-size="9" fill="#059669">Visual Design Quality</text>
+  <text x="470" y="168" text-anchor="middle" font-size="9" fill="#64748B">逐页 VLM · 图片输入</text>
+
+  <!-- D2 评估维度 -->
+  <rect x="570" y="125" width="160" height="50" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="580" y="138" font-size="10" fill="#334155" font-weight="500">评估维度:</text>
+  <text x="580" y="148" font-size="9" fill="#64748B">• 配色对比度 (Contrast)</text>
+  <text x="580" y="158" font-size="9" fill="#64748B">• 排版与字体 (Typography)</text>
+  <text x="580" y="168" font-size="9" fill="#64748B">• 布局对齐 (Alignment)</text>
+
+  <!-- ================================================================== -->
+  <!-- D3: 风格迁移 -->
+  <!-- ================================================================== -->
+  <line x1="345" y1="190" x2="345" y2="210" stroke="#475569" stroke-width="1.5"/>
+  <line x1="345" y1="210" x2="360" y2="210" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="360" y="185" width="200" height="50" rx="10" fill="#FEF3C7" stroke="#D97706" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="360" y="185" width="45" height="50" rx="10" fill="#D97706"/>
+  <rect x="400" y="185" width="5" height="50" fill="#D97706"/>
+  <text x="382" y="204" text-anchor="middle" font-size="16" font-weight="800" fill="#FFFFFF">D3</text>
+  <text x="382" y="220" text-anchor="middle" font-size="10" font-weight="600" fill="#FEF3C7">风格</text>
+  <text x="470" y="202" text-anchor="middle" font-size="12" font-weight="700" fill="#92400E">风格迁移评估</text>
+  <text x="470" y="215" text-anchor="middle" font-size="9" fill="#D97706">Style Transfer Quality</text>
+  <text x="470" y="228" text-anchor="middle" font-size="9" fill="#64748B">逐页 VLM · 参考图+slide</text>
+
+  <!-- D3 评估维度 -->
+  <rect x="570" y="185" width="160" height="50" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="580" y="198" font-size="10" fill="#334155" font-weight="500">评估维度:</text>
+  <text x="580" y="208" font-size="9" fill="#64748B">• 配色一致性 (Palette)</text>
+  <text x="580" y="218" font-size="9" fill="#64748B">• 排版风格 (Typography)</text>
+  <text x="580" y="228" font-size="9" fill="#64748B">• 装饰元素还原 (Decor)</text>
+
+  <!-- D3 条件标注 -->
+  <rect x="250" y="248" width="52" height="20" rx="4" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <text x="276" y="261" text-anchor="middle" font-size="9" fill="#92400E">需参考图</text>
+
+  <!-- ================================================================== -->
+  <!-- 客观指标: 颜色直方图 -->
+  <!-- ================================================================== -->
+  <line x1="345" y1="190" x2="345" y2="270" stroke="#475569" stroke-width="1.5"/>
+  <line x1="345" y1="270" x2="360" y2="270" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="360" y="245" width="200" height="50" rx="10" fill="#F1F5F9" stroke="#64748B" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="360" y="245" width="45" height="50" rx="10" fill="#64748B"/>
+  <rect x="400" y="245" width="5" height="50" fill="#64748B"/>
+  <text x="382" y="266" text-anchor="middle" font-size="14" font-weight="800" fill="#FFFFFF">Obj</text>
+  <text x="382" y="280" text-anchor="middle" font-size="8" font-weight="600" fill="#E2E8F0">客观</text>
+  <text x="470" y="262" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">颜色直方图相似度</text>
+  <text x="470" y="275" text-anchor="middle" font-size="9" fill="#64748B">HSV Color Histogram</text>
+  <text x="470" y="288" text-anchor="middle" font-size="9" fill="#64748B">OpenCV · 无需 LLM</text>
+
+  <!-- 客观指标维度 -->
+  <rect x="570" y="245" width="160" height="50" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="580" y="258" font-size="10" fill="#334155" font-weight="500">技术细节:</text>
+  <text x="580" y="268" font-size="9" fill="#64748B">• HSV 空间 (H:50, S:60)</text>
+  <text x="580" y="278" font-size="9" fill="#64748B">• 相关系数 HISTCMP_CORREL</text>
+  <text x="580" y="288" font-size="9" fill="#64748B">• 返回值 -1 ~ 1</text>
+
+  <!-- ================================================================== -->
+  <!-- 汇总输出 -->
+  <!-- ================================================================== -->
+  <line x1="730" y1="60" x2="780" y2="60" stroke="#3B82F6" stroke-width="1" opacity="0.4"/>
+  <line x1="730" y1="120" x2="780" y2="120" stroke="#059669" stroke-width="1" opacity="0.4"/>
+  <line x1="730" y1="180" x2="780" y2="180" stroke="#D97706" stroke-width="1" opacity="0.4"/>
+  <line x1="730" y1="240" x2="780" y2="240" stroke="#64748B" stroke-width="1" opacity="0.4"/>
+
+  <line x1="780" y1="60" x2="780" y2="240" stroke="#475569" stroke-width="1.5"/>
+  <line x1="780" y1="190" x2="800" y2="190" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- 汇总结果框 -->
+  <rect x="800" y="70" width="120" height="240" rx="10" fill="#FFFFFF" stroke="#1E293B" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="800" y="70" width="120" height="28" rx="10" fill="#1E293B"/>
+  <rect x="800" y="92" width="120" height="2" fill="#1E293B"/>
+  <text x="860" y="88" text-anchor="middle" font-size="12" font-weight="700" fill="#FFFFFF">评估报告</text>
+
+  <text x="815" y="116" font-size="11" font-weight="600" fill="#1E40AF">D1 内容</text>
+  <text x="910" y="116" text-anchor="end" font-size="13" font-weight="700" fill="#1E40AF">4.2</text>
+  <rect x="815" y="122" width="95" height="4" rx="2" fill="#E2E8F0"/>
+  <rect x="815" y="122" width="80" height="4" rx="2" fill="#3B82F6"/>
+
+  <text x="815" y="146" font-size="11" font-weight="600" fill="#065F46">D2 设计</text>
+  <text x="910" y="146" text-anchor="end" font-size="13" font-weight="700" fill="#065F46">3.8</text>
+  <rect x="815" y="152" width="95" height="4" rx="2" fill="#E2E8F0"/>
+  <rect x="815" y="152" width="72" height="4" rx="2" fill="#059669"/>
+
+  <text x="815" y="176" font-size="11" font-weight="600" fill="#92400E">D3 风格</text>
+  <text x="910" y="176" text-anchor="end" font-size="13" font-weight="700" fill="#92400E">3.5</text>
+  <rect x="815" y="182" width="95" height="4" rx="2" fill="#E2E8F0"/>
+  <rect x="815" y="182" width="66" height="4" rx="2" fill="#D97706"/>
+
+  <line x1="815" y1="194" x2="910" y2="194" stroke="#E2E8F0" stroke-width="1"/>
+
+  <text x="815" y="210" font-size="10" font-weight="600" fill="#475569">HSV 相似度</text>
+  <text x="910" y="210" text-anchor="end" font-size="13" font-weight="700" fill="#475569">0.82</text>
+  <rect x="815" y="216" width="95" height="4" rx="2" fill="#E2E8F0"/>
+  <rect x="815" y="216" width="78" height="4" rx="2" fill="#64748B"/>
+
+  <text x="860" y="258" text-anchor="middle" font-size="9" fill="#94A3B8">eval_result.json</text>
+  <text x="860" y="272" text-anchor="middle" font-size="9" fill="#94A3B8">逐页 + 汇总均值</text>
+  <text x="860" y="286" text-anchor="middle" font-size="9" fill="#94A3B8">(分数仅为示例)</text>
+
+  <!-- ================================================================== -->
+  <!-- 并行执行标注 -->
+  <!-- ================================================================== -->
+  <rect x="30" y="350" width="420" height="50" rx="8" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="48" y="368" font-size="12" font-weight="600" fill="#334155">执行策略</text>
+  <text x="48" y="386" font-size="10" fill="#64748B">• D1~D3 并发执行  ·  D2/D3 逐页评分取均值  ·  支持 eval_result.json 缓存直接返回</text>
+</svg>

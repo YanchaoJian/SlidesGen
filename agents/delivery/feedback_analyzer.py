@@ -11,7 +11,7 @@ from typing import List, Literal
 from pydantic import BaseModel, Field, model_validator
 
 from agents.delivery.prompts import FEEDBACK_ANALYSIS_SYSTEM_PROMPT, FEEDBACK_ANALYSIS_USER_TEMPLATE
-from utils.llm import LLMConfig, create_llm, raise_if_fatal_llm_error
+from utils.llm import LLMConfig, create_llm, raise_if_fatal_llm_error, parse_json_response
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,6 @@ def analyze_feedback(
     """使用 LLM 分析用户反馈的范围。"""
     try:
         llm = create_llm(llm_config, temperature=0)
-        structured_llm = llm.with_structured_output(FeedbackAnalysis)
 
         prompt = (
             FEEDBACK_ANALYSIS_SYSTEM_PROMPT +
@@ -56,7 +55,10 @@ def analyze_feedback(
             )
         )
 
-        result = structured_llm.invoke(prompt)
+        response = llm.invoke(prompt)
+        result = parse_json_response(response.content)
+        result = FeedbackAnalysis(**result)  # 验证并转换为 Pydantic 模型实例
+
         logger.info(f"   -> Feedback analyzed: Scope='{result.scope}', Target Pages={result.target_pages}")
         return result
     except Exception as e:

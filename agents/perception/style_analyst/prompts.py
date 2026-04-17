@@ -428,6 +428,18 @@ reference image's visual identity and is **complete enough for SVG code generati
 - **Rejected** (`is_approved = False`): Provide **specific corrections** with concrete values:
   - ❌ "color is wrong" → ✅ "Primary should be #005587 not #003366, matching the header bar"
   - ❌ "layout has issues" → ✅ "Header area is ~100px tall, not 160px as stated"
+
+## Output Format (STRICT JSON)
+
+Return a JSON object with exactly these fields. Do not use Markdown code blocks:
+
+```json
+{
+   "is_approved": true or false,
+   "critique": "detailed justification or specific corrections..."
+}
+```
+
 """
 
 STYLE_CRITIC_USER_PROMPT = """\

@@ -13,7 +13,7 @@ from openai import OpenAI
 
 load_dotenv()
 
-DEFAULT_MODEL = "gpt-5-mini"
+DEFAULT_MODEL = "MiniMax-M2.7"
 DEFAULT_PROMPT = "Reply with exactly: pong"
 
 

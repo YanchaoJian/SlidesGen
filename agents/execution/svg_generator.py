@@ -89,35 +89,34 @@ def build_svg_slide_prompt(
     page = slide_plan.get("slide_page", 1)
     title = slide_plan.get("title", "")
     content_items = slide_plan.get("content", [])
-    notes = slide_plan.get("presenter_notes", "")
 
     # ── 构建内容描述 ──
     sections = []
 
     sections.append(f"## Slide {page} / {total_pages}\n")
 
-    # 设计规范（从参考图提取的主题风格）
-    sections.append("### Design Specification\n")
-    sections.append("Follow the color scheme, typography, layout principles, and visual features ")
-    sections.append("defined below. These override the default values in the system prompt.\n")
-    sections.append(f"{style_protocol}\n")
+    if not slide_detail:
+        # 设计规范（从参考图提取的主题风格）
+        sections.append("### Design Specification\n")
+        sections.append("Follow the color scheme, typography, layout principles, and visual features ")
+        sections.append("defined below. These override the default values in the system prompt.\n")
+        sections.append(f"{style_protocol}\n")
+
+        # 页面内容
+        sections.append("### Page Content\n")
+        sections.append(f"**Title**: {title}\n")
+
+        if content_items:
+            sections.append("**Body Points**:")
+            for i, item in enumerate(content_items, 1):
+                sections.append(f"  {i}. {item}")
+            sections.append("")
 
     # 详细页面描述（由 expand_slide_plan 生成）
-    if slide_detail:
-        sections.append("### Detailed Slide Description\n")
-        sections.append("The following is a detailed layout and content description expanded from the outline. ")
-        sections.append("Use this as the primary guide for element placement and visual decisions.\n")
-        sections.append(f"{slide_detail}\n")
-
-    # 页面内容
-    sections.append("### Page Content\n")
-    sections.append(f"**Title**: {title}\n")
-
-    if content_items:
-        sections.append("**Body Points**:")
-        for i, item in enumerate(content_items, 1):
-            sections.append(f"  {i}. {item}")
-        sections.append("")
+    sections.append("### Detailed Slide Description\n")
+    sections.append("The following is a detailed layout and content description expanded from the outline. ")
+    sections.append("Use this as the primary guide for element placement and visual decisions.\n")
+    sections.append(f"{slide_detail}\n")
 
     # 图片引用
     if slide_plan.get("includes_figure") and slide_plan.get("figure_reference"):
@@ -158,11 +157,7 @@ def build_svg_slide_prompt(
         sections.append(f"  - LaTeX: `{eq.get('latex', '')}`")
         sections.append(f"  - Context: {eq.get('context', '')}")
         sections.append("")
-
-    # 演讲备注
-    if notes:
-        sections.append(f"**Presenter Notes** (for context, do NOT display on slide): {notes}\n")
-
+        
     # 页面类型提示
     if page == 1:
         sections.append("### Layout Hint\n")

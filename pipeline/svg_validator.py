@@ -17,7 +17,7 @@ from pipeline.svg_finalize.embed_images import embed_images_in_svg
 from pipeline.svg_finalize.fix_image_aspect import fix_image_aspect_in_svg
 from pipeline.svg_finalize.crop_images import process_svg_images as crop_images_in_svg
 from pipeline.svg_finalize.embed_icons import process_svg_file as embed_icons_in_file
-from pipeline.svg_finalize.strip_background import strip_full_canvas_background_in_file
+# from pipeline.svg_finalize.strip_background import strip_full_canvas_background_in_file
 
 logger = logging.getLogger(__name__)
 
@@ -295,6 +295,7 @@ def finalize_single_svg(svg_path: str) -> Tuple[bool, str]:
         return False, f"SVG file not found: {svg_path}"
 
     try:
+        '''
         # Step 0: 剥掉全画布背景 rect（兜底：母版会提供背景，slide 不应再画）
         try:
             removed = strip_full_canvas_background_in_file(str(path))
@@ -302,7 +303,7 @@ def finalize_single_svg(svg_path: str) -> Tuple[bool, str]:
                 logger.debug(f"   -> stripped {removed} full-canvas background rect(s)")
         except Exception as e:
             logger.warning(f"   -> strip_background skipped: {e}")
-
+        '''
         # Step 1: 嵌入 icons（仅当 templates/icons 目录存在时）
         icons_dir = Path(__file__).resolve().parent.parent / "templates" / "icons"
         if icons_dir.exists():
