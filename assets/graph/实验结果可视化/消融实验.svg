@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 410 620 370" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect x="40" y="430" width="580" height="330" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="330" y="456" text-anchor="middle" font-size="14" font-weight="700" fill="#1E293B">消融实验结果 (Ablation Study)</text>
+  <text x="330" y="472" text-anchor="middle" font-size="10" fill="#94A3B8">验证各模块对最终质量的贡献</text>
+
+  <rect x="60" y="488" width="540" height="28" rx="4" fill="#1E293B"/>
+  <text x="170" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">实验配置</text>
+  <text x="340" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">D1 内容</text>
+  <text x="410" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">D2 设计</text>
+  <text x="480" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">D3 风格</text>
+  <text x="556" y="507" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF">HSV Sim</text>
+
+  <rect x="60" y="518" width="540" height="30" fill="#F0FDF4"/>
+  <text x="76" y="538" font-size="10" font-weight="600" fill="#065F46">完整管线 (Full Pipeline)</text>
+  <text x="340" y="538" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46">4.5</text>
+  <text x="410" y="538" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46">4.0</text>
+  <text x="480" y="538" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46">3.8</text>
+  <text x="556" y="538" text-anchor="middle" font-size="11" font-weight="700" fill="#065F46">0.85</text>
+
+  <rect x="60" y="548" width="540" height="30" fill="#FFFFFF"/>
+  <text x="76" y="568" font-size="10" fill="#475569">w/o CRAP 优化</text>
+  <text x="340" y="568" text-anchor="middle" font-size="11" fill="#475569">4.4</text>
+  <text x="410" y="568" text-anchor="middle" font-size="11" fill="#DC2626">3.1</text>
+  <text x="480" y="568" text-anchor="middle" font-size="11" fill="#475569">3.6</text>
+  <text x="556" y="568" text-anchor="middle" font-size="11" fill="#475569">0.82</text>
+  <text x="416" y="568" font-size="8" fill="#DC2626">↓0.9</text>
+
+  <rect x="60" y="578" width="540" height="30" fill="#F8FAFC"/>
+  <text x="76" y="598" font-size="10" fill="#475569">w/o 风格自查 (Style Critic)</text>
+  <text x="340" y="598" text-anchor="middle" font-size="11" fill="#475569">4.3</text>
+  <text x="410" y="598" text-anchor="middle" font-size="11" fill="#475569">3.7</text>
+  <text x="480" y="598" text-anchor="middle" font-size="11" fill="#DC2626">2.9</text>
+  <text x="556" y="598" text-anchor="middle" font-size="11" fill="#DC2626">0.68</text>
+  <text x="486" y="598" font-size="8" fill="#DC2626">↓0.9</text>
+  <text x="564" y="598" font-size="8" fill="#DC2626">↓0.17</text>
+
+  <rect x="60" y="608" width="540" height="30" fill="#FFFFFF"/>
+  <text x="76" y="628" font-size="10" fill="#475569">w/o 设计质量检查 (Slide Critic)</text>
+  <text x="340" y="628" text-anchor="middle" font-size="11" fill="#475569">4.4</text>
+  <text x="410" y="628" text-anchor="middle" font-size="11" fill="#DC2626">3.3</text>
+  <text x="480" y="628" text-anchor="middle" font-size="11" fill="#475569">3.5</text>
+  <text x="556" y="628" text-anchor="middle" font-size="11" fill="#475569">0.81</text>
+  <text x="416" y="628" font-size="8" fill="#DC2626">↓0.7</text>
+
+  <rect x="60" y="638" width="540" height="30" fill="#F8FAFC"/>
+  <text x="76" y="658" font-size="10" fill="#475569">w/o 大纲扩展 (Slide Expander)</text>
+  <text x="340" y="658" text-anchor="middle" font-size="11" fill="#DC2626">3.5</text>
+  <text x="410" y="658" text-anchor="middle" font-size="11" fill="#475569">3.8</text>
+  <text x="480" y="658" text-anchor="middle" font-size="11" fill="#475569">3.6</text>
+  <text x="556" y="658" text-anchor="middle" font-size="11" fill="#475569">0.83</text>
+  <text x="346" y="658" font-size="8" fill="#DC2626">↓1.0</text>
+
+  <rect x="60" y="670" width="540" height="28" rx="4" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+  <text x="76" y="688" font-size="9" fill="#92400E" font-weight="500">红色标注 = 相比完整管线下降显著的维度 · 箭头为差值 · 数据为示例</text>
+
+  <text x="330" y="720" text-anchor="middle" font-size="9" fill="#EF4444" font-style="italic">* 所有数据均为示例，请替换为实际实验结果</text>
+</svg>

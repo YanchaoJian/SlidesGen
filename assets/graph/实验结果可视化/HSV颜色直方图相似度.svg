@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="640 410 620 370" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect x="660" y="430" width="580" height="330" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="950" y="456" text-anchor="middle" font-size="14" font-weight="700" fill="#1E293B">HSV 颜色直方图相似度</text>
+  <text x="950" y="472" text-anchor="middle" font-size="10" fill="#94A3B8">Color Histogram Similarity — 客观指标 (-1 ~ 1)</text>
+
+  <text x="780" y="518" text-anchor="end" font-size="10" fill="#334155" font-weight="500">Full Pipeline</text>
+  <text x="780" y="556" text-anchor="end" font-size="10" fill="#334155">w/o Style Critic</text>
+  <text x="780" y="594" text-anchor="end" font-size="10" fill="#334155">w/o CRAP</text>
+  <text x="780" y="632" text-anchor="end" font-size="10" fill="#334155">w/o Expander</text>
+  <text x="780" y="670" text-anchor="end" font-size="10" fill="#334155">Random Baseline</text>
+
+  <line x1="790" y1="690" x2="1200" y2="690" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="790" y="706" font-size="8" fill="#94A3B8">0.0</text>
+  <text x="892" y="706" font-size="8" fill="#94A3B8">0.2</text>
+  <text x="994" y="706" font-size="8" fill="#94A3B8">0.4</text>
+  <text x="1096" y="706" font-size="8" fill="#94A3B8">0.6</text>
+  <text x="1198" y="706" font-size="8" fill="#94A3B8">0.8</text>
+
+  <line x1="892" y1="496" x2="892" y2="690" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="994" y1="496" x2="994" y2="690" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="1096" y1="496" x2="1096" y2="690" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="1198" y1="496" x2="1198" y2="690" stroke="#F1F5F9" stroke-width="1"/>
+
+  <rect x="790" y="504" width="434" height="22" rx="4" fill="#059669" opacity="0.8"/>
+  <text x="1230" y="519" font-size="10" font-weight="600" fill="#059669">0.85</text>
+
+  <rect x="790" y="542" width="347" height="22" rx="4" fill="#D97706" opacity="0.8"/>
+  <text x="1143" y="557" font-size="10" font-weight="600" fill="#D97706">0.68</text>
+
+  <rect x="790" y="580" width="418" height="22" rx="4" fill="#3B82F6" opacity="0.8"/>
+  <text x="1214" y="595" font-size="10" font-weight="600" fill="#3B82F6">0.82</text>
+
+  <rect x="790" y="618" width="423" height="22" rx="4" fill="#7C3AED" opacity="0.8"/>
+  <text x="1219" y="633" font-size="10" font-weight="600" fill="#7C3AED">0.83</text>
+
+  <rect x="790" y="656" width="179" height="22" rx="4" fill="#94A3B8" opacity="0.6"/>
+  <text x="975" y="671" font-size="10" font-weight="600" fill="#64748B">0.35</text>
+
+  <text x="950" y="730" text-anchor="middle" font-size="9" fill="#EF4444" font-style="italic">* 示例数据 · 风格自查 (Style Critic) 对颜色一致性贡献最大</text>
+</svg>

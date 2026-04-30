@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="640 50 620 380" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect x="660" y="72" width="580" height="340" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="950" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#1E293B">分维度评估分数柱状图</text>
+  <text x="950" y="112" text-anchor="middle" font-size="10" fill="#94A3B8">Grouped Bar Chart — 0-5 scale</text>
+
+  <line x1="730" y1="130" x2="730" y2="370" stroke="#CBD5E1" stroke-width="1.5"/>
+  <line x1="730" y1="370" x2="1190" y2="370" stroke="#CBD5E1" stroke-width="1.5"/>
+
+  <text x="720" y="374" text-anchor="end" font-size="9" fill="#94A3B8">0</text>
+  <text x="720" y="326" text-anchor="end" font-size="9" fill="#94A3B8">1</text>
+  <text x="720" y="278" text-anchor="end" font-size="9" fill="#94A3B8">2</text>
+  <text x="720" y="230" text-anchor="end" font-size="9" fill="#94A3B8">3</text>
+  <text x="720" y="182" text-anchor="end" font-size="9" fill="#94A3B8">4</text>
+  <text x="720" y="134" text-anchor="end" font-size="9" fill="#94A3B8">5</text>
+
+  <line x1="730" y1="322" x2="1190" y2="322" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="730" y1="274" x2="1190" y2="274" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="730" y1="226" x2="1190" y2="226" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="730" y1="178" x2="1190" y2="178" stroke="#F1F5F9" stroke-width="1"/>
+  <line x1="730" y1="130" x2="1190" y2="130" stroke="#F1F5F9" stroke-width="1"/>
+
+  <rect x="790" y="178" width="30" height="192" rx="3" fill="#3B82F6" opacity="0.85"/>
+  <text x="805" y="172" text-anchor="middle" font-size="8" fill="#3B82F6" font-weight="600">4.0</text>
+  <rect x="824" y="130" width="30" height="240" rx="3" fill="#059669" opacity="0.85"/>
+  <text x="839" y="124" text-anchor="middle" font-size="8" fill="#059669" font-weight="600">5.0</text>
+  <rect x="858" y="178" width="30" height="192" rx="3" fill="#D97706" opacity="0.85"/>
+  <text x="873" y="172" text-anchor="middle" font-size="8" fill="#D97706" font-weight="600">4.0</text>
+  <text x="840" y="390" text-anchor="middle" font-size="11" font-weight="600" fill="#1E40AF">D1 内容</text>
+
+  <rect x="940" y="202" width="30" height="168" rx="3" fill="#3B82F6" opacity="0.85"/>
+  <text x="955" y="196" text-anchor="middle" font-size="8" fill="#3B82F6" font-weight="600">3.5</text>
+  <rect x="974" y="183" width="30" height="187" rx="3" fill="#059669" opacity="0.85"/>
+  <text x="989" y="177" text-anchor="middle" font-size="8" fill="#059669" font-weight="600">3.9</text>
+  <rect x="1008" y="202" width="30" height="168" rx="3" fill="#D97706" opacity="0.85"/>
+  <text x="1023" y="196" text-anchor="middle" font-size="8" fill="#D97706" font-weight="600">3.5</text>
+  <text x="990" y="390" text-anchor="middle" font-size="11" font-weight="600" fill="#059669">D2 设计</text>
+
+  <rect x="1090" y="269" width="30" height="101" rx="3" fill="#3B82F6" opacity="0.85"/>
+  <text x="1105" y="263" text-anchor="middle" font-size="8" fill="#3B82F6" font-weight="600">2.1</text>
+  <rect x="1124" y="212" width="30" height="158" rx="3" fill="#059669" opacity="0.85"/>
+  <text x="1139" y="206" text-anchor="middle" font-size="8" fill="#059669" font-weight="600">3.3</text>
+  <rect x="1158" y="207" width="30" height="163" rx="3" fill="#D97706" opacity="0.85"/>
+  <text x="1173" y="201" text-anchor="middle" font-size="8" fill="#D97706" font-weight="600">3.4</text>
+  <text x="1140" y="390" text-anchor="middle" font-size="11" font-weight="600" fill="#D97706">D3 风格</text>
+
+  <rect x="1080" y="85" width="135" height="52" rx="4" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" opacity="0.9"/>
+  <rect x="1088" y="93" width="12" height="8" rx="2" fill="#3B82F6"/>
+  <text x="1106" y="101" font-size="8" fill="#334155">gpt-5.4-nano</text>
+  <rect x="1088" y="107" width="12" height="8" rx="2" fill="#059669"/>
+  <text x="1106" y="115" font-size="8" fill="#334155">gemini-2.5-flash-lite</text>
+  <rect x="1088" y="121" width="12" height="8" rx="2" fill="#D97706"/>
+  <text x="1106" y="129" font-size="8" fill="#334155">claude-3-haiku-20240307</text>
+</svg>
