@@ -1,0 +1,331 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="blueHeader" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#065fc5"/>
+      <stop offset="1" stop-color="#003366"/>
+    </linearGradient>
+    <linearGradient id="softBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eef6ff"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="softTeal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eafffb"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="softAmber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff8e9"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="softPurple" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f3ff"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#0b3d91" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="16" markerHeight="16" refX="13" refY="8" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L14,8 L2,14 Z" fill="#0060c9"/>
+    </marker>
+    <marker id="arrowDark" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#111"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#6a3fb0"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#d99a00"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2c8a2c"/>
+    </marker>
+    <style>
+      .font { font-family: "Microsoft YaHei", "Noto Sans CJK SC", "PingFang SC", Arial, sans-serif; }
+      .title { font-size: 52px; font-weight: 800; fill: #003366; letter-spacing: 1px; }
+      .subtitle { font-size: 28px; font-weight: 500; fill: #4d5968; }
+      .panel { fill: #ffffff; stroke: #0d67c5; stroke-width: 1.8; filter: url(#shadow); }
+      .headerText { fill: #ffffff; font-size: 24px; font-weight: 800; }
+      .sectionTitle { fill: #0060c9; font-size: 20px; font-weight: 800; }
+      .small { font-size: 17px; fill: #111; }
+      .medium { font-size: 19px; fill: #111; }
+      .bold { font-weight: 800; }
+      .token { fill: #eef5ff; stroke: #5595ef; stroke-width: 1.4; }
+      .tokenText { font-size: 17px; font-weight: 700; fill: #173c7a; }
+      .coordX { fill: #eef9ea; stroke: #77bd78; }
+      .coordY { fill: #fff7dd; stroke: #e6b336; }
+      .coordZ { fill: #f2eafd; stroke: #a67cdd; }
+      .ctrl { fill: #fff1f1; stroke: #ff7c7c; }
+      .note { font-size: 17px; fill: #2a2a2a; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#fbfdff"/>
+
+  <!-- Title -->
+  <text class="font title" x="800" y="68" text-anchor="middle">结构化 Atomic Token 设计示意图</text>
+  <text class="font subtitle" x="800" y="108" text-anchor="middle">面向乐高积木结构生成的离散符号表示</text>
+
+  <!-- Left panel -->
+  <g id="left-panel">
+    <rect class="panel" x="36" y="128" width="392" height="544" rx="12"/>
+    <path d="M48,128 H416 A12,12 0 0 1 428,140 V181 H36 V140 A12,12 0 0 1 48,128 Z" fill="url(#blueHeader)"/>
+    <text class="font headerText" x="232" y="162" text-anchor="middle">原始文本表示（BrickGPT）</text>
+
+    <text class="font sectionTitle" x="60" y="218">示例</text>
+    <rect x="58" y="232" width="342" height="62" rx="7" fill="#fff" stroke="#8c8c8c" stroke-width="1.5" stroke-dasharray="9 7"/>
+    <text class="font" x="229" y="274" text-anchor="middle" font-size="27" fill="#111">1x2（7,4,0）</text>
+
+    <text class="font sectionTitle" x="60" y="345">被拆分为多个字符级 token</text>
+    <g transform="translate(57,362)">
+      <g class="font" font-size="21" font-weight="700" fill="#111" text-anchor="middle">
+        <rect x="0" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="16" y="28">1</text>
+        <rect x="39" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="55" y="28">x</text>
+        <rect x="78" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="94" y="28">2</text>
+        <rect x="117" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="133" y="28">(</text>
+        <rect x="156" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="172" y="28">7</text>
+        <rect x="195" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="211" y="28">,</text>
+        <rect x="234" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="250" y="28">4</text>
+        <rect x="273" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="289" y="28">,</text>
+        <rect x="312" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="328" y="28">0</text>
+        <rect x="351" y="0" width="32" height="42" rx="6" fill="#f5f7fa" stroke="#b3b8c0"/><text x="367" y="28">)</text>
+      </g>
+    </g>
+
+    <line x1="54" y1="435" x2="408" y2="435" stroke="#8fa6c4" stroke-width="2" stroke-dasharray="8 7"/>
+    <text class="font sectionTitle" x="60" y="471">存在的问题</text>
+    <g transform="translate(63,494)" class="font">
+      <g>
+        <path d="M17 0 L34 33 H0 Z" fill="#ffc928" stroke="#ad7800" stroke-width="1.8"/>
+        <text x="17" y="27" text-anchor="middle" font-size="25" font-weight="900" fill="#111">!</text>
+        <text x="52" y="24" class="medium">token 碎片化严重</text>
+      </g>
+      <g transform="translate(0,52)">
+        <path d="M17 0 L34 33 H0 Z" fill="#ffc928" stroke="#ad7800" stroke-width="1.8"/>
+        <text x="17" y="27" text-anchor="middle" font-size="25" font-weight="900" fill="#111">!</text>
+        <text x="52" y="24" class="medium">结构边界依赖符号与换行</text>
+      </g>
+      <g transform="translate(0,104)">
+        <path d="M17 0 L34 33 H0 Z" fill="#ffc928" stroke="#ad7800" stroke-width="1.8"/>
+        <text x="17" y="27" text-anchor="middle" font-size="25" font-weight="900" fill="#111">!</text>
+        <text x="52" y="24" class="medium">坐标之间的顺序关系不显式</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Big arrow 1 -->
+  <g id="arrow1">
+    <polygon points="431,340 456,340 456,319 478,360 456,401 456,379 431,379" fill="#0060c9" opacity="0.95"/>
+  </g>
+
+  <!-- Middle panel -->
+  <g id="middle-panel">
+    <rect class="panel" x="470" y="128" width="540" height="544" rx="12"/>
+    <path d="M482,128 H998 A12,12 0 0 1 1010,140 V181 H470 V140 A12,12 0 0 1 482,128 Z" fill="url(#blueHeader)"/>
+    <text class="font headerText" x="740" y="162" text-anchor="middle">本文的结构化 Token 设计</text>
+
+    <!-- A box -->
+    <rect x="484" y="191" width="512" height="107" rx="13" fill="url(#softBlue)"/>
+    <circle cx="510" cy="211" r="18" fill="#075fc9"/>
+    <text class="font" x="510" y="219" text-anchor="middle" font-size="22" font-weight="900" fill="#fff">A</text>
+    <text class="font sectionTitle" x="540" y="216">零件类型 Token（14个）</text>
+    <g class="font" transform="translate(540,232)">
+      <rect class="token" x="0" y="0" width="88" height="31" rx="5"/><text class="tokenText" x="44" y="22" text-anchor="middle">&lt;B_1x1&gt;</text>
+      <rect class="token" x="103" y="0" width="88" height="31" rx="5"/><text class="tokenText" x="147" y="22" text-anchor="middle">&lt;B_1x2&gt;</text>
+      <rect class="token" x="206" y="0" width="88" height="31" rx="5"/><text class="tokenText" x="250" y="22" text-anchor="middle">&lt;B_2x1&gt;</text>
+      <rect class="token" x="309" y="0" width="88" height="31" rx="5"/><text class="tokenText" x="353" y="22" text-anchor="middle">&lt;B_2x4&gt;</text>
+      <rect class="token" x="412" y="0" width="36" height="31" rx="5"/><text class="tokenText" x="430" y="22" text-anchor="middle">...</text>
+      <text class="note" x="0" y="59">1x2 与 2x1 视为不同 token，隐含旋转信息</text>
+    </g>
+
+    <!-- B box -->
+    <rect x="484" y="306" width="512" height="151" rx="13" fill="url(#softTeal)"/>
+    <circle cx="510" cy="329" r="18" fill="#0c9da0"/>
+    <text class="font" x="510" y="337" text-anchor="middle" font-size="22" font-weight="900" fill="#fff">B</text>
+    <text class="font sectionTitle" x="540" y="333" fill="#0a8b8e">坐标 Token（X / Y / Z）</text>
+    <g class="font" transform="translate(540,349)">
+      <text class="medium bold" x="0" y="22">X 轴:</text>
+      <rect class="coordX" x="73" y="0" width="84" height="31" rx="5"/><text class="tokenText" x="115" y="22" text-anchor="middle" fill="#1b5e20">&lt;X_0&gt;</text>
+      <text x="178" y="22" font-size="24" font-weight="800">...</text>
+      <rect class="coordX" x="223" y="0" width="88" height="31" rx="5"/><text class="tokenText" x="267" y="22" text-anchor="middle" fill="#1b5e20">&lt;X_19&gt;</text>
+
+      <text class="medium bold" x="0" y="61">Y 轴:</text>
+      <rect class="coordY" x="73" y="39" width="84" height="31" rx="5"/><text class="tokenText" x="115" y="61" text-anchor="middle" fill="#7c5a00">&lt;Y_0&gt;</text>
+      <text x="178" y="61" font-size="24" font-weight="800">...</text>
+      <rect class="coordY" x="223" y="39" width="88" height="31" rx="5"/><text class="tokenText" x="267" y="61" text-anchor="middle" fill="#7c5a00">&lt;Y_19&gt;</text>
+
+      <text class="medium bold" x="0" y="100">Z 轴:</text>
+      <rect class="coordZ" x="73" y="78" width="84" height="31" rx="5"/><text class="tokenText" x="115" y="100" text-anchor="middle" fill="#5b2aa0">&lt;Z_0&gt;</text>
+      <text x="178" y="100" font-size="24" font-weight="800">...</text>
+      <rect class="coordZ" x="223" y="78" width="88" height="31" rx="5"/><text class="tokenText" x="267" y="100" text-anchor="middle" fill="#5b2aa0">&lt;Z_19&gt;</text>
+    </g>
+
+    <!-- C box -->
+    <rect x="484" y="466" width="512" height="104" rx="13" fill="#fbfbff"/>
+    <circle cx="510" cy="489" r="18" fill="#075fc9"/>
+    <text class="font" x="510" y="497" text-anchor="middle" font-size="22" font-weight="900" fill="#fff">C</text>
+    <text class="font sectionTitle" x="540" y="493">结构控制 Token</text>
+    <g class="font" transform="translate(550,504)">
+      <rect class="ctrl" x="0" y="0" width="80" height="32" rx="5"/><text class="tokenText" x="40" y="22" text-anchor="middle" fill="#333">&lt;EOC&gt;</text>
+      <rect class="ctrl" x="107" y="0" width="80" height="32" rx="5"/><text class="tokenText" x="147" y="22" text-anchor="middle" fill="#333">&lt;EOR&gt;</text>
+      <rect class="ctrl" x="214" y="0" width="80" height="32" rx="5"/><text class="tokenText" x="254" y="22" text-anchor="middle" fill="#333">&lt;EOS&gt;</text>
+      <text class="note" x="-10" y="58">分别表示单个砖块结束、行结束、序列结束</text>
+    </g>
+
+    <!-- D box -->
+    <rect x="484" y="578" width="512" height="78" rx="13" fill="#f7fbff"/>
+    <circle cx="510" cy="599" r="18" fill="#075fc9"/>
+    <text class="font" x="510" y="607" text-anchor="middle" font-size="22" font-weight="900" fill="#fff">D</text>
+    <text class="font sectionTitle" x="540" y="602">层级组织方式</text>
+    <g class="font" transform="translate(554,613)">
+      <rect x="0" y="0" width="80" height="42" rx="6" fill="#e8f2ff" stroke="#4c92e8" stroke-width="1.5"/><text x="40" y="28" text-anchor="middle" font-size="20" font-weight="800">层 Z</text>
+      <line x1="90" y1="21" x2="124" y2="21" stroke="#111" stroke-width="3" marker-end="url(#arrowDark)"/>
+      <rect x="130" y="0" width="80" height="42" rx="6" fill="#fff5d9" stroke="#e0a412" stroke-width="1.5"/><text x="170" y="28" text-anchor="middle" font-size="20" font-weight="800">行 Y</text>
+      <line x1="220" y1="21" x2="254" y2="21" stroke="#111" stroke-width="3" marker-end="url(#arrowDark)"/>
+      <rect x="260" y="0" width="150" height="42" rx="6" fill="#eaf8e8" stroke="#6abf69" stroke-width="1.5"/><text x="335" y="28" text-anchor="middle" font-size="20" font-weight="800">列 X + 砖块类型</text>
+    </g>
+  </g>
+
+  <!-- Big arrow 2 -->
+  <g id="arrow2">
+    <polygon points="1015,340 1040,340 1040,319 1062,360 1040,401 1040,379 1015,379" fill="#0060c9" opacity="0.95"/>
+  </g>
+
+  <!-- Right panel -->
+  <g id="right-panel">
+    <rect class="panel" x="1050" y="128" width="520" height="548" rx="12"/>
+    <path d="M1062,128 H1558 A12,12 0 0 1 1570,140 V181 H1050 V140 A12,12 0 0 1 1062,128 Z" fill="url(#blueHeader)"/>
+    <text class="font headerText" x="1310" y="162" text-anchor="middle">输出序列示例</text>
+
+    <text class="font sectionTitle" x="1070" y="220">结构化 Token 序列</text>
+    <text class="font sectionTitle" x="1345" y="220">对应的第 0 层（Z=0）示意图</text>
+
+    <!-- token sequence box -->
+    <rect x="1068" y="234" width="228" height="312" rx="7" fill="#fff" stroke="#8aa0b9" stroke-width="1.6"/>
+    <g class="font" transform="translate(1078,250)">
+      <rect class="coordZ" x="0" y="0" width="68" height="34" rx="5"/><text class="tokenText" x="34" y="23" text-anchor="middle" fill="#5b2aa0">&lt;Z_0&gt;</text>
+      <rect class="coordY" x="0" y="47" width="68" height="34" rx="5"/><text class="tokenText" x="34" y="70" text-anchor="middle" fill="#7c5a00">&lt;Y_4&gt;</text>
+      <rect class="coordX" x="0" y="94" width="68" height="34" rx="5"/><text class="tokenText" x="34" y="117" text-anchor="middle" fill="#1b5e20">&lt;X_7&gt;</text>
+      <rect class="token" x="77" y="94" width="72" height="34" rx="5"/><text class="tokenText" x="113" y="117" text-anchor="middle">&lt;B_1x2&gt;</text>
+      <rect class="ctrl" x="158" y="94" width="54" height="34" rx="5"/><text class="tokenText" x="185" y="117" text-anchor="middle" fill="#333">&lt;EOC&gt;</text>
+      <rect class="coordX" x="0" y="141" width="68" height="34" rx="5"/><text class="tokenText" x="34" y="164" text-anchor="middle" fill="#1b5e20">&lt;X_9&gt;</text>
+      <rect class="token" x="77" y="141" width="72" height="34" rx="5"/><text class="tokenText" x="113" y="164" text-anchor="middle">&lt;B_2x2&gt;</text>
+      <rect class="ctrl" x="158" y="141" width="54" height="34" rx="5"/><text class="tokenText" x="185" y="164" text-anchor="middle" fill="#333">&lt;EOC&gt;</text>
+      <rect class="ctrl" x="0" y="188" width="68" height="34" rx="5"/><text class="tokenText" x="34" y="211" text-anchor="middle" fill="#333">&lt;EOR&gt;</text>
+      <rect class="ctrl" x="0" y="235" width="68" height="34" rx="5"/><text class="tokenText" x="34" y="258" text-anchor="middle" fill="#333">&lt;EOS&gt;</text>
+    </g>
+
+    <!-- grid diagram -->
+    <g id="grid" transform="translate(1374,297)">
+      <text class="font" x="87" y="-34" text-anchor="middle" font-size="16" font-weight="800">X（列）</text>
+      <text class="font" x="-55" y="51" text-anchor="middle" font-size="17" font-weight="800">Y</text>
+      <text class="font" x="-55" y="73" text-anchor="middle" font-size="17" font-weight="800">（行）</text>
+      <g class="font" font-size="16" fill="#111">
+        <text x="10" y="-9">5</text><text x="42" y="-9">6</text><text x="74" y="-9">7</text><text x="106" y="-9">8</text><text x="138" y="-9">9</text><text x="165" y="-9">10</text><text x="202" y="-9">11</text>
+        <text x="-25" y="20">6</text><text x="-25" y="56">5</text><text x="-25" y="92" fill="#075fc9" font-weight="800">4</text><text x="-25" y="128">3</text><text x="-25" y="164">2</text>
+      </g>
+      <rect x="0" y="0" width="216" height="180" fill="#fff" stroke="#9da6b1" stroke-width="1.3"/>
+      <g stroke="#d6dbe2" stroke-width="1">
+        <line x1="36" y1="0" x2="36" y2="180"/><line x1="72" y1="0" x2="72" y2="180"/><line x1="108" y1="0" x2="108" y2="180"/><line x1="144" y1="0" x2="144" y2="180"/><line x1="180" y1="0" x2="180" y2="180"/>
+        <line x1="0" y1="36" x2="216" y2="36"/><line x1="0" y1="72" x2="216" y2="72"/><line x1="0" y1="108" x2="216" y2="108"/><line x1="0" y1="144" x2="216" y2="144"/>
+      </g>
+      <line x1="0" y1="90" x2="216" y2="90" stroke="#2d7de1" stroke-width="2" stroke-dasharray="6 5"/>
+      <rect x="52" y="73" width="62" height="34" fill="#5ca4ff" stroke="#1167c7" stroke-width="2"/>
+      <text class="font" x="83" y="96" text-anchor="middle" font-size="18" font-weight="800" fill="#071b3d">1x2</text>
+      <rect x="128" y="66" width="50" height="50" fill="#5ca4ff" stroke="#1167c7" stroke-width="2"/>
+      <text class="font" x="153" y="97" text-anchor="middle" font-size="18" font-weight="800" fill="#071b3d">2x2</text>
+    </g>
+
+    <!-- legend -->
+    <g class="font" transform="translate(1084,577)">
+      <line x1="0" y1="0" x2="55" y2="0" stroke="#6a3fb0" stroke-width="3" marker-end="url(#arrowPurple)"/>
+      <text x="68" y="6" font-size="18" font-weight="800" fill="#5b2aa0">&lt;Z_0&gt;</text>
+      <text x="142" y="6" font-size="17" fill="#222">：当前位置于第 0 层</text>
+      <line x1="0" y1="36" x2="55" y2="36" stroke="#d99a00" stroke-width="3" marker-end="url(#arrowAmber)"/>
+      <text x="68" y="42" font-size="18" font-weight="800" fill="#b57d00">&lt;Y_4&gt;</text>
+      <text x="142" y="42" font-size="17" fill="#222">：当前位置于第 4 行</text>
+      <line x1="0" y1="72" x2="55" y2="72" stroke="#2c8a2c" stroke-width="3" marker-end="url(#arrowGreen)"/>
+      <text x="68" y="78" font-size="18" font-weight="800" fill="#2c8a2c">&lt;X_7&gt;  &lt;B_1x2&gt;</text>
+      <text x="220" y="78" font-size="17" fill="#222">：在 X=7 放置 1x2 砖块</text>
+    </g>
+  </g>
+
+  <!-- Bottom: design advantages -->
+  <g id="advantages">
+    <path d="M64 690 L73 710 L94 712 L78 726 L83 747 L64 736 L45 747 L50 726 L34 712 L55 710 Z" fill="#075fc9"/>
+    <text class="font" x="100" y="722" font-size="30" font-weight="900" fill="#003366">设计优势</text>
+    <line x1="235" y1="712" x2="1055" y2="712" stroke="#075fc9" stroke-width="2"/>
+
+    <!-- card 1 -->
+    <g transform="translate(36,740)">
+      <rect width="266" height="138" rx="8" fill="url(#softBlue)" stroke="#73a8e8" stroke-width="1.5"/>
+      <g transform="translate(50,70)" fill="none" stroke="#075fc9" stroke-width="4">
+        <ellipse cx="0" cy="0" rx="38" ry="12"/>
+        <ellipse cx="0" cy="0" rx="38" ry="12" transform="rotate(60)"/>
+        <ellipse cx="0" cy="0" rx="38" ry="12" transform="rotate(120)"/>
+        <circle cx="0" cy="0" r="5" fill="#075fc9" stroke="none"/>
+      </g>
+      <text class="font" x="96" y="46" font-size="20" font-weight="900" fill="#003366">1. 原子化表示:</text>
+      <text class="font" x="96" y="78" font-size="18" fill="#1a2c42">减少无关字符学习,</text>
+      <text class="font" x="96" y="105" font-size="18" fill="#1a2c42">提升解析稳定性</text>
+    </g>
+
+    <!-- card 2 -->
+    <g transform="translate(323,740)">
+      <rect width="272" height="138" rx="8" fill="url(#softTeal)" stroke="#64b9bf" stroke-width="1.5"/>
+      <g transform="translate(49,47)">
+        <polygon points="0,8 45,-10 90,8 45,28" fill="#0b9b9f"/>
+        <polygon points="0,38 45,20 90,38 45,58" fill="#0b9b9f" opacity="0.95"/>
+        <polygon points="0,68 45,50 90,68 45,88" fill="#0b9b9f" opacity="0.9"/>
+      </g>
+      <text class="font" x="96" y="46" font-size="20" font-weight="900" fill="#087f83">2. 显式层级结构:</text>
+      <text class="font" x="96" y="78" font-size="18" fill="#1a2c42">让模型更容易感知</text>
+      <text class="font" x="96" y="105" font-size="18" fill="#1a2c42">层、行、列关系</text>
+    </g>
+
+    <!-- card 3 -->
+    <g transform="translate(618,740)">
+      <rect width="268" height="138" rx="8" fill="url(#softAmber)" stroke="#e4ad2b" stroke-width="1.5"/>
+      <g transform="translate(58,70)" fill="none" stroke="#d99a00" stroke-width="8" stroke-linecap="round">
+        <path d="M-20,-5 A30,30 0 0 1 22,-28"/>
+        <path d="M22,-28 L12,-28 L20,-40" fill="none"/>
+        <path d="M20,8 A30,30 0 0 1 -22,31"/>
+        <path d="M-22,31 L-12,31 L-20,43" fill="none"/>
+      </g>
+      <text class="font" x="89" y="46" font-size="20" font-weight="900" fill="#7c5200">3. 保留方向信息:</text>
+      <text class="font" x="89" y="78" font-size="18" fill="#1a2c42">1x2 与 2x1 区分,</text>
+      <text class="font" x="89" y="105" font-size="18" fill="#1a2c42">旋转信息不丢失</text>
+    </g>
+
+    <!-- card 4 -->
+    <g transform="translate(908,740)">
+      <rect width="270" height="138" rx="8" fill="url(#softPurple)" stroke="#9c83cf" stroke-width="1.5"/>
+      <g transform="translate(50,69)">
+        <path d="M0,-42 L28,-30 L28,3 C28,26 11,42 0,48 C-11,42 -28,26 -28,3 L-28,-30 Z" fill="#6236a4"/>
+        <path d="M-11,2 L-2,13 L15,-12" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <text class="font" x="95" y="42" font-size="20" font-weight="900" fill="#3f2678">4. 便于约束生成:</text>
+      <text class="font" x="95" y="73" font-size="18" fill="#1a2c42">更适合合法性检查、</text>
+      <text class="font" x="95" y="100" font-size="18" fill="#1a2c42">碰撞检测与后续</text>
+      <text class="font" x="95" y="127" font-size="18" fill="#1a2c42">物理约束</text>
+    </g>
+
+    <line x1="1200" y1="730" x2="1200" y2="885" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 7"/>
+
+    <!-- HMN card -->
+    <g transform="translate(1222,744)">
+      <rect width="390" height="130" rx="8" fill="#f2fcff" stroke="#1da6d8" stroke-width="1.8"/>
+      <g transform="translate(48,63)" stroke="#109aca" fill="none" stroke-width="4" stroke-linecap="round">
+        <path d="M-25,-12 A28,28 0 1 1 25,-12 C18,4 9,13 9,30 L-9,30 C-9,13 -18,4 -25,-12 Z"/>
+        <line x1="-8" y1="38" x2="8" y2="38"/>
+        <line x1="-13" y1="31" x2="13" y2="31"/>
+        <path d="M-8,-3 C-2,4 -2,14 -2,28"/>
+        <path d="M8,-3 C2,4 2,14 2,28"/>
+        <circle cx="-9" cy="-8" r="3" fill="#109aca" stroke="none"/>
+        <circle cx="9" cy="-8" r="3" fill="#109aca" stroke="none"/>
+        <circle cx="0" cy="-16" r="3" fill="#109aca" stroke="none"/>
+      </g>
+      <text class="font" x="94" y="37" font-size="20" font-weight="900" fill="#005a9c">可进一步结合 HMN 坐标初始化,</text>
+      <text class="font" x="94" y="73" font-size="20" font-weight="900" fill="#005a9c">使 &lt;X_7&gt; 与 &lt;X_8&gt; 更接近,</text>
+      <text class="font" x="94" y="109" font-size="20" font-weight="900" fill="#005a9c">与 &lt;X_15&gt; 更远。</text>
+    </g>
+  </g>
+</svg>

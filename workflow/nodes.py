@@ -219,7 +219,7 @@ def expand_slide_plan_node(state: SlideState, config: RunnableConfig) -> Dict[st
     if not slide_detail:
         logger.warning(f"⚠️ [Slide {slide_page}] Slide plan expansion failed. SVG generator will use the original plan.")
     else:
-        slide_dir = os.path.join(cfg["output_dir"], "result", f"slide_{slide_page:02d}")
+        slide_dir = os.path.join(cfg["output_dir"], "slides", f"slide_{slide_page:02d}")
         os.makedirs(slide_dir, exist_ok=True)
         detail_path = os.path.join(slide_dir, "slide_detail.md")
         try:
@@ -337,7 +337,7 @@ def optimize_svg_crap_node(state: SlideState, config: RunnableConfig) -> Dict[st
             logger.info(f"   -> [Slide {slide_page}] CRAP optimization returned no result. Keeping original.")
 
     # 3. 写入文件 + 后处理
-    slide_dir = os.path.join(cfg["output_dir"], "result", f"slide_{slide_page:02d}")
+    slide_dir = os.path.join(cfg["output_dir"], "slides", f"slide_{slide_page:02d}")
     os.makedirs(slide_dir, exist_ok=True)
     # 修复通配符，确保只统计带页码的
     existing_versions = glob.glob(os.path.join(slide_dir, f"slide_{slide_page:02d}_v*.svg"))
@@ -492,7 +492,7 @@ def merge_slides_to_deck_node(state: OverallState, config: RunnableConfig) -> Di
     if notes_dict:
         logger.info(f"   -> Speaker notes prepared for {len(notes_dict)} slide(s).")
 
-    final_path = os.path.join(cfg["output_dir"], "result", "Final_Presentation.pptx").replace(os.sep, "/")
+    final_path = os.path.join(cfg["output_dir"], "slides", "Final_Presentation.pptx").replace(os.sep, "/")
     result = merge_svgs_to_pptx(svg_paths, final_path, style_protocol=state.get("style_protocol"), notes=notes_dict)
 
     if result:

@@ -159,7 +159,7 @@ def _normalize_svg_namespace(svg: Optional[str]) -> Optional[str]:
 def _get_slide_svg(page: int) -> Optional[str]:
     """取目标 slide_page 的 reference SVG 内容。"""
     version = FINAL_VERSIONS.get(page)
-    slide_dir = os.path.join(REFERENCE_DIR, "result", f"slide_{page:02d}")
+    slide_dir = os.path.join(REFERENCE_DIR, "slides", f"slide_{page:02d}")
     svg: Optional[str] = None
     if version is not None:
         svg = _read_text(os.path.join(slide_dir, f"slide_v{version}.svg"))
@@ -175,7 +175,7 @@ def _get_slide_svg(page: int) -> Optional[str]:
 
 
 def _get_slide_detail(page: int) -> Optional[str]:
-    return _read_text(os.path.join(REFERENCE_DIR, "result", f"slide_{page:02d}", "slide_detail.md"))
+    return _read_text(os.path.join(REFERENCE_DIR, "slides", f"slide_{page:02d}", "slide_detail.md"))
 
 
 GENERIC_SLIDE_DETAIL = """# Stub Slide Layout (fallback)

@@ -239,7 +239,7 @@ async def evaluate_pptx(
         pptx_path: PPTX 文件路径。
         llm_config: 视觉模型配置（需支持图片输入）。
         style_image_path: 参考风格图路径。None 则跳过 D3 风格迁移评估。
-        output_dir: 评估产物输出目录。默认推导到 metrics/eval/。
+        output_dir: 评估产物输出目录。默认推导到 eval/runs/{session_id}/。
         dpi: 截图 DPI。
 
     Returns:
@@ -257,8 +257,19 @@ async def evaluate_pptx(
 
     # 推导输出目录
     if output_dir is None:
-        session_dir = os.path.dirname(os.path.dirname(pptx_path))
-        output_dir = os.path.join(session_dir, "metrics")
+        pptx = Path(pptx_path)
+        # 从 pptx_path 提取 session_id，写到 eval/runs/ 下
+        # 支持路径如 output/{session_id}/slides/Final_Presentation.pptx
+        #       → eval/runs/{session_id}/
+        try:
+            parts = pptx.parts
+            output_idx = next(i for i, p in enumerate(parts) if p == "output")
+            session_id = parts[output_idx + 1]
+            project_root = Path(*parts[:output_idx])
+            output_dir = str(project_root / "eval" / "runs" / session_id)
+        except (StopIteration, IndexError):
+            # 回退：直接输出到 pptx 同级目录
+            output_dir = str(pptx.parent)
     os.makedirs(output_dir, exist_ok=True)
 
     eval_file = os.path.join(output_dir, "eval_result.json")
@@ -516,7 +527,7 @@ def main():
     parser.add_argument("--pptx_path", required=True, help="Path to the PPTX file to evaluate.")
     parser.add_argument("--style_image_path", default=None, help="Path to the reference style image (enables D3 style transfer scoring).")
     parser.add_argument("--model_name", default="gpt-4o", help="Vision model for evaluation (default: gpt-4o).")
-    parser.add_argument("--output_dir", default=None, help="Directory to save evaluation results. Default: <session>/metrics/")
+    parser.add_argument("--output_dir", default=None, help="Directory to save evaluation results. Default: eval/runs/<session_id>/")
     parser.add_argument("--dpi", type=int, default=200, help="DPI for PPTX slide rendering (default: 200).")
     args = parser.parse_args()
 

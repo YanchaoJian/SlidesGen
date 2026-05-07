@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="450" fill="#f8fafc" rx="12" />
+  <rect x="30" y="30" width="740" height="390" fill="#ffffff" rx="10" filter="url(#shadow)"/>
+
+  <text x="400" y="70" font-size="20" font-weight="bold" fill="#0f172a" text-anchor="middle">设计重试次数 vs 最终平均得分 相关性分析 (双轴图)</text>
+  <text x="400" y="90" font-size="12" fill="#64748b" text-anchor="middle">柱状图：排版重试次数 (左轴) ｜ 折线图：三模型平均打分 (右轴)</text>
+
+  <!-- Y轴刻度线 -->
+  <line x1="80" y1="350" x2="720" y2="350" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="80" y1="120" x2="80" y2="350" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="720" y1="120" x2="720" y2="350" stroke="#cbd5e1" stroke-width="2"/> <!-- 右侧轴 -->
+
+  <!-- 左Y轴标签 (重试次数 0-4) -->
+  <text x="65" y="355" font-size="12" fill="#94a3b8" text-anchor="end">0</text>
+  <text x="65" y="297" font-size="12" fill="#94a3b8" text-anchor="end">1</text>
+  <text x="65" y="239" font-size="12" fill="#94a3b8" text-anchor="end">2</text>
+  <text x="65" y="181" font-size="12" fill="#94a3b8" text-anchor="end">3</text>
+  <text x="65" y="123" font-size="12" fill="#94a3b8" text-anchor="end">4</text>
+  <text x="50" y="105" font-size="12" fill="#64748b" font-weight="bold" text-anchor="end">重试次数</text>
+
+  <!-- 右Y轴标签 (平均得分 0-5) -->
+  <text x="735" y="355" font-size="12" fill="#10b981" text-anchor="start">0</text>
+  <text x="735" y="260" font-size="12" fill="#10b981" text-anchor="start">2</text>
+  <text x="735" y="166" font-size="12" fill="#10b981" text-anchor="start">4</text>
+  <text x="735" y="119" font-size="12" fill="#10b981" text-anchor="start">5</text>
+  <text x="735" y="105" font-size="12" fill="#10b981" font-weight="bold" text-anchor="start">平均得分</text>
+
+  <g transform="translate(100, 0)">
+    <!-- 重试次数柱状图 (0-4次，每单位58px高度) -->
+    <rect x="0" y="292" width="16" height="58" rx="2" fill="#e2e8f0"/> <!-- P1: 1 -->
+    <rect x="35" y="176" width="16" height="174" rx="2" fill="#e2e8f0"/> <!-- P2: 3 -->
+    <rect x="70" y="350" width="16" height="0" rx="2" fill="#e2e8f0"/>  <!-- P3: 0 -->
+    <rect x="105" y="234" width="16" height="116" rx="2" fill="#e2e8f0"/> <!-- P4: 2 -->
+    <rect x="140" y="176" width="16" height="174" rx="2" fill="#e2e8f0"/> <!-- P5: 3 -->
+    <rect x="175" y="176" width="16" height="174" rx="2" fill="#e2e8f0"/> <!-- P6: 3 -->
+    <rect x="210" y="234" width="16" height="116" rx="2" fill="#e2e8f0"/> <!-- P7: 2 -->
+    <rect x="245" y="234" width="16" height="116" rx="2" fill="#e2e8f0"/> <!-- P8: 2 -->
+    <rect x="280" y="234" width="16" height="116" rx="2" fill="#e2e8f0"/> <!-- P9: 2 -->
+    <rect x="315" y="350" width="16" height="0" rx="2" fill="#e2e8f0"/>  <!-- P10: 0 -->
+    <rect x="350" y="176" width="16" height="174" rx="2" fill="#e2e8f0"/> <!-- P11: 3 -->
+    <rect x="385" y="292" width="16" height="58" rx="2" fill="#e2e8f0"/>  <!-- P12: 1 -->
+    <rect x="420" y="292" width="16" height="58" rx="2" fill="#e2e8f0"/>  <!-- P13: 1 -->
+    <rect x="455" y="234" width="16" height="116" rx="2" fill="#e2e8f0"/> <!-- P14: 2 -->
+    <rect x="490" y="234" width="16" height="116" rx="2" fill="#e2e8f0"/> <!-- P15: 2 -->
+    <rect x="525" y="292" width="16" height="58" rx="2" fill="#e2e8f0"/>  <!-- P16: 1 -->
+    <rect x="560" y="234" width="16" height="116" rx="2" fill="#e2e8f0"/> <!-- P17: 2 -->
+    <rect x="595" y="350" width="16" height="0" rx="2" fill="#e2e8f0"/>   <!-- P18: 0 -->
+
+    <text x="8" y="370" font-size="12" fill="#475569" text-anchor="middle">P1</text>
+    <text x="43" y="370" font-size="12" fill="#475569" text-anchor="middle">P2</text>
+    <text x="78" y="370" font-size="12" fill="#475569" text-anchor="middle">P3</text>
+    <text x="113" y="370" font-size="12" fill="#475569" text-anchor="middle">P4</text>
+    <text x="148" y="370" font-size="12" fill="#475569" text-anchor="middle">P5</text>
+    <text x="183" y="370" font-size="12" fill="#475569" text-anchor="middle">P6</text>
+    <text x="218" y="370" font-size="12" fill="#475569" text-anchor="middle">P7</text>
+    <text x="253" y="370" font-size="12" fill="#475569" text-anchor="middle">P8</text>
+    <text x="288" y="370" font-size="12" fill="#475569" text-anchor="middle">P9</text>
+    <text x="323" y="370" font-size="12" fill="#475569" text-anchor="middle">P10</text>
+    <text x="358" y="370" font-size="12" fill="#475569" text-anchor="middle">P11</text>
+    <text x="393" y="370" font-size="12" fill="#475569" text-anchor="middle">P12</text>
+    <text x="428" y="370" font-size="12" fill="#475569" text-anchor="middle">P13</text>
+    <text x="463" y="370" font-size="12" fill="#475569" text-anchor="middle">P14</text>
+    <text x="498" y="370" font-size="12" fill="#475569" text-anchor="middle">P15</text>
+    <text x="533" y="370" font-size="12" fill="#475569" text-anchor="middle">P16</text>
+    <text x="568" y="370" font-size="12" fill="#475569" text-anchor="middle">P17</text>
+    <text x="603" y="370" font-size="12" fill="#475569" text-anchor="middle">P18</text>
+
+    <!-- 平均得分折线图 (0-5分，每单位47px高度)
+         (4), (1+3+3)/3=2.33, (4), (2+3+2)/3=2.33, (3+4+0)/3=2.33, (4), (4), (4),
+         (4), (4), (4), (4), (4), (4), (4), (4), (1+4+2)/3=2.33, (4)
+    -->
+    <polyline points="8,162 43,240.5 78,162 113,240.5 148,240.5 183,162 218,162 253,162 288,162 323,162 358,162 393,162 428,162 463,162 498,162 533,162 568,240.5 603,162" fill="none" stroke="#10b981" stroke-width="3"/>
+    
+    <circle cx="8" cy="162" r="4" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+    <circle cx="43" cy="240.5" r="4" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+    <circle cx="78" cy="162" r="4" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+    <circle cx="113" cy="240.5" r="4" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+    <circle cx="148" cy="240.5" r="4" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+    <circle cx="183" cy="162" r="4" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+    <circle cx="568" cy="240.5" r="4" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+  </g>
+
+  <!-- 图例图示 -->
+  <rect x="250" y="400" width="16" height="12" rx="2" fill="#e2e8f0"/>
+  <text x="275" y="410" font-size="12" fill="#334155">页面设计重试次数</text>
+  
+  <line x1="430" y1="406" x2="460" y2="406" stroke="#10b981" stroke-width="3"/>
+  <circle cx="445" cy="406" r="3" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+  <text x="470" y="410" font-size="12" fill="#334155">三模型平均主观排版得分</text>
+</svg>

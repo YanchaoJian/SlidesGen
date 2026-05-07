@@ -125,17 +125,18 @@ expand_plan → generate_svg → optimize_svg_crap → check_design → ✓
 ## 📁 Output Structure
 
 ```
-output/0407_1126_gpt-4o/
+output/0415_2157_GCM/
 ├── plan/                    # Presentation plan & paper content
-├── raw/                     # Extracted PDF content
+├── raw/                     # Extracted PDF content (images/)
 ├── style/                   # Style protocols & critiques
-├── result/
+├── slides/
 │   ├── slide_01/            # slide_v*.svg, slide_detail.md, slide_critique.json
 │   ├── slide_02/
 │   └── Final_Presentation.pptx
 ├── checkpoints/             # LangGraph SQLite checkpoint
-└── final_snapshot.json
-└── run_stats.json
+├── final_snapshot.json      # Final graph state snapshot
+├── run_stats.json           # Timing, per-node stats, per-model tokens
+└── log.txt                  # Session log
 ```
 
 ## 📊 Evaluation
@@ -155,7 +156,7 @@ Plus an objective metric: **HSV color histogram similarity** (OpenCV, no LLM nee
 ```bash
 # Evaluate a generated PPTX directly from the command line
 python -m metrics.evaluate \
-    --pptx_path output/.../result/Final_Presentation.pptx \
+    --pptx_path output/.../slides/Final_Presentation.pptx \
     --style_image_path style.png \
     --model_name gpt-4o \
     --dpi 200
@@ -172,7 +173,7 @@ from utils.llm import LLMConfig
 
 llm_config = LLMConfig(model_name="gpt-4o", api_key="...", base_url="...")
 result = await evaluate_pptx(
-    "output/.../result/Final_Presentation.pptx",
+    "output/.../slides/Final_Presentation.pptx",
     llm_config,
     style_image_path="style.png",
 )
@@ -182,7 +183,9 @@ result = await evaluate_pptx(
 ## 🛠️ Utility Scripts
 
 ```bash
-python scripts/visualize_workflow.py   # Render the LangGraph workflow as PNG
+python scripts/visualize_workflow.py          # Render the LangGraph workflow as PNG/Mermaid/ASCII
+python scripts/run_with_fake_llm.py           # Run full pipeline with stub LLM (no API calls)
+python scripts/convert_svg_folder_to_pptx.py  # Batch convert SVG folder to PPTX (master chrome + notes)
 ```
 
 ## 📚 Tech Stack
@@ -195,6 +198,7 @@ python scripts/visualize_workflow.py   # Render the LangGraph workflow as PNG
 | `python-pptx`        | PowerPoint generation                      |
 | `pdf2image` + Poppler| PPTX → image rendering for visual review   |
 | `opencv-python-headless` | Color histogram similarity for evaluation |
+| `matplotlib` / `numpy` | Evaluation visualization (SVG charts)    |
 | `pydantic`           | Data validation and structured output      |
 | `tenacity`           | Retry logic for external tool calls        |
 | `torch`              | Deep learning backend (marker-pdf / surya) |

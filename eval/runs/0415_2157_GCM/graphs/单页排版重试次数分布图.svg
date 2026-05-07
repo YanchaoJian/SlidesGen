@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="800" height="450" fill="#f8fafc" rx="12" />
+  <rect x="30" y="30" width="740" height="390" fill="#ffffff" rx="10" filter="url(#shadow)"/>
+
+  <!-- 标题 -->
+  <text x="400" y="70" font-size="20" font-weight="bold" fill="#0f172a" text-anchor="middle">单页幻灯片设计重试次数分布</text>
+  <text x="400" y="90" font-size="12" fill="#64748b" text-anchor="middle">反映各页面排版生成的难度及Self-Heal触发频次 (共 18 页)</text>
+
+  <!-- 坐标轴线 -->
+  <line x1="80" y1="350" x2="740" y2="350" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="80" y1="120" x2="80" y2="350" stroke="#cbd5e1" stroke-width="2"/>
+
+  <!-- Y轴刻度 (0 到 4) -->
+  <text x="65" y="355" font-size="12" fill="#64748b" text-anchor="end">0</text>
+  <text x="65" y="295" font-size="12" fill="#64748b" text-anchor="end">1</text>
+  <text x="65" y="235" font-size="12" fill="#64748b" text-anchor="end">2</text>
+  <text x="65" y="175" font-size="12" fill="#64748b" text-anchor="end">3</text>
+  <text x="65" y="115" font-size="12" fill="#64748b" text-anchor="end">4</text>
+
+  <!-- Y轴水平参考线 -->
+  <line x1="80" y1="290" x2="740" y2="290" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4"/>
+  <line x1="80" y1="230" x2="740" y2="230" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4"/>
+  <line x1="80" y1="170" x2="740" y2="170" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4"/>
+  <line x1="80" y1="110" x2="740" y2="110" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4"/>
+
+  <!-- 数据柱状图与X轴标签 -->
+  <g transform="translate(100, 0)">
+    <!-- Page 1: 1 -->
+    <rect x="0" y="290" width="18" height="60" rx="3" fill="#3b82f6" opacity="0.85"/>
+    <text x="9" y="370" font-size="12" fill="#475569" text-anchor="middle">P1</text>
+    
+    <!-- Page 2: 3 -->
+    <rect x="35" y="170" width="18" height="180" rx="3" fill="#ef4444" opacity="0.85"/>
+    <text x="44" y="370" font-size="12" fill="#475569" text-anchor="middle">P2</text>
+    
+    <!-- Page 3: 0 -->
+    <rect x="70" y="350" width="18" height="0" rx="3" fill="#3b82f6" opacity="0.85"/>
+    <text x="79" y="370" font-size="12" fill="#475569" text-anchor="middle">P3</text>
+    
+    <!-- Page 4: 2 -->
+    <rect x="105" y="230" width="18" height="120" rx="3" fill="#f59e0b" opacity="0.85"/>
+    <text x="114" y="370" font-size="12" fill="#475569" text-anchor="middle">P4</text>
+    
+    <!-- Page 5: 3 -->
+    <rect x="140" y="170" width="18" height="180" rx="3" fill="#ef4444" opacity="0.85"/>
+    <text x="149" y="370" font-size="12" fill="#475569" text-anchor="middle">P5</text>
+    
+    <!-- Page 6: 3 -->
+    <rect x="175" y="170" width="18" height="180" rx="3" fill="#ef4444" opacity="0.85"/>
+    <text x="184" y="370" font-size="12" fill="#475569" text-anchor="middle">P6</text>
+    
+    <!-- Page 7: 2 -->
+    <rect x="210" y="230" width="18" height="120" rx="3" fill="#f59e0b" opacity="0.85"/>
+    <text x="219" y="370" font-size="12" fill="#475569" text-anchor="middle">P7</text>
+    
+    <!-- Page 8: 2 -->
+    <rect x="245" y="230" width="18" height="120" rx="3" fill="#f59e0b" opacity="0.85"/>
+    <text x="254" y="370" font-size="12" fill="#475569" text-anchor="middle">P8</text>
+    
+    <!-- Page 9: 2 -->
+    <rect x="280" y="230" width="18" height="120" rx="3" fill="#f59e0b" opacity="0.85"/>
+    <text x="289" y="370" font-size="12" fill="#475569" text-anchor="middle">P9</text>
+    
+    <!-- Page 10: 0 -->
+    <rect x="315" y="350" width="18" height="0" rx="3" fill="#3b82f6" opacity="0.85"/>
+    <text x="324" y="370" font-size="12" fill="#475569" text-anchor="middle">P10</text>
+    
+    <!-- Page 11: 3 -->
+    <rect x="350" y="170" width="18" height="180" rx="3" fill="#ef4444" opacity="0.85"/>
+    <text x="359" y="370" font-size="12" fill="#475569" text-anchor="middle">P11</text>
+    
+    <!-- Page 12: 1 -->
+    <rect x="385" y="290" width="18" height="60" rx="3" fill="#3b82f6" opacity="0.85"/>
+    <text x="394" y="370" font-size="12" fill="#475569" text-anchor="middle">P12</text>
+    
+    <!-- Page 13: 1 -->
+    <rect x="420" y="290" width="18" height="60" rx="3" fill="#3b82f6" opacity="0.85"/>
+    <text x="429" y="370" font-size="12" fill="#475569" text-anchor="middle">P13</text>
+    
+    <!-- Page 14: 2 -->
+    <rect x="455" y="230" width="18" height="120" rx="3" fill="#f59e0b" opacity="0.85"/>
+    <text x="464" y="370" font-size="12" fill="#475569" text-anchor="middle">P14</text>
+    
+    <!-- Page 15: 2 -->
+    <rect x="490" y="230" width="18" height="120" rx="3" fill="#f59e0b" opacity="0.85"/>
+    <text x="499" y="370" font-size="12" fill="#475569" text-anchor="middle">P15</text>
+    
+    <!-- Page 16: 1 -->
+    <rect x="525" y="290" width="18" height="60" rx="3" fill="#3b82f6" opacity="0.85"/>
+    <text x="534" y="370" font-size="12" fill="#475569" text-anchor="middle">P16</text>
+    
+    <!-- Page 17: 2 -->
+    <rect x="560" y="230" width="18" height="120" rx="3" fill="#f59e0b" opacity="0.85"/>
+    <text x="569" y="370" font-size="12" fill="#475569" text-anchor="middle">P17</text>
+    
+    <!-- Page 18: 0 -->
+    <rect x="595" y="350" width="18" height="0" rx="3" fill="#3b82f6" opacity="0.85"/>
+    <text x="604" y="370" font-size="12" fill="#475569" text-anchor="middle">P18</text>
+  </g>
+
+  <!-- 图例图示 -->
+  <rect x="250" y="400" width="12" height="12" rx="2" fill="#3b82f6" opacity="0.85"/>
+  <text x="270" y="411" font-size="12" fill="#334155">无需/少重试 (0-1次)</text>
+  
+  <rect x="410" y="400" width="12" height="12" rx="2" fill="#f59e0b" opacity="0.85"/>
+  <text x="430" y="411" font-size="12" fill="#334155">中度修改 (2次)</text>
+  
+  <rect x="530" y="400" width="12" height="12" rx="2" fill="#ef4444" opacity="0.85"/>
+  <text x="550" y="411" font-size="12" fill="#334155">深度修复 (3次)</text>
+
+</svg>

@@ -58,7 +58,9 @@ python test/test_soffice.py
 ### Utility Scripts
 
 ```bash
-python scripts/visualize_workflow.py   # Visualize the LangGraph workflow as PNG
+python scripts/visualize_workflow.py          # Visualize the LangGraph workflow as PNG/Mermaid/ASCII
+python scripts/run_with_fake_llm.py           # Run full pipeline with stub LLM (no API calls)
+python scripts/convert_svg_folder_to_pptx.py  # Batch convert SVG folder to PPTX (master chrome + notes)
 ```
 
 ## Architecture
@@ -125,7 +127,7 @@ SVG processing pipeline under `pipeline/`:
 | `pipeline/svg_validator.py` | XML validation + banned feature checks + geometry detection + `finalize_single_svg` entry |
 | `pipeline/svg_finalize/` | SVG post-processing steps: `fix_image_aspect`, `crop_images`, `embed_images`, `embed_icons`, `flatten_tspan`, `strip_background`, `svg_rect_to_path` |
 | `pipeline/finalize_svg.py` | Standalone CLI entry point that runs the `svg_finalize/` pipeline over a folder of SVGs (used for offline batch post-processing) |
-| `pipeline/svg_to_pptx/` | SVG → DrawingML conversion engine (drawingml_* converters + pptx_* builders + `master_chrome` slide-master injection) |
+| `pipeline/svg_to_pptx/` | SVG → DrawingML conversion engine (drawingml_* converters + pptx_* builders + `master_chrome` slide-master injection + `pptx_notes` speaker notes) |
 | `pipeline/svg_to_pptx_runner.py` | Thin CLI wrapper that delegates to `svg_to_pptx/` for backward-compatible command-line use |
 | `pipeline/pptx_merger.py` | Merge multiple post-processed SVG slides into one editable PPTX |
 | `pipeline/pptx_imaging.py` | PPTX → image rendering via LibreOffice + pdf2image (for visual review / evaluation) |
@@ -175,6 +177,40 @@ Feedback analysis (`analyze_feedback()` in `agents/delivery/feedback_analyzer.py
   - `ambiguous` → loop back into `review_pptx_design` to re-prompt the user (does **not** silently approve, and does **not** consume a retry slot)
   - empty/None → end the review cycle
 
+## Evaluation Framework
+
+`metrics/` provides LLM-as-Judge evaluation (manual trigger, consumes API):
+
+| Dimension | Metric | What it measures |
+|-----------|--------|-----------------|
+| D1 Content | `content.txt` / `content_cn.txt` | Information accuracy, completeness, logical coherence |
+| D2 Design | `design.txt` / `design_cn.txt` | Color/contrast, typography, layout/alignment, visual richness |
+| D3 Style Transfer | `style_transfer.txt` / `style_transfer_cn.txt` | Faithfulness to reference style image |
+| Objective | HSV histogram | Color similarity (OpenCV, no LLM) |
+
+```bash
+# CLI evaluation
+python -m metrics.evaluate --pptx_path output/.../Final_Presentation.pptx --style_image_path style.png --model_name gpt-4o
+
+# Run stats report
+python metrics/parse_logs.py --session_id 0415_2157_GCM
+
+# Visualization (generates SVG charts)
+python metrics/plot.py --session 0415_2157_GCM
+
+# Cross-baseline comparison
+python metrics/run_eval_comparison.py --method PPTAgent --paper paper_01
+```
+
+## Additional Directories
+
+| Directory | Purpose |
+|-----------|---------|
+| `data/` | Sample inputs: `data/paper_01/` contains `paper.pdf`, `style.png`, `style_source.pptx` |
+| `eval/` | Evaluation artifacts: `baselines/` (PPTAgent, AutoPresent, AutoSlides), `comparison/`, `runs/` (per-session eval results + SVG charts) |
+| `graph/` | Architecture diagrams (SVG): system architecture, workflow, state management, evaluation framework, etc. |
+| `docs/` | Landing page (`index.html`) |
+
 ## Key Conventions
 
 ### Prompt/Code Separation
@@ -192,15 +228,17 @@ llm = create_llm(config, temperature=0.0)
 ### Output Structure
 
 ```
-output/{session_id}/        # e.g., "0324_1557"
+output/{session_id}/        # e.g., "0415_2157_GCM"
 ├── plan/                   # Presentation plans, paper content JSON
-├── raw/                    # Extracted PDF content
+├── raw/                    # Extracted PDF content (images/)
 ├── style/                  # Style protocols and critiques
-├── result/
-│   ├── slide_01/           # Per-slide: slide_v*.svg, slide_critique.json
+├── slides/
+│   ├── slide_01/           # Per-slide: slide_v*.svg, slide_detail.md, slide_critique.json
 │   └── Final_Presentation.pptx
 ├── checkpoints/            # LangGraph checkpoint SQLite
-└── final_snapshot.json
+├── final_snapshot.json     # Final graph state snapshot
+├── run_stats.json          # End-to-end timing, per-node stats, per-model tokens
+└── log.txt                 # Session log (dual-written from console)
 ```
 
 ### Session Resumption
@@ -216,6 +254,7 @@ Core libraries (see `requirements.txt`):
 - **langchain_openai**: LLM interface
 - **pdf2image + Poppler**: PPTX→image for visual review
 - **opencv-python-headless**: Color histogram similarity for evaluation
+- **matplotlib / numpy**: Evaluation visualization (SVG charts)
 - **pydantic**: Data validation and structured output parsing
 - **tenacity**: Retry logic for external tool calls
 - **torch**: Deep learning backend for marker-pdf / surya models

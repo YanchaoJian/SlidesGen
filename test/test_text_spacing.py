@@ -160,7 +160,7 @@ def print_results(texts: List[Dict], violations: List[Dict], svg_path: str):
 
 def main():
     # 默认测试文件
-    default_path = "output/0415_1459_gpt-5.4-mini/result/slide_02/slide_v2.svg"
+    default_path = "output/0415_1758_gpt-5.4-mini/slides/slide_02/slide_02_v2.svg"
     
     # 支持命令行传入路径
     svg_path = sys.argv[1] if len(sys.argv) > 1 else default_path

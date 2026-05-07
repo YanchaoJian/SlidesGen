@@ -6,7 +6,7 @@ num_re = re.compile(r'y\s*=\s*["\']([\d.]+)["\']')
 x_re = re.compile(r'x\s*=\s*["\']([\d.]+)["\']')
 fs_re = re.compile(r'font-size\s*=\s*["\']([\d.]+)["\']')
 
-for svg_path in sorted(glob.glob('output/0415_2127_GGG/result/slide_*/slide_*.svg')):
+for svg_path in sorted(glob.glob('output/0415_2127_GGG/slides/slide_*/slide_*.svg')):
     with open(svg_path, 'r', encoding='utf-8') as f:
         code = f.read()
     

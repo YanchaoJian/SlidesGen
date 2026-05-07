@@ -1,0 +1,121 @@
+{
+  "planned_slides": 18,
+  "produced_slides": 18,
+  "missing_pages": [],
+  "svg_first_pass_rate": 1.0,
+  "design_first_pass_rate": 0.167,
+  "selfheal_success_rate": 0.733,
+  "avg_svg_retries": 0.0,
+  "avg_design_retries": 1.67,
+  "slide_completion_rate": 1.0,
+  "per_slide": {
+    "1": {
+      "svg_retries": 0,
+      "design_retries": 1,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "2": {
+      "svg_retries": 0,
+      "design_retries": 3,
+      "svg_verified": true,
+      "design_verified": false
+    },
+    "3": {
+      "svg_retries": 0,
+      "design_retries": 0,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "4": {
+      "svg_retries": 0,
+      "design_retries": 2,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "5": {
+      "svg_retries": 0,
+      "design_retries": 3,
+      "svg_verified": true,
+      "design_verified": false
+    },
+    "6": {
+      "svg_retries": 0,
+      "design_retries": 3,
+      "svg_verified": true,
+      "design_verified": false
+    },
+    "7": {
+      "svg_retries": 0,
+      "design_retries": 2,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "8": {
+      "svg_retries": 0,
+      "design_retries": 2,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "9": {
+      "svg_retries": 0,
+      "design_retries": 2,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "10": {
+      "svg_retries": 0,
+      "design_retries": 0,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "11": {
+      "svg_retries": 0,
+      "design_retries": 3,
+      "svg_verified": true,
+      "design_verified": false
+    },
+    "12": {
+      "svg_retries": 0,
+      "design_retries": 1,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "13": {
+      "svg_retries": 0,
+      "design_retries": 1,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "14": {
+      "svg_retries": 0,
+      "design_retries": 2,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "15": {
+      "svg_retries": 0,
+      "design_retries": 2,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "16": {
+      "svg_retries": 0,
+      "design_retries": 1,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "17": {
+      "svg_retries": 0,
+      "design_retries": 2,
+      "svg_verified": true,
+      "design_verified": true
+    },
+    "18": {
+      "svg_retries": 0,
+      "design_retries": 0,
+      "svg_verified": true,
+      "design_verified": true
+    }
+  }
+}

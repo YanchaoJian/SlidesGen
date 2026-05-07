@@ -146,7 +146,7 @@
   <text x="80" y="584" font-size="10" fill="#64748B" font-family="Consolas, monospace">├── plan/          # 大纲、论文内容 JSON</text>
   <text x="80" y="598" font-size="10" fill="#64748B" font-family="Consolas, monospace">├── raw/           # PDF 提取原始内容</text>
   <text x="80" y="612" font-size="10" fill="#64748B" font-family="Consolas, monospace">├── style/         # 风格协议与批评</text>
-  <text x="355" y="568" font-size="10" fill="#64748B" font-family="Consolas, monospace">├── result/        # SVG + PPTX 产物</text>
+  <text x="355" y="568" font-size="10" fill="#64748B" font-family="Consolas, monospace">├── slides/        # SVG + PPTX 产物</text>
   <text x="355" y="584" font-size="10" fill="#059669" font-family="Consolas, monospace" font-weight="600">├── checkpoints/   # SQLite 检查点 ★</text>
   <text x="355" y="600" font-size="10" fill="#64748B" font-family="Consolas, monospace">└── final_snapshot.json</text>
 

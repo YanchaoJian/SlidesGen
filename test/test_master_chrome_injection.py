@@ -38,15 +38,15 @@ from pipeline.svg_to_pptx.drawingml_converter import convert_svg_to_slide_shapes
 # ---------------------------------------------------------------------------
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-SAMPLE_SLIDES_DIR = PROJECT_ROOT / "output" / "0408_1155_MS" / "result"
+SAMPLE_SLIDES_DIR = PROJECT_ROOT / "output" / "0415_2127_GGG" / "slides"
 TEST_OUTPUT_DIR = PROJECT_ROOT / "test" / "output"
 TEST_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # 选 3 张内容页做样本（避开封面 slide_01，封面通常排版独立）
 SAMPLE_SLIDE_SVGS = [
-    SAMPLE_SLIDES_DIR / "slide_05" / "slide_v1.svg",
-    SAMPLE_SLIDES_DIR / "slide_07" / "slide_v0.svg",
-    SAMPLE_SLIDES_DIR / "slide_10" / "slide_v0.svg",
+    SAMPLE_SLIDES_DIR / "slide_05" / "slide_05_v1.svg",
+    SAMPLE_SLIDES_DIR / "slide_07" / "slide_07_v0.svg",
+    SAMPLE_SLIDES_DIR / "slide_10" / "slide_10_v0.svg",
 ]
 
 # 模拟 style_analyst 产出的 master chrome SVG（含一个顶部 bar + 左下校训 + 右下 logo 框）
