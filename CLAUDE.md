@@ -36,23 +36,13 @@ python main.py --pdf_path path/to/paper.pdf --style_image_path path/to/style.png
 
 # With custom options (stage-specific models override --model_name fallback)
 python main.py --pdf_path paper.pdf --style_image_path style.png \
-    --model_name gpt-4o \
-    --vision_model gpt-4o --svg_model gpt-4o --text_model gpt-4o \
+    --model_name gpt-5.4-mini \
+    --vision_model gemini-3.1-pro-preview --svg_model claude-sonnet-4-6 --text_model MiniMax-M2.7 \
     --output_dir output \
     --verbose
 
 # Resume interrupted session (must pass the FULL session dir name including model suffix)
-python main.py --pdf_path paper.pdf --style_image_path style.png --thread_id 0324_1557_gpt-4o
-```
-
-### Testing
-
-```bash
-python -m pytest test/
-# Run a single test file directly
-python test/test_llm_call.py
-python test/test_pdf_parser.py
-python test/test_soffice.py
+python main.py --pdf_path paper.pdf --style_image_path style.png --thread_id 0415_2157_GCM
 ```
 
 ### Utility Scripts
@@ -190,26 +180,18 @@ Feedback analysis (`analyze_feedback()` in `agents/delivery/feedback_analyzer.py
 
 ```bash
 # CLI evaluation
-python -m metrics.evaluate --pptx_path output/.../Final_Presentation.pptx --style_image_path style.png --model_name gpt-4o
-
-# Run stats report
-python metrics/parse_logs.py --session_id 0415_2157_GCM
-
-# Visualization (generates SVG charts)
-python metrics/plot.py --session 0415_2157_GCM
+python -m metrics.evaluate --pptx_path output/.../Final_Presentation.pptx --style_image_path style.png --model_name gpt-5.4-nano
 
 # Cross-baseline comparison
-python metrics/run_eval_comparison.py --method PPTAgent --paper paper_01
+python scripts/run_eval_comparison.py --method PPTAgent --paper attention
 ```
 
 ## Additional Directories
 
 | Directory | Purpose |
 |-----------|---------|
-| `data/` | Sample inputs: `data/paper_01/` contains `paper.pdf`, `style.png`, `style_source.pptx` |
-| `eval/` | Evaluation artifacts: `baselines/` (PPTAgent, AutoPresent, AutoSlides), `comparison/`, `runs/` (per-session eval results + SVG charts) |
-| `graph/` | Architecture diagrams (SVG): system architecture, workflow, state management, evaluation framework, etc. |
-| `docs/` | Landing page (`index.html`) |
+| `data/` | Sample inputs: `data/attention/` contains `attention.pdf`, `academic.png`, `academic.pptx` |
+| `docs/` | Documentation: landing page (`index.html`) |
 
 ## Key Conventions
 
@@ -221,7 +203,7 @@ All `prompts.py` files contain **only string constants** — no functions, impor
 
 ```python
 from utils.llm import LLMConfig, create_llm
-config = LLMConfig(model_name="gpt-4o", api_key="...", base_url="...")
+config = LLMConfig(model_name="gpt-5.4-mini", api_key="...", base_url="...")
 llm = create_llm(config, temperature=0.0)
 ```
 
@@ -254,7 +236,7 @@ Core libraries (see `requirements.txt`):
 - **langchain_openai**: LLM interface
 - **pdf2image + Poppler**: PPTX→image for visual review
 - **opencv-python-headless**: Color histogram similarity for evaluation
-- **matplotlib / numpy**: Evaluation visualization (SVG charts)
+- **numpy**: HSV color histogram computation for evaluation
 - **pydantic**: Data validation and structured output parsing
 - **tenacity**: Retry logic for external tool calls
 - **torch**: Deep learning backend for marker-pdf / surya models

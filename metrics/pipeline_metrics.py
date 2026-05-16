@@ -1,9 +1,9 @@
-"""From slide_reports calculate slide quality metrics."""
+"""From slide_reports calculate pipeline quality metrics."""
 
 from typing import Any, Dict, List, Optional
 
 
-def compute_slide_metrics(
+def compute_pipeline_metrics(
     slide_reports: Dict[int, Dict[str, Any]],
     presentation_plan: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
@@ -15,7 +15,7 @@ def compute_slide_metrics(
         presentation_plan: List of dictionaries with slide plan.
 
     Returns:
-        slide_metrics dictionary, can be directly merged into run_stats.json.
+        pipeline_metrics dictionary, can be directly merged into run_stats.json.
     """
     if not slide_reports:
         return {}
@@ -93,9 +93,9 @@ if __name__ == "__main__":
     import os
 
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="Calculate slide metrics from final_snapshot.json and save to a new JSON file")
+    parser = argparse.ArgumentParser(description="Calculate pipeline metrics from final_snapshot.json and save to a new JSON file")
     parser.add_argument("--snapshot_path", required=True, help="Path to the final_snapshot.json file")
-    parser.add_argument("--output_path", required=True, help="Path to the target output JSON file (e.g., metrics/slide_metrics.json)")
+    parser.add_argument("--output_path", required=True, help="Path to the target output JSON file (e.g., metrics/pipeline_metrics.json)")
     args = parser.parse_args()
 
     if not os.path.exists(args.snapshot_path):
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     # Extract needed data for statistics
     slide_reports = data.get("slide_reports", {})
     presentation_plan = data.get("presentation_plan", [])
-    metrics_result = compute_slide_metrics(slide_reports, presentation_plan)
+    metrics_result = compute_pipeline_metrics(slide_reports, presentation_plan)
 
     # Ensure the target path directory exists
     os.makedirs(os.path.dirname(args.output_path), exist_ok=True)

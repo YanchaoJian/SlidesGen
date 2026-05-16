@@ -21,8 +21,7 @@ opencv-python-headless>=4.10
 # Data validation
 pydantic>=2.10
 
-# Evaluation & Visualization
-matplotlib>=3.8
+# Evaluation
 numpy>=1.26
 
 # Utilities

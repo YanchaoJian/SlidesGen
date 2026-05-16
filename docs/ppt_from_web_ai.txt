@@ -1,0 +1,1 @@
+Based on the uploaded style reference image and research paper PDF, generate a presentation for an academic talk that matches the visual style of the reference image and covers the paper content. Output a .pptx file.

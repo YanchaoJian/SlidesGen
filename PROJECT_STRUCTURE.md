@@ -23,14 +23,12 @@ SlidesGen/
 ├── pipeline/                  # 非 LLM 的 SVG 处理、PPTX 合并与渲染流水线
 ├── workflow/                  # LangGraph 状态机：节点、状态、图编排
 ├── utils/                     # 通用工具（LLM 封装、日志、运行时指标采集）
-├── metrics/                   # 运行统计分析 + LLM-as-Judge 质量评估（均为手动运行）
-├── scripts/                   # 辅助脚本
-├── test/                      # 单元/集成测试
+├── metrics/                   # LLM-as-Judge 质量评估（手动触发）
+├── scripts/                   # 辅助脚本（日志分析、跨基线对比等）
 ├── data/                      # 示例输入数据（论文 PDF、参考样式图、参考 PPTX）
 ├── assets/                    # 示例 SVG 文件
-├── eval/                      # 评估产物（基线对比、运行结果、可视化图表）
-├── graph/                     # 系统架构图（SVG 格式）
-├── docs/                      # 项目着陆页
+├── docs/                      # 文档
+│   └── index.html             # 项目着陆页
 ├── models/                    # Marker PDF 解析模型权重
 └── output/                    # 运行产物（每次会话一个子目录）
 ```
@@ -166,27 +164,18 @@ SlidesGen/
 |------|------|---------|
 | `metrics/evaluate.py` | LLM-as-Judge 统一评估框架：三维评分（Content / Design / Style Transfer，各 0-5）+ HSV 颜色直方图客观相似度。提供 `evaluate_pptx()` 单文件评估与 `evaluate_pptx_batch()` 批量评估接口。 | 手动（消耗 API） |
 | `metrics/prompts/` | 评估 prompt 模板（英文：`content.txt` / `design.txt` / `style_transfer.txt`；中文：`content_cn.txt` / `design_cn.txt` / `style_transfer_cn.txt`），由 `evaluate.py` 在模块加载时读取。 | — |
-| `metrics/slide_metrics.py` | `compute_slide_metrics()`：基于 `slide_reports` 与 plan 聚合单页质量指标（首次通过率、自愈率、重试次数等）。 | 手动 |
-| `metrics/parse_logs.py` | 读取 `run_stats.json` 输出 Markdown 报告的 CLI 脚本，用于事后查看。 | 手动 CLI |
-| `metrics/plot.py` | 将 `eval_result.json` / `slide_metrics.json` 转换为 SVG 可视化图表（柱状图、雷达图、趋势图等）。 | 手动 CLI |
-| `metrics/run_eval_comparison.py` | 跨基线批量评估脚本（PPTAgent / AutoPresent / AutoSlides），结果写入 `eval/comparison/`。 | 手动 CLI |
+| `metrics/pipeline_metrics.py` | `compute_pipeline_metrics()`：基于 `slide_reports` 与 plan 聚合流水线质量指标（首次通过率、自愈率、重试次数等）。 | 手动 |
 
 ---
 
-## 七、`scripts/` 与 `test/`
+## 七、`scripts/`
 
 | 文件 | 功能 |
 |------|------|
 | `scripts/visualize_workflow.py` | 把 LangGraph 工作流导出为 PNG/Mermaid，便于查看节点拓扑。 |
 | `scripts/run_with_fake_llm.py` | Fake-LLM runner：monkey-patch `create_llm` 返回 stub 响应，在不消耗 API 的情况下跑通完整 pipeline。 |
 | `scripts/convert_svg_folder_to_pptx.py` | 批量 SVG→PPTX 转换 CLI，支持自动检测、slide master 注入、演讲者备注。 |
-| `test/test_llm_call.py` | LLM 调用连通性测试。 |
-| `test/test_pdf_parser.py` | PDF 解析（marker）流程测试。 |
-| `test/test_soffice.py` | LibreOffice 渲染依赖检查测试。 |
-| `test/test_master_chrome_injection.py` | Slide master 注入功能测试。 |
-| `test/test_presenter_notes.py` | 演讲者备注注入功能测试。 |
-| `test/test_critic_exception.py` | Pydantic 验证失败异常结构测试。 |
-| `test/test_text_spacing.py` | SVG 文本行间距分析测试。 |
+| `scripts/run_eval_comparison.py` | 跨基线批量评估脚本（PPTAgent / Kimi），结果写入 `eval/comparison/`。 |
 
 ---
 
@@ -194,33 +183,17 @@ SlidesGen/
 
 | 路径 | 用途 |
 |------|------|
-| `data/paper_01/paper.pdf` | 示例输入论文。 |
-| `data/paper_01/style.png` | 示例参考样式图。 |
-| `data/paper_01/style_source.pptx` | 参考 PPTX（slide master 来源）。 |
+| `data/attention/attention.pdf` | 示例输入论文。 |
+| `data/attention/academic.png` | 示例参考样式图。 |
+| `data/attention/academic.pptx` | 参考 PPTX（slide master 来源）。 |
 | `assets/svg/` | 示例 SVG 幻灯片（`01.svg`、`02.svg`）及合并产物。 |
 | `models/marker/...` | marker-pdf 所需的本地模型权重（layout、text_detection、text_recognition、table_recognition、texify、inline_math_detection、ocr_error_detection）。 |
 
 ---
 
-## 九、`eval/` —— 评估产物
+## 九、`docs/` —— 文档
 
 | 路径 | 用途 |
-|------|------|
-| `eval/baselines/` | 基线方法生成的幻灯片（`PPTAgent/`、`AutoPresent/`、`AutoSlides/`）。 |
-| `eval/comparison/` | 跨方法对比结果与可视化图表。 |
-| `eval/runs/{session}/` | 单次运行的评估产物：`eval_result.json`（三维评分）、`slide_metrics.json`（质量指标）、`graphs/`（SVG 可视化图表）、`slide_images/`（幻灯片截图）。 |
-
----
-
-## 十、`graph/` —— 架构图
-
-以 SVG 格式存储的系统架构图，包括：系统架构、工作流图、单页生成子图、全局状态管理、人机交互、模型调度机制、SVG 转化流水线、任务恢复机制、评估框架。
-
----
-
-## 十一、`docs/` —— 项目着陆页
-
-| 文件 | 用途 |
 |------|------|
 | `docs/index.html` | 项目展示着陆页（HTML + CSS）。 |
 

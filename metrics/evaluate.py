@@ -526,7 +526,7 @@ def main():
     )
     parser.add_argument("--pptx_path", required=True, help="Path to the PPTX file to evaluate.")
     parser.add_argument("--style_image_path", default=None, help="Path to the reference style image (enables D3 style transfer scoring).")
-    parser.add_argument("--model_name", default="gpt-4o", help="Vision model for evaluation (default: gpt-4o).")
+    parser.add_argument("--model_name", default="gpt-5.4-nano", help="Vision model for evaluation (default: gpt-5.4-nano).")
     parser.add_argument("--output_dir", default=None, help="Directory to save evaluation results. Default: eval/runs/<session_id>/")
     parser.add_argument("--dpi", type=int, default=200, help="DPI for PPTX slide rendering (default: 200).")
     args = parser.parse_args()

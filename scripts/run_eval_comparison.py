@@ -10,19 +10,19 @@
 
 用法:
     # 评估所有基线
-    python metrics/run_eval_comparison.py
+    python scripts/run_eval_comparison.py
 
     # 仅评估某个方法
-    python metrics/run_eval_comparison.py --method PPTAgent
+    python scripts/run_eval_comparison.py --method PPTAgent
 
     # 仅评估某个论文
-    python metrics/run_eval_comparison.py --paper paper_01
+    python scripts/run_eval_comparison.py --paper attention
 
     # 把 SlidesGen 某次运行结果也加入对比汇总（默认用 session_id 作为论文 key）
-    python metrics/run_eval_comparison.py --add-run 0415_2157_GCM
+    python scripts/run_eval_comparison.py --add-run 0415_2157_GCM
 
     # 把 SlidesGen 结果加入对比汇总，并指定论文名
-    python metrics/run_eval_comparison.py --add-run 0415_2157_GCM --paper Transformer
+    python scripts/run_eval_comparison.py --add-run 0415_2157_GCM --paper Transformer
 """
 
 import argparse
@@ -204,7 +204,7 @@ async def run_all(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="对比实验批量评估")
     parser.add_argument("--method", default=None, help="仅评估指定方法（如 PPTAgent）")
-    parser.add_argument("--paper", default=None, help="仅评估指定论文目录（如 paper_01）")
+    parser.add_argument("--paper", default=None, help="仅评估指定论文目录（如 attention）")
     parser.add_argument("--add-run", dest="add_run", default=None,
                         help="将 SlidesGen 某次运行结果加入对比汇总（session_id）")
     parser.add_argument("--run-paper", dest="run_paper", default=None,

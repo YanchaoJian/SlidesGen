@@ -158,11 +158,8 @@ Plus an objective metric: **HSV color histogram similarity** (OpenCV, no LLM nee
 python -m metrics.evaluate \
     --pptx_path output/.../slides/Final_Presentation.pptx \
     --style_image_path style.png \
-    --model_name gpt-4o \
+    --model_name gpt-5.4-nano \
     --dpi 200
-
-# Analyze run stats (token usage, latency, retry counts)
-python metrics/parse_logs.py --session_id 0407_1126_gpt-4o
 ```
 
 ### Python API
@@ -171,7 +168,7 @@ python metrics/parse_logs.py --session_id 0407_1126_gpt-4o
 from metrics import evaluate_pptx
 from utils.llm import LLMConfig
 
-llm_config = LLMConfig(model_name="gpt-4o", api_key="...", base_url="...")
+llm_config = LLMConfig(model_name="gpt-5.4-nano", api_key="...", base_url="...")
 result = await evaluate_pptx(
     "output/.../slides/Final_Presentation.pptx",
     llm_config,
@@ -198,7 +195,7 @@ python scripts/convert_svg_folder_to_pptx.py  # Batch convert SVG folder to PPTX
 | `python-pptx`        | PowerPoint generation                      |
 | `pdf2image` + Poppler| PPTX → image rendering for visual review   |
 | `opencv-python-headless` | Color histogram similarity for evaluation |
-| `matplotlib` / `numpy` | Evaluation visualization (SVG charts)    |
+| `numpy`              | HSV color histogram computation            |
 | `pydantic`           | Data validation and structured output      |
 | `tenacity`           | Retry logic for external tool calls        |
 | `torch`              | Deep learning backend (marker-pdf / surya) |
