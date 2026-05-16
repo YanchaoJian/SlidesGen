@@ -43,7 +43,7 @@ models/
 # Project: Runtime Output
 # ========================
 output/
-test/output/
+test/
 
 # ========================
 # Project: Databases
