@@ -6,6 +6,8 @@
 
 *Turn research papers into beautiful, editable PowerPoint slides — automatically.*
 
+🌐 **Language** | [English](README.md) | [中文](README_ZH.md)
+
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![LangGraph](https://img.shields.io/badge/Built%20with-LangGraph-1C3C3C)](https://github.com/langchain-ai/langgraph)
 [![python-pptx](https://img.shields.io/badge/Output-PPTX-D24726?logo=microsoftpowerpoint&logoColor=white)](https://python-pptx.readthedocs.io/)
